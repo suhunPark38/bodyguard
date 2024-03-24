@@ -111,8 +111,9 @@ class _CustomSearchbar extends State<CustomSearchbar> {
      if (response.statusCode == 200) {
        //final decoded = jsonDecode(utf8.decode(response.bodyBytes));
        // 수정된 'items' 접근 경로
-       Map<String, dynamic> map = json.decode(response.body);
-       Map<String, dynamic> body = map["I2790"]; // 앞서 데이터를 받는 키 입력하면 됨
+       Map<String?, dynamic> map = await json.decode(response.body);
+       log(response.body);
+       Map<String?, dynamic> body = map["I2790"]; // 앞서 데이터를 받는 키 입력하면 됨
        List<dynamic> item = body["row"];
        log("리스트의 크기: ${item.length}");
        List<Value2> allInfo = item.map((dynamic items) => Value2.fromJson(items)).toList();
@@ -121,6 +122,7 @@ class _CustomSearchbar extends State<CustomSearchbar> {
        return allInfo;
      } else {
        // 오류 처리 또는 빈 리스트 반환
+       print('값 받아오기 실패');
        log('값 받아오기 실패');
        throw Exception('Failed to load data');
      }
@@ -153,10 +155,10 @@ class _CustomSearchbar extends State<CustomSearchbar> {
                 searchItem();
               },
             ),
-          SizedBox(height: 15.0),
+          //SizedBox(height: 15.0),
           Expanded(
               child: FutureBuilder<List<Value2>>(
-                future: Fetchinfo(inputText), // Future<List<Value>> 타입의 Future
+                future: list, // Future<List<Value>> 타입의 Future
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator(); // 로딩 중 표시
@@ -169,40 +171,7 @@ class _CustomSearchbar extends State<CustomSearchbar> {
                       scrollDirection: Axis.vertical, // 상하 스크롤 활성화
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal, // 좌우 스크롤 활성화
-                        child: DataTable(
-                          columnSpacing: 10.0,
-                          columns: const [
-                            DataColumn(label: Text('이름')),
-                            DataColumn(label: Text('업체명')),
-                            DataColumn(label: Text('열량')),
-                            DataColumn(label: Text('탄수화물')),
-                            DataColumn(label: Text('단백질')),
-                            DataColumn(label: Text('지방')),
-                            DataColumn(label: Text('당류')),
-                            DataColumn(label: Text('나트륨')),
-                            DataColumn(label: Text('콜레스테롤')),
-                            DataColumn(label: Text('포화지방산')),
-                            DataColumn(label: Text('트랜스지방')),
-                          ],
-                          rows: List<DataRow>.generate(
-                            snapshot.data!.length,
-                                (index) => DataRow(
-                              cells: [
-                                DataCell(Text(snapshot.data![index].DESC_KOR)),
-                                DataCell(Text(snapshot.data![index].MAKER_NAME)),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT1))),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT2))),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT3))),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT4))),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT5))),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT6))),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT7))),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT8))),
-                                DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT9))),
-                              ],
-                            ),
-                          ),
-                        ),
+                        child: searchValue(snapshot, snapshot.data!.length)
                       ),
                     );
                   } else {
@@ -217,7 +186,48 @@ class _CustomSearchbar extends State<CustomSearchbar> {
 
       );
     }
-  }
+
+    DataTable searchValue(AsyncSnapshot<List<Value2>> snapshot, int index){
+     return DataTable(
+       border: TableBorder.symmetric(inside: BorderSide(color: Colors.red,width: 1)),
+       columnSpacing: 10.0,
+       columns: const [
+         DataColumn(label: Text('이름')),
+         DataColumn(label: Text('업체명')),
+         DataColumn(label: Text('열량')),
+         DataColumn(label: Text('탄수화물')),
+         DataColumn(label: Text('단백질')),
+         DataColumn(label: Text('지방')),
+         DataColumn(label: Text('당류')),
+         DataColumn(label: Text('나트륨')),
+         DataColumn(label: Text('콜레스테롤')),
+         DataColumn(label: Text('포화지방산')),
+         DataColumn(label: Text('트랜스지방')),
+       ],
+       rows: List<DataRow>.generate(
+         snapshot.data!.length,
+             (index) => DataRow(
+           cells: [
+             DataCell(Text(snapshot.data![index].DESC_KOR)),
+             DataCell(Text(snapshot.data![index].MAKER_NAME)),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT1))),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT2))),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT3))),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT4))),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT5))),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT6))),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT7))),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT8))),
+             DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT9))),
+           ],
+         ),
+       ),
+     );
+    }
+
+}
+
+
 
 //ListView.builder(
 //shrinkWrap: true,
