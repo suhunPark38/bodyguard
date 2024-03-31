@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+@DataClassName('PersonalSettings')
 class PersonalSettings extends Table{
   TextColumn get userId => text()();
   TextColumn get nickname => text()();

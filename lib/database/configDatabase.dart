@@ -28,6 +28,11 @@ class ConfigDatabase extends _$configDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  //Diet 테이블에 식단 추가하는 메소드
+  Future<void> insertDiet(DietCompanion entry) async{
+    await into(diet).insert(entry);
+  }
 }
 
 LazyDatabase _openConnection(){

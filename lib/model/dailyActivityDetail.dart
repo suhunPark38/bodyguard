@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+@DataClassName('DailyActivityDetail')
 class DailyActivityDetail extends Table{
   DateTimeColumn get recordDate => dateTime()();
   TextColumn get activityName => text()();
