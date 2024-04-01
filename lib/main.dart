@@ -1,7 +1,10 @@
 import 'package:bodyguard/utils.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
+import 'package:bodyguard/database/configDatabase.dart';
 
 
 
@@ -9,23 +12,31 @@ void main() {
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
-class NutritionalData {
+class DietRecord {
   final double calories;
   final double carbohydrates;
   final double protein;
   final double fat;
   final double sodium;
   final double sugar;
+  final String menuName;
+  final DateTime eatingTime;
+  final double amount;
+  final int classification;
   final int waterIntake;
   final int steps;
 
-  NutritionalData({
+  DietRecord({
     required this.calories,
     required this.carbohydrates,
     required this.protein,
     required this.fat,
     required this.sodium,
     required this.sugar,
+    required this.classification,
+    required this.menuName,
+    required this.amount,
+    required this.eatingTime,
     required this.waterIntake,
     required this.steps,
   });
@@ -50,11 +61,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
   late DateTime _selectedDay;
+  late ConfigDatabase _configDatabase;
 
-  Map<DateTime, NutritionalData> nutritionalData = {};
+  Map<DateTime, DietRecord> nutritionalData = {};
 
   @override
   void initState() {
@@ -63,7 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _focusedDay = DateTime.utc(now.year, now.month, now.day);
     _selectedDay = DateTime.utc(now.year, now.month, now.day);
     _calendarFormat = CalendarFormat.month;
+    _configDatabase = ConfigDatabase();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 selectedDayPredicate: (day) {
                   return isSameDay(_selectedDay, day);
                 },
-                availableCalendarFormats: {
+                availableCalendarFormats: const {
                   CalendarFormat.week: '주간',
                   CalendarFormat.month: '월간',
                 },
@@ -158,6 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                   }
+                  return null;
                 }),
               ),
 
@@ -260,13 +276,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       String fat = '';
                       String sodium = '';
                       String sugar = '';
+                      String amount = '';
+                      String menuName = '';
+                      String classification = '';
+                      String eatingTime = '';
                       String waterIntake = '';
                       String steps = '';
 
                       return AlertDialog(
                         title: const Text('값을 입력하세요'),
                         content: SingleChildScrollView(
-                          child: Container(
+                          child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.7,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -343,6 +363,42 @@ class _MyHomePageState extends State<MyHomePage> {
                                     hintText: '걸은 횟수 입력(type: int)',
                                   ),
                                 ),
+                                TextField(
+                                  onChanged: (value) {
+                                    menuName = value;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                  decoration: const InputDecoration(
+                                    hintText: '메뉴 이름 입력(type: String)',
+                                  ),
+                                ),
+                                TextField(
+                                  onChanged: (value) {
+                                    amount = value;
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    hintText: '먹은 양 입력(type: double)',
+                                  ),
+                                ),
+                                TextField(
+                                  onChanged: (value) {
+                                    eatingTime = value;
+                                  },
+                                  keyboardType: TextInputType.datetime,
+                                  decoration: const InputDecoration(
+                                    hintText: '먹은 시간 입력(type: datetime)',
+                                  ),
+                                ),
+                                TextField(
+                                  onChanged: (value) {
+                                    classification = value;
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    hintText: '식사 구분 입력(type: int) 0:아침',
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -351,7 +407,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                nutritionalData[_selectedDay] = NutritionalData(
+                                nutritionalData[_selectedDay] = DietRecord(
                                   calories: double.tryParse(calories) ?? 0.0,
                                   carbohydrates:
                                       double.tryParse(carbohydrates) ?? 0.0,
@@ -359,10 +415,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                   fat: double.tryParse(fat) ?? 0.0,
                                   sodium: double.tryParse(sodium) ?? 0.0,
                                   sugar: double.tryParse(sugar) ?? 0.0,
+                                  amount: double.tryParse(amount) ?? 0.0,
+                                  eatingTime: DateTime.tryParse(eatingTime) ?? DateTime.now(),
+                                  classification: int.tryParse(classification) ?? 0,
+                                  menuName: menuName,
                                   waterIntake: int.tryParse(waterIntake) ?? 0,
                                   steps: int.tryParse(steps) ?? 0,
                                 );
                               });
+
+                              _configDatabase.insertDiet(DietCompanion(
+                                eatingTime: Value(DateTime.now()),
+                                menuName: Value(menuName),
+                                amount: Value(double.tryParse(amount) ?? 0.0),
+                                classfication: Value(int.tryParse(classification) ?? 0),
+                                calories: Value(double.tryParse(calories) ?? 0.0),
+                                carbohydrate: Value(double.tryParse(carbohydrates) ?? 0.0),
+                                protein: Value(double.tryParse(protein) ?? 0.0),
+                                fat: Value(double.tryParse(fat) ?? 0.0),
+                                sodium: Value(double.tryParse(sodium) ?? 0.0),
+                                sugar: Value(double.tryParse(sugar) ?? 0.0),
+                              ));
+
                               Navigator.of(context).pop();
                             },
                             child: const Text('확인'),
@@ -461,7 +535,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 const SizedBox(width: 5), // 물 컵 아이콘 간격 조절
                               if ((nutritionalData[_selectedDay]?.waterIntake ?? 0) < 6)
                                 ...List.generate(
-                                  (nutritionalData[_selectedDay]?.waterIntake?.toInt() ?? 0),
+                                  (nutritionalData[_selectedDay]?.waterIntake.toInt() ?? 0),
                                       (index) {
                                     return const Icon(
                                       Icons.local_drink,

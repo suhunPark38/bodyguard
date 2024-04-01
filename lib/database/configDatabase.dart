@@ -23,7 +23,7 @@ part 'configDatabase.g.dart';
     DailyActivityDetail,
   ],
 )
-class ConfigDatabase extends _$configDatabase {
+class ConfigDatabase extends _$ConfigDatabase {
   ConfigDatabase() : super(_openConnection());
 
   @override

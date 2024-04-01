@@ -55,7 +55,7 @@ class DonutChartPainter extends CustomPainter {
 
     canvas.drawCircle(center, radius, backgroundPaint);
 
-    final startAngle = -math.pi / 2;
+    const startAngle = -math.pi / 2;
     final sweepAngle = math.pi * 2 * percentage;
 
     canvas.drawArc(

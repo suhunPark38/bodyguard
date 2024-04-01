@@ -3,7 +3,7 @@
 part of 'configDatabase.dart';
 
 // ignore_for_file: type=lint
-class $DietTable extends Diet with TableInfo<$DietTable, Diet> {
+class $DietTable extends Diet with TableInfo<$DietTable, DietData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -93,7 +93,7 @@ class $DietTable extends Diet with TableInfo<$DietTable, Diet> {
   String get actualTableName => $name;
   static const String $name = 'diet';
   @override
-  VerificationContext validateIntegrity(Insertable<Diet> instance,
+  VerificationContext validateIntegrity(Insertable<DietData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -173,9 +173,9 @@ class $DietTable extends Diet with TableInfo<$DietTable, Diet> {
   @override
   Set<GeneratedColumn> get $primaryKey => {dietId};
   @override
-  Diet map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DietData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Diet(
+    return DietData(
       dietId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}diet_id'])!,
       eatingTime: attachedDatabase.typeMapping
@@ -207,7 +207,7 @@ class $DietTable extends Diet with TableInfo<$DietTable, Diet> {
   }
 }
 
-class Diet extends DataClass implements Insertable<Diet> {
+class DietData extends DataClass implements Insertable<DietData> {
   final int dietId;
   final DateTime eatingTime;
   final String menuName;
@@ -219,7 +219,7 @@ class Diet extends DataClass implements Insertable<Diet> {
   final double fat;
   final double sodium;
   final double sugar;
-  const Diet(
+  const DietData(
       {required this.dietId,
       required this.eatingTime,
       required this.menuName,
@@ -264,10 +264,10 @@ class Diet extends DataClass implements Insertable<Diet> {
     );
   }
 
-  factory Diet.fromJson(Map<String, dynamic> json,
+  factory DietData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Diet(
+    return DietData(
       dietId: serializer.fromJson<int>(json['dietId']),
       eatingTime: serializer.fromJson<DateTime>(json['eatingTime']),
       menuName: serializer.fromJson<String>(json['menuName']),
@@ -299,7 +299,7 @@ class Diet extends DataClass implements Insertable<Diet> {
     };
   }
 
-  Diet copyWith(
+  DietData copyWith(
           {int? dietId,
           DateTime? eatingTime,
           String? menuName,
@@ -311,7 +311,7 @@ class Diet extends DataClass implements Insertable<Diet> {
           double? fat,
           double? sodium,
           double? sugar}) =>
-      Diet(
+      DietData(
         dietId: dietId ?? this.dietId,
         eatingTime: eatingTime ?? this.eatingTime,
         menuName: menuName ?? this.menuName,
@@ -326,7 +326,7 @@ class Diet extends DataClass implements Insertable<Diet> {
       );
   @override
   String toString() {
-    return (StringBuffer('Diet(')
+    return (StringBuffer('DietData(')
           ..write('dietId: $dietId, ')
           ..write('eatingTime: $eatingTime, ')
           ..write('menuName: $menuName, ')
@@ -348,7 +348,7 @@ class Diet extends DataClass implements Insertable<Diet> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Diet &&
+      (other is DietData &&
           other.dietId == this.dietId &&
           other.eatingTime == this.eatingTime &&
           other.menuName == this.menuName &&
@@ -362,7 +362,7 @@ class Diet extends DataClass implements Insertable<Diet> {
           other.sugar == this.sugar);
 }
 
-class DietCompanion extends UpdateCompanion<Diet> {
+class DietCompanion extends UpdateCompanion<DietData> {
   final Value<int> dietId;
   final Value<DateTime> eatingTime;
   final Value<String> menuName;
@@ -409,7 +409,7 @@ class DietCompanion extends UpdateCompanion<Diet> {
         fat = Value(fat),
         sodium = Value(sodium),
         sugar = Value(sugar);
-  static Insertable<Diet> custom({
+  static Insertable<DietData> custom({
     Expression<int>? dietId,
     Expression<DateTime>? eatingTime,
     Expression<String>? menuName,
@@ -523,7 +523,7 @@ class DietCompanion extends UpdateCompanion<Diet> {
 }
 
 class $PersonalSettingsTable extends PersonalSettings
-    with TableInfo<$PersonalSettingsTable, PersonalSettings> {
+    with TableInfo<$PersonalSettingsTable, PersonalSetting> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -589,7 +589,7 @@ class $PersonalSettingsTable extends PersonalSettings
   String get actualTableName => $name;
   static const String $name = 'personal_settings';
   @override
-  VerificationContext validateIntegrity(Insertable<PersonalSettings> instance,
+  VerificationContext validateIntegrity(Insertable<PersonalSetting> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -653,9 +653,9 @@ class $PersonalSettingsTable extends PersonalSettings
   @override
   Set<GeneratedColumn> get $primaryKey => {userId};
   @override
-  PersonalSettings map(Map<String, dynamic> data, {String? tablePrefix}) {
+  PersonalSetting map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PersonalSettings(
+    return PersonalSetting(
       userId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
       nickname: attachedDatabase.typeMapping
@@ -681,8 +681,7 @@ class $PersonalSettingsTable extends PersonalSettings
   }
 }
 
-class PersonalSettings extends DataClass
-    implements Insertable<PersonalSettings> {
+class PersonalSetting extends DataClass implements Insertable<PersonalSetting> {
   final String userId;
   final String nickname;
   final double height;
@@ -691,7 +690,7 @@ class PersonalSettings extends DataClass
   final double recommenedCalories;
   final double targetCalories;
   final double targetWaterIntake;
-  const PersonalSettings(
+  const PersonalSetting(
       {required this.userId,
       required this.nickname,
       required this.height,
@@ -727,10 +726,10 @@ class PersonalSettings extends DataClass
     );
   }
 
-  factory PersonalSettings.fromJson(Map<String, dynamic> json,
+  factory PersonalSetting.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PersonalSettings(
+    return PersonalSetting(
       userId: serializer.fromJson<String>(json['userId']),
       nickname: serializer.fromJson<String>(json['nickname']),
       height: serializer.fromJson<double>(json['height']),
@@ -757,7 +756,7 @@ class PersonalSettings extends DataClass
     };
   }
 
-  PersonalSettings copyWith(
+  PersonalSetting copyWith(
           {String? userId,
           String? nickname,
           double? height,
@@ -766,7 +765,7 @@ class PersonalSettings extends DataClass
           double? recommenedCalories,
           double? targetCalories,
           double? targetWaterIntake}) =>
-      PersonalSettings(
+      PersonalSetting(
         userId: userId ?? this.userId,
         nickname: nickname ?? this.nickname,
         height: height ?? this.height,
@@ -778,7 +777,7 @@ class PersonalSettings extends DataClass
       );
   @override
   String toString() {
-    return (StringBuffer('PersonalSettings(')
+    return (StringBuffer('PersonalSetting(')
           ..write('userId: $userId, ')
           ..write('nickname: $nickname, ')
           ..write('height: $height, ')
@@ -797,7 +796,7 @@ class PersonalSettings extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is PersonalSettings &&
+      (other is PersonalSetting &&
           other.userId == this.userId &&
           other.nickname == this.nickname &&
           other.height == this.height &&
@@ -808,7 +807,7 @@ class PersonalSettings extends DataClass
           other.targetWaterIntake == this.targetWaterIntake);
 }
 
-class PersonalSettingsCompanion extends UpdateCompanion<PersonalSettings> {
+class PersonalSettingsCompanion extends UpdateCompanion<PersonalSetting> {
   final Value<String> userId;
   final Value<String> nickname;
   final Value<double> height;
@@ -847,7 +846,7 @@ class PersonalSettingsCompanion extends UpdateCompanion<PersonalSettings> {
         recommenedCalories = Value(recommenedCalories),
         targetCalories = Value(targetCalories),
         targetWaterIntake = Value(targetWaterIntake);
-  static Insertable<PersonalSettings> custom({
+  static Insertable<PersonalSetting> custom({
     Expression<String>? userId,
     Expression<String>? nickname,
     Expression<double>? height,
@@ -945,7 +944,7 @@ class PersonalSettingsCompanion extends UpdateCompanion<PersonalSettings> {
 }
 
 class $DailyActivityInfoTable extends DailyActivityInfo
-    with TableInfo<$DailyActivityInfoTable, DailyActivityInfo> {
+    with TableInfo<$DailyActivityInfoTable, DailyActivityInfoData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -983,7 +982,8 @@ class $DailyActivityInfoTable extends DailyActivityInfo
   String get actualTableName => $name;
   static const String $name = 'daily_activity_info';
   @override
-  VerificationContext validateIntegrity(Insertable<DailyActivityInfo> instance,
+  VerificationContext validateIntegrity(
+      Insertable<DailyActivityInfoData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1025,9 +1025,9 @@ class $DailyActivityInfoTable extends DailyActivityInfo
   @override
   Set<GeneratedColumn> get $primaryKey => {recordDate};
   @override
-  DailyActivityInfo map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DailyActivityInfoData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DailyActivityInfo(
+    return DailyActivityInfoData(
       recordDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}record_date'])!,
       totalCalorieIntake: attachedDatabase.typeMapping.read(
@@ -1045,13 +1045,13 @@ class $DailyActivityInfoTable extends DailyActivityInfo
   }
 }
 
-class DailyActivityInfo extends DataClass
-    implements Insertable<DailyActivityInfo> {
+class DailyActivityInfoData extends DataClass
+    implements Insertable<DailyActivityInfoData> {
   final DateTime recordDate;
   final double totalCalorieIntake;
   final double totalCalorieBurned;
   final double waterIntake;
-  const DailyActivityInfo(
+  const DailyActivityInfoData(
       {required this.recordDate,
       required this.totalCalorieIntake,
       required this.totalCalorieBurned,
@@ -1075,10 +1075,10 @@ class DailyActivityInfo extends DataClass
     );
   }
 
-  factory DailyActivityInfo.fromJson(Map<String, dynamic> json,
+  factory DailyActivityInfoData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DailyActivityInfo(
+    return DailyActivityInfoData(
       recordDate: serializer.fromJson<DateTime>(json['recordDate']),
       totalCalorieIntake:
           serializer.fromJson<double>(json['totalCalorieIntake']),
@@ -1098,12 +1098,12 @@ class DailyActivityInfo extends DataClass
     };
   }
 
-  DailyActivityInfo copyWith(
+  DailyActivityInfoData copyWith(
           {DateTime? recordDate,
           double? totalCalorieIntake,
           double? totalCalorieBurned,
           double? waterIntake}) =>
-      DailyActivityInfo(
+      DailyActivityInfoData(
         recordDate: recordDate ?? this.recordDate,
         totalCalorieIntake: totalCalorieIntake ?? this.totalCalorieIntake,
         totalCalorieBurned: totalCalorieBurned ?? this.totalCalorieBurned,
@@ -1111,7 +1111,7 @@ class DailyActivityInfo extends DataClass
       );
   @override
   String toString() {
-    return (StringBuffer('DailyActivityInfo(')
+    return (StringBuffer('DailyActivityInfoData(')
           ..write('recordDate: $recordDate, ')
           ..write('totalCalorieIntake: $totalCalorieIntake, ')
           ..write('totalCalorieBurned: $totalCalorieBurned, ')
@@ -1126,14 +1126,15 @@ class DailyActivityInfo extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is DailyActivityInfo &&
+      (other is DailyActivityInfoData &&
           other.recordDate == this.recordDate &&
           other.totalCalorieIntake == this.totalCalorieIntake &&
           other.totalCalorieBurned == this.totalCalorieBurned &&
           other.waterIntake == this.waterIntake);
 }
 
-class DailyActivityInfoCompanion extends UpdateCompanion<DailyActivityInfo> {
+class DailyActivityInfoCompanion
+    extends UpdateCompanion<DailyActivityInfoData> {
   final Value<DateTime> recordDate;
   final Value<double> totalCalorieIntake;
   final Value<double> totalCalorieBurned;
@@ -1156,7 +1157,7 @@ class DailyActivityInfoCompanion extends UpdateCompanion<DailyActivityInfo> {
         totalCalorieIntake = Value(totalCalorieIntake),
         totalCalorieBurned = Value(totalCalorieBurned),
         waterIntake = Value(waterIntake);
-  static Insertable<DailyActivityInfo> custom({
+  static Insertable<DailyActivityInfoData> custom({
     Expression<DateTime>? recordDate,
     Expression<double>? totalCalorieIntake,
     Expression<double>? totalCalorieBurned,
@@ -1224,7 +1225,7 @@ class DailyActivityInfoCompanion extends UpdateCompanion<DailyActivityInfo> {
 }
 
 class $DailyActivityDetailTable extends DailyActivityDetail
-    with TableInfo<$DailyActivityDetailTable, DailyActivityDetail> {
+    with TableInfo<$DailyActivityDetailTable, DailyActivityDetailData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1269,7 +1270,7 @@ class $DailyActivityDetailTable extends DailyActivityDetail
   static const String $name = 'daily_activity_detail';
   @override
   VerificationContext validateIntegrity(
-      Insertable<DailyActivityDetail> instance,
+      Insertable<DailyActivityDetailData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1315,9 +1316,10 @@ class $DailyActivityDetailTable extends DailyActivityDetail
   @override
   Set<GeneratedColumn> get $primaryKey => {recordDate};
   @override
-  DailyActivityDetail map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DailyActivityDetailData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DailyActivityDetail(
+    return DailyActivityDetailData(
       recordDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}record_date'])!,
       activityName: attachedDatabase.typeMapping
@@ -1337,14 +1339,14 @@ class $DailyActivityDetailTable extends DailyActivityDetail
   }
 }
 
-class DailyActivityDetail extends DataClass
-    implements Insertable<DailyActivityDetail> {
+class DailyActivityDetailData extends DataClass
+    implements Insertable<DailyActivityDetailData> {
   final DateTime recordDate;
   final String activityName;
   final double calorieBurned;
   final DateTime startTime;
   final DateTime endTime;
-  const DailyActivityDetail(
+  const DailyActivityDetailData(
       {required this.recordDate,
       required this.activityName,
       required this.calorieBurned,
@@ -1371,10 +1373,10 @@ class DailyActivityDetail extends DataClass
     );
   }
 
-  factory DailyActivityDetail.fromJson(Map<String, dynamic> json,
+  factory DailyActivityDetailData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DailyActivityDetail(
+    return DailyActivityDetailData(
       recordDate: serializer.fromJson<DateTime>(json['recordDate']),
       activityName: serializer.fromJson<String>(json['activityName']),
       calorieBurned: serializer.fromJson<double>(json['calorieBurned']),
@@ -1394,13 +1396,13 @@ class DailyActivityDetail extends DataClass
     };
   }
 
-  DailyActivityDetail copyWith(
+  DailyActivityDetailData copyWith(
           {DateTime? recordDate,
           String? activityName,
           double? calorieBurned,
           DateTime? startTime,
           DateTime? endTime}) =>
-      DailyActivityDetail(
+      DailyActivityDetailData(
         recordDate: recordDate ?? this.recordDate,
         activityName: activityName ?? this.activityName,
         calorieBurned: calorieBurned ?? this.calorieBurned,
@@ -1409,7 +1411,7 @@ class DailyActivityDetail extends DataClass
       );
   @override
   String toString() {
-    return (StringBuffer('DailyActivityDetail(')
+    return (StringBuffer('DailyActivityDetailData(')
           ..write('recordDate: $recordDate, ')
           ..write('activityName: $activityName, ')
           ..write('calorieBurned: $calorieBurned, ')
@@ -1425,7 +1427,7 @@ class DailyActivityDetail extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is DailyActivityDetail &&
+      (other is DailyActivityDetailData &&
           other.recordDate == this.recordDate &&
           other.activityName == this.activityName &&
           other.calorieBurned == this.calorieBurned &&
@@ -1434,7 +1436,7 @@ class DailyActivityDetail extends DataClass
 }
 
 class DailyActivityDetailCompanion
-    extends UpdateCompanion<DailyActivityDetail> {
+    extends UpdateCompanion<DailyActivityDetailData> {
   final Value<DateTime> recordDate;
   final Value<String> activityName;
   final Value<double> calorieBurned;
@@ -1461,7 +1463,7 @@ class DailyActivityDetailCompanion
         calorieBurned = Value(calorieBurned),
         startTime = Value(startTime),
         endTime = Value(endTime);
-  static Insertable<DailyActivityDetail> custom({
+  static Insertable<DailyActivityDetailData> custom({
     Expression<DateTime>? recordDate,
     Expression<String>? activityName,
     Expression<double>? calorieBurned,

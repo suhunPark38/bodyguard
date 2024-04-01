@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 
-@DataClassName('Diet')
 class Diet extends Table{
   IntColumn get dietId => integer().autoIncrement()();
   DateTimeColumn get eatingTime => dateTime()();
