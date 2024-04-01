@@ -67,6 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
   late DateTime _selectedDay;
   late ConfigDatabase _configDatabase;
 
+  late List<DietData> _diets;
+
+  late List<DietData> _breakfast;
+  late List<DietData> _lunch;
+  late List<DietData> _dinner;
+
   Map<DateTime, DietRecord> nutritionalData = {};
 
   @override
@@ -137,11 +143,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     _calendarFormat = format;
                   });
                 },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
+                onDaySelected: (selectedDay, focusedDay) async {
+                  setState(()  {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
                   });
+
+                  _diets = await _configDatabase.getDietByEatingTime(_selectedDay);
+
+                  _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
+                  _lunch = _diets.where((diet) => diet.classfication == 1).toList();
+                  _dinner = _diets.where((diet) => diet.classfication == 2).toList();
                 },
                 headerStyle: const HeaderStyle(
                   formatButtonVisible: true,
@@ -209,6 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 30),
+
                             ],
                           ),
                         ),

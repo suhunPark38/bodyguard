@@ -48,6 +48,8 @@ class ConfigDatabase extends _$ConfigDatabase {
     await into(dailyActivityInfo).insert(entry);
   }
 
+  /* DailyActivityInfo 테이블 */
+
 
   /* Diet 테이블 */
 
@@ -57,7 +59,7 @@ class ConfigDatabase extends _$ConfigDatabase {
   }
 
   /// Diet 테이블에서 EatingTime으로 해당 날짜의 Diet 조회하는 메소드
-  Future<List<DietData>> getDietByEatingTime(DateTime eatingTime){
+  Future<List<DietData>> getDietByEatingTime(DateTime eatingTime) {
     final DateTime startDate = DateTime(eatingTime.year, eatingTime.month, eatingTime.day);
     final DateTime endDate = startDate.add(Duration(days: 1));
 
