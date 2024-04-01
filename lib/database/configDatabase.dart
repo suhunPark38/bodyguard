@@ -29,6 +29,28 @@ class ConfigDatabase extends _$ConfigDatabase {
   @override
   int get schemaVersion => 1;
 
+  /* PersonalSettings 테이블 */
+
+  /// 최초 로그인 시, 사용자 설정값 추가
+  Future<void> insertPersonalSettings(PersonalSettingsCompanion entry) async{
+    await into(personalSettings).insert(entry);
+  }
+
+  /// 사용자 설정값 수정
+  Future<void> updatePersonalSettings(PersonalSettingsCompanion entry) async{
+    await update(personalSettings).replace(entry);
+  }
+
+  /* DailyActivityInfo 테이블 */
+
+  /// 일일 활동량 저장
+  Future<void> insertDailyActivityInfo(DailyActivityInfoCompanion entry) async{
+    await into(dailyActivityInfo).insert(entry);
+  }
+
+
+  /* Diet 테이블 */
+
   /// Diet 테이블에 식단 추가하는 메소드
   Future<void> insertDiet(DietCompanion entry) async{
     await into(diet).insert(entry);
