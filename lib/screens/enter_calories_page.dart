@@ -1,4 +1,3 @@
-import 'package:bodyguard/utils.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +6,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:bodyguard/database/configDatabase.dart';
-
-
-
-void main() {
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
-}
+import 'package:bodyguard/widgets/circle_chart.dart';
+import 'my_home_page.dart';
+import 'main.dart';
 
 class DietRecord {
   final double calories;
@@ -44,6 +40,10 @@ class DietRecord {
   });
 }
 
+class MyEnterCaloriesPage extends StatefulWidget {
+  const MyEnterCaloriesPage({Key? key}) : super(key: key);
+
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
 
@@ -59,11 +59,10 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyEnterCaloriesPageState createState() => _MyEnterCaloriesPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-
+class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
   late DateTime _selectedDay;
@@ -98,14 +97,18 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            print('뒤로가기 버튼 클릭됨!');
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back),
         ),
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              print('홈 버튼 클릭됨!');
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+                (route) => false,
+              );
             },
             icon: const Icon(Icons.home),
           ),
@@ -193,15 +196,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   return null;
                 }),
               ),
-
               ElevatedButton(
-
                 onPressed: () {
                   print("음식 추가 버튼 클릭됨!!");
                 },
                 child: const Text('음식 추가'),
               ),
-
               const SizedBox(height: 20),
               SizedBox(
                 height: 200,
@@ -210,7 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
-                      child:Card(
+                      child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -223,17 +223,17 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Text(
                                 '아침',
-                                style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 30),
-
                             ],
                           ),
                         ),
                       ),
                     ),
                     Expanded(
-                      child:Card(
+                      child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -246,7 +246,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Text(
                                 '점심',
-                                style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 30),
                             ],
@@ -255,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Expanded(
-                      child:Card(
+                      child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -268,7 +269,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Text(
                                 '저녁',
-                                style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 30),
                             ],
@@ -279,11 +281,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
-
               ElevatedButton(
-
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -555,27 +554,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ...List.generate(
                                   (nutritionalData[_selectedDay]?.waterIntake.toInt() ?? 0),
                                       (index) {
-                                    return const Icon(
-                                      Icons.local_drink,
-                                      size: 20, // 작은 아이콘 크기
-                                      color: Colors.blue,
-                                    );
-                                  },
-                                ),
+                                        return const Icon(
+                                          Icons.local_drink,
+                                          size: 20, // 작은 아이콘 크기
+                                          color: Colors.blue,
+                                        );
+                                      },
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 30),
+                              Text(
+                                '총 ${((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) >= 1000 ? ((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) / 1000 : (nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200} ${(nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200 >= 1000 ? "L" : "ml"}',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 30),
-                          Text(
-                            '총 ${((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) >= 1000 ? ((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) / 1000 : (nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200} ${(nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200 >= 1000 ? "L" : "ml"}',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 20),
@@ -609,13 +609,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           const Text(
                             '활동량',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 10),
                           Stack(
                             alignment: Alignment.center,
                             children: [
-                              StepsDonutChart(steps: nutritionalData[_selectedDay]?.steps ?? 0),
+                              StepsDonutChart(
+                                  steps: nutritionalData[_selectedDay]?.steps ??
+                                      0),
                               Text(
                                 '${(nutritionalData[_selectedDay]?.steps ?? 0)} 걸음',
                                 style: const TextStyle(fontSize: 15),
