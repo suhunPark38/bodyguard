@@ -34,7 +34,6 @@ class Value2 {
   */
 
 
-  //final String resultCode,resultMsg,numOfRows,pageNo,totalCount;
   final String DESC_KOR, MAKER_NAME, SERVING_SIZE, SERVING_UNIT, NUTR_CONT1,
       NUTR_CONT2, NUTR_CONT3
   , NUTR_CONT4, NUTR_CONT5, NUTR_CONT6, NUTR_CONT7, NUTR_CONT8, NUTR_CONT9;
@@ -189,7 +188,7 @@ class _CustomSearchbar extends State<CustomSearchbar> {
 
     DataTable searchValue(AsyncSnapshot<List<Value2>> snapshot, int index){
      return DataTable(
-       border: TableBorder.symmetric(inside: BorderSide(color: Colors.red,width: 1)),
+       border: TableBorder.symmetric(inside: BorderSide(color: Colors.grey,width: 1)),
        columnSpacing: 10.0,
        columns: const [
          DataColumn(label: Text('이름')),

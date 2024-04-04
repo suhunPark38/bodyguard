@@ -4,9 +4,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
-void main() async {
+Future<Widget> MapRun() async {
   await _initialize();
-  runApp(const NaverMapApp());
+  return const NaverMapApp();
 }
 
 
@@ -29,6 +29,8 @@ Future<void> _initialize() async {
 
 class NaverMapApp extends StatelessWidget {
   const NaverMapApp({Key? key});
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -78,17 +80,17 @@ class NaverMapApp extends StatelessWidget {
                 return SingleChildScrollView(
                   controller: scrollController,
                   child: Container(
-                      child: Expanded(
-                        child: Text("가게정보",textAlign: TextAlign.center,),
-                      ),
-                      height: 1000,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20)
-                          ),
-                          color: Colors.white
-                      ),
+                    child: Expanded(
+                      child: Text("가게정보",textAlign: TextAlign.center,),
+                    ),
+                    height: 1000,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)
+                        ),
+                        color: Colors.white
+                    ),
                   ),
                 );
               },
@@ -98,5 +100,5 @@ class NaverMapApp extends StatelessWidget {
       ),
     );
   }
-  //출처: https://daino.tistory.com/entry/플러터Flutter-네이버지도Navermap-마커-생성-위젯-사용 [daino_saur:티스토리]
+//출처: https://daino.tistory.com/entry/플러터Flutter-네이버지도Navermap-마커-생성-위젯-사용 [daino_saur:티스토리]
 }
