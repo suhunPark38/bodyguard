@@ -3,12 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:bodyguard/database/configDatabase.dart';
 import 'package:bodyguard/widgets/circle_chart.dart';
 import 'my_home_page.dart';
-import 'main.dart';
 
 class DietRecord {
   final double calories;
@@ -42,21 +40,6 @@ class DietRecord {
 
 class MyEnterCaloriesPage extends StatefulWidget {
   const MyEnterCaloriesPage({Key? key}) : super(key: key);
-
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyEnterCaloriesPageState createState() => _MyEnterCaloriesPageState();
