@@ -1,55 +1,17 @@
-import 'package:bodyguard/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:bodyguard/widgets/circle_chart.dart';
+import 'my_home_page.dart';
+import 'main.dart';
 
-
-
-void main() {
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
-}
-
-class NutritionalData {
-  final double calories;
-  final double carbohydrates;
-  final double protein;
-  final double fat;
-  final double sodium;
-  final double sugar;
-  final int waterIntake;
-  final int steps;
-
-  NutritionalData({
-    required this.calories,
-    required this.carbohydrates,
-    required this.protein,
-    required this.fat,
-    required this.sodium,
-    required this.sugar,
-    required this.waterIntake,
-    required this.steps,
-  });
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+class MyEnterCaloriesPage extends StatefulWidget {
+  const MyEnterCaloriesPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-    );
-  }
+  _MyEnterCaloriesPageState createState() => _MyEnterCaloriesPageState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
   late DateTime _selectedDay;
@@ -75,14 +37,18 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            print('뒤로가기 버튼 클릭됨!');
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back),
         ),
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              print('홈 버튼 클릭됨!');
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+                (route) => false,
+              );
             },
             icon: const Icon(Icons.home),
           ),
@@ -160,24 +126,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 }),
               ),
-
               ElevatedButton(
-
                 onPressed: () {
                   print("음식 추가 버튼 클릭됨!!");
                 },
                 child: const Text('음식 추가'),
               ),
-
               const SizedBox(height: 20),
               SizedBox(
                 height: 200,
                 child: Row(
-
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
-                      child:Card(
+                      child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -190,7 +152,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Text(
                                 '아침',
-                                style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 30),
                             ],
@@ -199,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Expanded(
-                      child:Card(
+                      child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -212,7 +175,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Text(
                                 '점심',
-                                style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 30),
                             ],
@@ -221,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Expanded(
-                      child:Card(
+                      child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -234,7 +198,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Text(
                                 '저녁',
-                                style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 30),
                             ],
@@ -245,11 +210,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
-
               ElevatedButton(
-
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -374,120 +336,135 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: const Text('칼로리 및 성분 입력'),
               ),
-
               const SizedBox(height: 20),
-
               SizedBox(
                 height: 300,
-              child: Row(
-
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                  child:Card(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            '먹은 칼로리',
-                            style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 30),
-                          Text(
-                            '탄수화물 ${nutritionalData[_selectedDay]?.carbohydrates ?? 0.0}g',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '단백질 ${nutritionalData[_selectedDay]?.protein ?? 0.0}g',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '지방 ${nutritionalData[_selectedDay]?.fat ?? 0.0}g',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '나트륨 ${nutritionalData[_selectedDay]?.sodium ?? 0.0}mg',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '당 ${nutritionalData[_selectedDay]?.sugar ?? 0.0}g',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            '총 ${nutritionalData[_selectedDay]?.calories ?? 0.0} kcal',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  ),
-                  Expanded(
-                    child:
-                  Card(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            '마신 물',
-                            style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 30),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: Card(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              if ((nutritionalData[_selectedDay]?.waterIntake ?? 0) >= 6)
-                                const Icon(
-                                  Icons.local_drink,
-                                  size: 100, // 큰 아이콘 크기
-                                  color: Colors.blue,
-                                ),
-                              if ((nutritionalData[_selectedDay]?.waterIntake ?? 0) >= 6)
-                                const SizedBox(width: 5), // 물 컵 아이콘 간격 조절
-                              if ((nutritionalData[_selectedDay]?.waterIntake ?? 0) < 6)
-                                ...List.generate(
-                                  (nutritionalData[_selectedDay]?.waterIntake?.toInt() ?? 0),
-                                      (index) {
-                                    return const Icon(
-                                      Icons.local_drink,
-                                      size: 20, // 작은 아이콘 크기
-                                      color: Colors.blue,
-                                    );
-                                  },
-                                ),
+                              const Text(
+                                '먹은 칼로리',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 30),
+                              Text(
+                                '탄수화물 ${nutritionalData[_selectedDay]?.carbohydrates ?? 0.0}g',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '단백질 ${nutritionalData[_selectedDay]?.protein ?? 0.0}g',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '지방 ${nutritionalData[_selectedDay]?.fat ?? 0.0}g',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '나트륨 ${nutritionalData[_selectedDay]?.sodium ?? 0.0}mg',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '당 ${nutritionalData[_selectedDay]?.sugar ?? 0.0}g',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                '총 ${nutritionalData[_selectedDay]?.calories ?? 0.0} kcal',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 30),
-                          Text(
-                            '총 ${((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) >= 1000 ? ((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) / 1000 : (nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200} ${(nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200 >= 1000 ? "L" : "ml"}',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                  ),
-                ],
+                    Expanded(
+                      child: Card(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                '마신 물',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if ((nutritionalData[_selectedDay]
+                                              ?.waterIntake ??
+                                          0) >=
+                                      6)
+                                    const Icon(
+                                      Icons.local_drink,
+                                      size: 100, // 큰 아이콘 크기
+                                      color: Colors.blue,
+                                    ),
+                                  if ((nutritionalData[_selectedDay]
+                                              ?.waterIntake ??
+                                          0) >=
+                                      6)
+                                    const SizedBox(width: 5), // 물 컵 아이콘 간격 조절
+                                  if ((nutritionalData[_selectedDay]
+                                              ?.waterIntake ??
+                                          0) <
+                                      6)
+                                    ...List.generate(
+                                      (nutritionalData[_selectedDay]
+                                              ?.waterIntake
+                                              ?.toInt() ??
+                                          0),
+                                      (index) {
+                                        return const Icon(
+                                          Icons.local_drink,
+                                          size: 20, // 작은 아이콘 크기
+                                          color: Colors.blue,
+                                        );
+                                      },
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 30),
+                              Text(
+                                '총 ${((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) >= 1000 ? ((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) / 1000 : (nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200} ${(nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200 >= 1000 ? "L" : "ml"}',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              ),
-
               const SizedBox(height: 20),
-
               Card(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -517,13 +494,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           const Text(
                             '활동량',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 10),
                           Stack(
                             alignment: Alignment.center,
                             children: [
-                              StepsDonutChart(steps: nutritionalData[_selectedDay]?.steps ?? 0),
+                              StepsDonutChart(
+                                  steps: nutritionalData[_selectedDay]?.steps ??
+                                      0),
                               Text(
                                 '${(nutritionalData[_selectedDay]?.steps ?? 0)} 걸음',
                                 style: const TextStyle(fontSize: 15),
@@ -549,7 +529,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
