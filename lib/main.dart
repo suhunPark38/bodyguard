@@ -1,6 +1,8 @@
 import 'package:bodyguard/utils.dart';
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -151,9 +153,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   _diets = await _configDatabase.getDietByEatingTime(_selectedDay);
 
-                  _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
-                  _lunch = _diets.where((diet) => diet.classfication == 1).toList();
-                  _dinner = _diets.where((diet) => diet.classfication == 2).toList();
+                  /// 확인 용. 완전 작업 끝나면 지울 것임.
+                  print(_diets);
+
+                  //_breakfast = _diets.where((diet) => diet.classfication == 0).toList();
+                  //_lunch = _diets.where((diet) => diet.classfication == 1).toList();
+                  //_dinner = _diets.where((diet) => diet.classfication == 2).toList();
                 },
                 headerStyle: const HeaderStyle(
                   formatButtonVisible: true,
