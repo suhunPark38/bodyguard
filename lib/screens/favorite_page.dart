@@ -13,6 +13,7 @@ class FavoritePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
+
             Widget mapPage = await MapRun(); // MapRun 실행하여 Widget 받기
             Navigator.push(
               context,

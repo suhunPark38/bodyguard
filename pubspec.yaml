@@ -32,7 +32,9 @@ dependencies:
     sdk: flutter
   http: ^1.2.1
   flutter_naver_map: ^1.2.1
-
+  cloud_firestore: ^4.16.0
+  firebase_database: ^10.5.0
+  firebase_core: ^2.28.0
 
 
   # The following adds the Cupertino Icons font to your application.
