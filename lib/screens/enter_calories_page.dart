@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:bodyguard/util/DateUtil.dart';
 
 import 'package:bodyguard/database/configDatabase.dart';
 import 'package:bodyguard/widgets/circle_chart.dart';
@@ -142,9 +143,9 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                   /// 확인 용. 완전 작업 끝나면 지울 것임.
                   print(_diets);
 
-                  //_breakfast = _diets.where((diet) => diet.classfication == 0).toList();
-                  //_lunch = _diets.where((diet) => diet.classfication == 1).toList();
-                  //_dinner = _diets.where((diet) => diet.classfication == 2).toList();
+                  _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
+                  _lunch = _diets.where((diet) => diet.classfication == 1).toList();
+                  _dinner = _diets.where((diet) => diet.classfication == 2).toList();
                 },
                 headerStyle: const HeaderStyle(
                   formatButtonVisible: true,
@@ -178,12 +179,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                   }
                   return null;
                 }),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  print("음식 추가 버튼 클릭됨!!");
-                },
-                child: const Text('음식 추가'),
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -385,7 +380,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                   onChanged: (value) {
                                     eatingTime = value;
                                   },
-                                  keyboardType: TextInputType.datetime,
+                                  keyboardType: TextInputType.text,
                                   decoration: const InputDecoration(
                                     hintText: '먹은 시간 입력(type: datetime)',
                                   ),
@@ -416,7 +411,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                   sodium: double.tryParse(sodium) ?? 0.0,
                                   sugar: double.tryParse(sugar) ?? 0.0,
                                   amount: double.tryParse(amount) ?? 0.0,
-                                  eatingTime: DateTime.tryParse(eatingTime) ?? DateTime.now(),
+                                  eatingTime: DateTime.tryParse(eatingTime) ?? DateUtil().updateDateTimeToNow(_selectedDay),
                                   classification: int.tryParse(classification) ?? 0,
                                   menuName: menuName,
                                   waterIntake: int.tryParse(waterIntake) ?? 0,
@@ -425,7 +420,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                               });
 
                               _configDatabase.insertDiet(DietCompanion(
-                                eatingTime: Value(DateTime.now()),
+                                eatingTime: Value(DateUtil().updateDateTimeToNow(_selectedDay)),
                                 menuName: Value(menuName),
                                 amount: Value(double.tryParse(amount) ?? 0.0),
                                 classfication: Value(int.tryParse(classification) ?? 0),
