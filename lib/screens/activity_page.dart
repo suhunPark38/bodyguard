@@ -154,7 +154,9 @@ class WeeklyStepsChart extends StatelessWidget {
     int averageDistance = 5; // in kilometers
     int averageSteps = 7000;
 
-    return Row(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Row(
@@ -215,6 +217,7 @@ class WeeklyStepsChart extends StatelessWidget {
               ),
             ]),
       ],
+    ),
     );
   }
 }
