@@ -52,7 +52,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   late DateTime _selectedDay;
   late ConfigDatabase _configDatabase;
 
-  late List<DietData> _diets;
+  List<DietData> _diets = <DietData>[];
 
   late List<DietData> _breakfast;
   late List<DietData> _lunch;
@@ -68,7 +68,12 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
     _selectedDay = DateTime.utc(now.year, now.month, now.day);
     _calendarFormat = CalendarFormat.month;
     _configDatabase = ConfigDatabase();
+
+    _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
+    _lunch = _diets.where((diet) => diet.classfication == 1).toList();
+    _dinner = _diets.where((diet) => diet.classfication == 2).toList();
   }
+
 
 
   @override
@@ -136,16 +141,18 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                   setState(()  {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
+
                   });
-
                   _diets = await _configDatabase.getDietByEatingTime(_selectedDay);
-
-                  /// 확인 용. 완전 작업 끝나면 지울 것임.
-                  print(_diets);
 
                   _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
                   _lunch = _diets.where((diet) => diet.classfication == 1).toList();
                   _dinner = _diets.where((diet) => diet.classfication == 2).toList();
+
+                  /// 확인 용. 완전 작업 끝나면 지울 것임.
+                  print(_diets);
+
+
                 },
                 headerStyle: const HeaderStyle(
                   formatButtonVisible: true,
@@ -194,7 +201,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 5,
-                        child: const Padding(
+                        child:  Padding(
                           padding: EdgeInsets.all(20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -204,28 +211,9 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                 style: TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 30),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 5,
-                        child: const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
                               Text(
-                                '점심',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
+                                 _breakfast.map((diet) => diet.menuName).toString(),
+                                style: const TextStyle(fontSize: 15),
                               ),
                               SizedBox(height: 30),
                             ],
@@ -240,7 +228,34 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 5,
-                        child: const Padding(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                '점심',
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                _lunch.map((diet) => diet.menuName).toString(),
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                              SizedBox(height: 30),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Card(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 5,
+                        child: Padding(
                           padding: EdgeInsets.all(20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -249,6 +264,10 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                 '저녁',
                                 style: TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                _dinner.map((diet) => diet.menuName).toString(),
+                                style: const TextStyle(fontSize: 15),
                               ),
                               SizedBox(height: 30),
                             ],
@@ -417,6 +436,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                   waterIntake: int.tryParse(waterIntake) ?? 0,
                                   steps: int.tryParse(steps) ?? 0,
                                 );
+
                               });
 
                               _configDatabase.insertDiet(DietCompanion(
