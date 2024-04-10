@@ -4,24 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:bodyguard/util/DateUtil.dart';
+import 'package:bodyguard/util/calculateUtil.dart';
 
 import 'package:bodyguard/database/configDatabase.dart';
 import 'package:bodyguard/widgets/circle_chart.dart';
 import 'my_home_page.dart';
 
+/// 사용자로부터 입력받은 식단 데이터
 class DietRecord {
-  final double calories;
-  final double carbohydrates;
-  final double protein;
-  final double fat;
-  final double sodium;
-  final double sugar;
-  final String menuName;
-  final DateTime eatingTime;
-  final double amount;
-  final int classification;
-  final int waterIntake;
-  final int steps;
+  double calories;
+  double carbohydrates;
+  double protein;
+  double fat;
+  double sodium;
+  double sugar;
 
   DietRecord({
     required this.calories,
@@ -30,12 +26,6 @@ class DietRecord {
     required this.fat,
     required this.sodium,
     required this.sugar,
-    required this.classification,
-    required this.menuName,
-    required this.amount,
-    required this.eatingTime,
-    required this.waterIntake,
-    required this.steps,
   });
 }
 
@@ -57,8 +47,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   late List<DietData> _breakfast;
   late List<DietData> _lunch;
   late List<DietData> _dinner;
-
-  Map<DateTime, DietRecord> nutritionalData = {};
+  DietRecord _totalNutritionalInfo = DietRecord(calories: 0, carbohydrates: 0, protein: 0, fat: 0, sodium: 0, sugar: 0);
 
   @override
   void initState() {
@@ -149,6 +138,15 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                   _lunch = _diets.where((diet) => diet.classfication == 1).toList();
                   _dinner = _diets.where((diet) => diet.classfication == 2).toList();
 
+                  _totalNutritionalInfo = DietRecord(
+                      calories: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.calories).toList()),
+                      carbohydrates: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.carbohydrate).toList()),
+                      protein: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.protein).toList()),
+                      fat: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.fat).toList()),
+                      sodium: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.sodium).toList()),
+                      sugar: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.sugar).toList()),
+                  );
+
                   /// 확인 용. 완전 작업 끝나면 지울 것임.
                   print(_diets);
 
@@ -158,7 +156,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                   formatButtonVisible: true,
                 ),
                 eventLoader: (day) {
-                  final nutritionalEvent = nutritionalData[day];
+                  final nutritionalEvent = _configDatabase.getDietByEatingTime(_selectedDay);
                   if (nutritionalEvent != null) {
                     // 값이 입력된 경우 이벤트를 반환합니다.
                     return [nutritionalEvent];
@@ -294,8 +292,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                       String menuName = '';
                       String classification = '';
                       String eatingTime = '';
-                      String waterIntake = '';
-                      String steps = '';
 
                       return AlertDialog(
                         title: const Text('값을 입력하세요'),
@@ -361,24 +357,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                 ),
                                 TextField(
                                   onChanged: (value) {
-                                    waterIntake = value;
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    hintText: '마신 물 입력(type: int)',
-                                  ),
-                                ),
-                                TextField(
-                                  onChanged: (value) {
-                                    steps = value;
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    hintText: '걸은 횟수 입력(type: int)',
-                                  ),
-                                ),
-                                TextField(
-                                  onChanged: (value) {
                                     menuName = value;
                                   },
                                   keyboardType: TextInputType.text,
@@ -420,27 +398,9 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                         actions: <Widget>[
                           ElevatedButton(
                             onPressed: () {
-                              setState(() {
-                                nutritionalData[_selectedDay] = DietRecord(
-                                  calories: double.tryParse(calories) ?? 0.0,
-                                  carbohydrates:
-                                      double.tryParse(carbohydrates) ?? 0.0,
-                                  protein: double.tryParse(protein) ?? 0.0,
-                                  fat: double.tryParse(fat) ?? 0.0,
-                                  sodium: double.tryParse(sodium) ?? 0.0,
-                                  sugar: double.tryParse(sugar) ?? 0.0,
-                                  amount: double.tryParse(amount) ?? 0.0,
-                                  eatingTime: DateTime.tryParse(eatingTime) ?? DateUtil().updateDateTimeToNow(_selectedDay),
-                                  classification: int.tryParse(classification) ?? 0,
-                                  menuName: menuName,
-                                  waterIntake: int.tryParse(waterIntake) ?? 0,
-                                  steps: int.tryParse(steps) ?? 0,
-                                );
-
-                              });
 
                               _configDatabase.insertDiet(DietCompanion(
-                                eatingTime: Value(DateUtil().updateDateTimeToNow(_selectedDay)),
+                                eatingTime: Value(DateTime.tryParse(eatingTime) ?? DateUtil().updateDateTimeToNow(_selectedDay)),
                                 menuName: Value(menuName),
                                 amount: Value(double.tryParse(amount) ?? 0.0),
                                 classfication: Value(int.tryParse(classification) ?? 0),
@@ -451,6 +411,13 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                 sodium: Value(double.tryParse(sodium) ?? 0.0),
                                 sugar: Value(double.tryParse(sugar) ?? 0.0),
                               ));
+
+                              setState(() {
+
+                              });
+
+
+
 
                               Navigator.of(context).pop();
                             },
@@ -490,28 +457,28 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           ),
                           const SizedBox(height: 30),
                           Text(
-                            '탄수화물 ${nutritionalData[_selectedDay]?.carbohydrates ?? 0.0}g',
+                            '탄수화물 ${_totalNutritionalInfo.calories}g',
                             style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '단백질 ${nutritionalData[_selectedDay]?.protein ?? 0.0}g',
+                            '단백질 ${_totalNutritionalInfo.protein}g',
                             style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '지방 ${nutritionalData[_selectedDay]?.fat ?? 0.0}g',
+                            '지방 ${_totalNutritionalInfo.fat}g',
                             style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '나트륨 ${nutritionalData[_selectedDay]?.sodium ?? 0.0}mg',
+                            '나트륨 ${_totalNutritionalInfo.sodium}mg',
                             style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '당 ${nutritionalData[_selectedDay]?.sugar ?? 0.0}g',
+                            '당 ${_totalNutritionalInfo.sugar}g',
                             style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 20),
                           Text(
-                            '총 ${nutritionalData[_selectedDay]?.calories ?? 0.0} kcal',
+                            '총 ${_totalNutritionalInfo.calories} kcal',
                             style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -540,17 +507,17 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if ((nutritionalData[_selectedDay]?.waterIntake ?? 0) >= 6)
+                              if (0 >= 6)
                                 const Icon(
                                   Icons.local_drink,
                                   size: 100, // 큰 아이콘 크기
                                   color: Colors.blue,
                                 ),
-                              if ((nutritionalData[_selectedDay]?.waterIntake ?? 0) >= 6)
+                              if (0 >= 6)
                                 const SizedBox(width: 5), // 물 컵 아이콘 간격 조절
-                              if ((nutritionalData[_selectedDay]?.waterIntake ?? 0) < 6)
+                              if (0 < 6)
                                 ...List.generate(
-                                  (nutritionalData[_selectedDay]?.waterIntake.toInt() ?? 0),
+                                  (0),
                                       (index) {
                                         return const Icon(
                                           Icons.local_drink,
@@ -563,7 +530,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                               ),
                               const SizedBox(height: 30),
                               Text(
-                                '총 ${((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) >= 1000 ? ((nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200) / 1000 : (nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200} ${(nutritionalData[_selectedDay]?.waterIntake ?? 0) * 200 >= 1000 ? "L" : "ml"}',
+                                '총 ${(0 * 200) >= 1000 ? (0 * 200) / 1000 : 0 * 200} ${0 * 200 >= 1000 ? "L" : "ml"}',
                                 style: const TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
@@ -597,7 +564,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                             style: TextStyle(fontSize: 15),
                           ),
                           Text(
-                            '${(nutritionalData[_selectedDay]?.calories ?? 0.0) * 0.04}kcal',
+                            '${0.0}kcal',
                             style: const TextStyle(fontSize: 15),
                           ),
                         ],
@@ -615,10 +582,9 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                             alignment: Alignment.center,
                             children: [
                               StepsDonutChart(
-                                  steps: nutritionalData[_selectedDay]?.steps ??
-                                      0),
+                                  steps: 0),
                               Text(
-                                '${(nutritionalData[_selectedDay]?.steps ?? 0)} 걸음',
+                                '${0} 걸음',
                                 style: const TextStyle(fontSize: 15),
                               ),
                             ],
@@ -633,7 +599,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                             style: TextStyle(fontSize: 15),
                           ),
                           Text(
-                            '${((nutritionalData[_selectedDay]?.steps ?? 0.0) * 0.001 * 0.7).toStringAsFixed(1)}km',
+                            '${(0 * 0.001 * 0.7).toStringAsFixed(1)}km',
                             style: const TextStyle(fontSize: 15),
                           ),
                         ],
