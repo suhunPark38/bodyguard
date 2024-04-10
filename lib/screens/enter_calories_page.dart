@@ -2,8 +2,8 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:bodyguard/util/DateUtil.dart';
 import 'package:bodyguard/util/calculateUtil.dart';
 
 import 'package:bodyguard/database/configDatabase.dart';
@@ -291,7 +291,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                       String amount = '';
                       String menuName = '';
                       String classification = '';
-                      String eatingTime = '';
+                      DateTime eatingTime = DateTime.now();
 
                       return AlertDialog(
                         title: const Text('값을 입력하세요'),
@@ -373,15 +373,47 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                     hintText: '먹은 양 입력(type: double)',
                                   ),
                                 ),
-                                TextField(
-                                  onChanged: (value) {
-                                    eatingTime = value;
+                                TextButton(
+                                  onPressed: () async {
+                                    final selectedDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2023),
+                                      lastDate: DateTime.now().add(const Duration(days: 365)),
+                                    );
+                                    if (selectedDate != null) {
+                                      final selectedTime = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.now(),
+                                      );
+                                      if (selectedTime != null) {
+                                        setState(() {
+                                          eatingTime = DateTime(
+                                              selectedDate.year,
+                                              selectedDate.month,
+                                              selectedDate.day,
+                                              selectedTime.hour,
+                                              selectedTime.minute,
+                                          );
+                                        });
+                                      }
+                                    }
                                   },
-                                  keyboardType: TextInputType.text,
-                                  decoration: const InputDecoration(
-                                    hintText: '먹은 시간 입력(type: datetime)',
+                                  child: Column(
+                                    children: <Widget>[
+                                      const Text(
+                                        '먹은 시간 입력: ',
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(eatingTime)
+                                      ),
+                                    ],
                                   ),
                                 ),
+
                                 TextField(
                                   onChanged: (value) {
                                     classification = value;
@@ -400,7 +432,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                             onPressed: () {
 
                               _configDatabase.insertDiet(DietCompanion(
-                                eatingTime: Value(DateTime.tryParse(eatingTime) ?? DateUtil().updateDateTimeToNow(_selectedDay)),
+                                eatingTime: Value(eatingTime),
                                 menuName: Value(menuName),
                                 amount: Value(double.tryParse(amount) ?? 0.0),
                                 classfication: Value(int.tryParse(classification) ?? 0),
@@ -415,8 +447,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                               setState(() {
 
                               });
-
-
 
 
                               Navigator.of(context).pop();
