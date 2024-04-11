@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'enter_calories_page.dart';
-import 'activity_page.dart';
+import '../enter_calories_page/enter_calories_page.dart';
+import '../activity_page/activity_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

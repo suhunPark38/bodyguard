@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../widgets/circle_chart.dart';
-import 'my_home_page.dart';
+import '../../widgets/circle_chart.dart';
+import '../home_page/my_home_page.dart';
 import 'package:intl/intl.dart';
 
 class ActivityPage extends StatefulWidget {

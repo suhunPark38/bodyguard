@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:bodyguard/util/calculateUtil.dart';
+import 'package:bodyguard/utils/calculateUtil.dart';
 
 import 'package:bodyguard/database/configDatabase.dart';
 import 'package:bodyguard/widgets/circle_chart.dart';
-import 'my_home_page.dart';
+import '../home_page/my_home_page.dart';
 
 /// 사용자로부터 입력받은 식단 데이터
 class DietRecord {

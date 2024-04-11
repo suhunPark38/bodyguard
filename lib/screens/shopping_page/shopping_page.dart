@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../map.dart';
+import '../../map.dart';
 
 
 class ShoppingPage extends StatelessWidget {
