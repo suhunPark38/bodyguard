@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
-
+import 'package:bodyguard/map.dart';
+import 'package:bodyguard/search.dart';
 
 class FavoritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorite'),
+        title: Text('Home'),
         centerTitle: true,
       ),
       body: Center(
-          child: const Text('Favorite'),
+        child: ElevatedButton(
+          onPressed: () async {
+
+            Widget mapPage = await MapRun(); // MapRun 실행하여 Widget 받기
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => mapPage, // 받은 Widget으로 화면 전환
+              ),
+            );
+          },
+          child: const Text('칼로리 입력 화면'),
         ),
+      ),
     );
   }
 }

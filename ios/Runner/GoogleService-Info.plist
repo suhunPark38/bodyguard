@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyDBAi-yovpJsPD2jX7vLdKJEhb5pXNlG3Y</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1038391091623</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.bodyguard</string>
+	<key>PROJECT_ID</key>
+	<string>bodyguard-d274c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bodyguard-d274c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1038391091623:ios:384e585d3db478b6c65682</string>
+	<key>DATABASE_URL</key>
+	<string>https://bodyguard-d274c-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>
