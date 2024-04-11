@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import '../home.dart';
 import 'my_home_page.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(),
     );
     //이거 기범이 코드 실행방법
-    //return MaterialApp(
+    // return MaterialApp(
     //
     //       home: SecondScreen(),
     //     );

@@ -16,9 +16,9 @@ class MyHomePage extends StatelessWidget {
         appBar: null,
         body: TabBarView(
           children: [
-            HomePage(),
             SearchPage(),
             FavoritePage(),
+            HomePage(),
             ShoppingPage(),
             IdentityPage(),
           ],
@@ -28,12 +28,7 @@ class MyHomePage extends StatelessWidget {
           child: Container(
             child: const TabBar(
               tabs: [
-                Tab(
-                  icon: Icon(
-                    Icons.home,
-                  ),
-                  text: '홈',
-                ),
+
                 Tab(
                   icon: Icon(
                     Icons.search,
@@ -45,6 +40,12 @@ class MyHomePage extends StatelessWidget {
                     Icons.favorite,
                   ),
                   text: '찜',
+                ),
+                Tab(
+                  icon: Icon(
+                    Icons.home,
+                  ),
+                  text: '홈',
                 ),
                 Tab(
                   icon: Icon(
