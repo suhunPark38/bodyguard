@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1038391091623",
+    "firebase_url": "https://bodyguard-d274c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "bodyguard-d274c",
+    "storage_bucket": "bodyguard-d274c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038391091623:android:989bde83ac0f0035c65682",
+        "android_client_info": {
+          "package_name": "com.example.bodyguard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG4npb2Uhsp7aUqycOJ6GdlD8UO5SG2k4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
