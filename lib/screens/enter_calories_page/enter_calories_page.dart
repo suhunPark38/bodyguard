@@ -40,9 +40,9 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
   late DateTime _selectedDay;
-  late ConfigDatabase _configDatabase;
+  ConfigDatabase _configDatabase = ConfigDatabase();
 
-  List<DietData> _diets = <DietData>[];
+  late List<DietData> _diets = <DietData>[];
 
   late List<DietData> _breakfast;
   late List<DietData> _lunch;
@@ -56,11 +56,23 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
     _focusedDay = DateTime.utc(now.year, now.month, now.day);
     _selectedDay = DateTime.utc(now.year, now.month, now.day);
     _calendarFormat = CalendarFormat.month;
-    _configDatabase = ConfigDatabase();
 
-    _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
-    _lunch = _diets.where((diet) => diet.classfication == 1).toList();
-    _dinner = _diets.where((diet) => diet.classfication == 2).toList();
+    _setDiets();
+
+  }
+
+  Future<void> _setDiets() async {
+    List<DietData> dietList = await _configDatabase.getDietByEatingTime(_selectedDay);
+
+    setState(() {
+      _diets = dietList;
+
+      _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
+      _lunch = _diets.where((diet) => diet.classfication == 1).toList();
+      _dinner = _diets.where((diet) => diet.classfication == 2).toList();
+    });
+
+
   }
 
 
@@ -126,17 +138,14 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                     _calendarFormat = format;
                   });
                 },
-                onDaySelected: (selectedDay, focusedDay) async {
-                  setState(()  {
+                onDaySelected: (selectedDay, focusedDay)  {
+                  setState(()   {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
 
+                    _setDiets();
                   });
-                  _diets = await _configDatabase.getDietByEatingTime(_selectedDay);
 
-                  _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
-                  _lunch = _diets.where((diet) => diet.classfication == 1).toList();
-                  _dinner = _diets.where((diet) => diet.classfication == 2).toList();
 
                   _totalNutritionalInfo = DietRecord(
                       calories: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.calories).toList()),
@@ -429,7 +438,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                         ),
                         actions: <Widget>[
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: ()  {
 
                               _configDatabase.insertDiet(DietCompanion(
                                 eatingTime: Value(eatingTime),
@@ -445,8 +454,10 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                               ));
 
                               setState(() {
-
+                                _setDiets();
                               });
+
+
 
 
                               Navigator.of(context).pop();
