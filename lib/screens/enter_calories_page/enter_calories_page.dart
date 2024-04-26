@@ -61,6 +61,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
 
   }
 
+  // 화면 불러올 때, 식단 입력할 때, 날짜 바꿀 때 diets 정보 갱신하는 메소드
   Future<void> _setDiets() async {
     List<DietData> dietList = await _configDatabase.getDietByEatingTime(_selectedDay);
 
@@ -142,9 +143,9 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                   setState(()   {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
-
-                    _setDiets();
                   });
+
+                  _setDiets();
 
 
                   _totalNutritionalInfo = DietRecord(
@@ -155,10 +156,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                       sodium: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.sodium).toList()),
                       sugar: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.sugar).toList()),
                   );
-
-                  /// 확인 용. 완전 작업 끝나면 지울 것임.
-                  print(_diets);
-
 
                 },
                 headerStyle: const HeaderStyle(
@@ -453,11 +450,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                 sugar: Value(double.tryParse(sugar) ?? 0.0),
                               ));
 
-                              setState(() {
-                                _setDiets();
-                              });
-
-
+                              _setDiets();
 
 
                               Navigator.of(context).pop();
