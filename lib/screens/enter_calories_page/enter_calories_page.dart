@@ -390,7 +390,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                     if (selectedDate != null) {
                                       final selectedTime = await showTimePicker(
                                         context: context,
-                                        initialTime: TimeOfDay.now(),
+                                        initialTime: TimeOfDay.fromDateTime(selectedDate),
                                       );
                                       if (selectedTime != null) {
                                         setState(() {
