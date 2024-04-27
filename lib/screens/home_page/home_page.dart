@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../AddressChangePage/AddressChangePage.dart';
+import '../Body_page/Body_page.dart';
+import '../OrderHistoryPage/OrderHistoryPage.dart';
 import '../enter_calories_page/enter_calories_page.dart';
 import '../activity_page/activity_page.dart';
 
@@ -108,7 +110,12 @@ class _SecondScreenState extends State<HomePage> {
                   IconButton(
                     icon: Icon(Icons.shopping_cart),
                     onPressed: () {
-                      print('알림버튼');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OrderHistoryPage(),
+                        ),
+                      );
                     },
                   ),
                 ],
@@ -170,12 +177,12 @@ class _SecondScreenState extends State<HomePage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  /*Image.network(
-                    'https://png.pngtree.com/thumb_back/fw800/background/20231014/pngtree-delicious-steak-lunch-box-food-delivered-in-styrofoam-with-rice-beans-image_13630864.png',
+                  Image.asset(
+                    'assets/order.png',
                     fit: BoxFit.cover,
-                    height:200,
+                    height: 200,
                     width: 300,
-                  ),*/
+                  ),
                   SizedBox(height: 10), // Adjust spacing between image and text
                   TextButton(
                     onPressed: () {
@@ -326,7 +333,7 @@ class _SecondScreenState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ActivityPage(),
+                              builder: (context) => const BodyPage(),
                             ),
                           );
                         },

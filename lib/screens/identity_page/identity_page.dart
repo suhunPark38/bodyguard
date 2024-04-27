@@ -65,6 +65,55 @@ class IdentityPage extends StatelessWidget {
   }
 }
 
+/*class DetailPage extends StatelessWidget {
+  final String detail;
+
+  const DetailPage(this.detail, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    String content = '';
+    if (detail == '내정보') {
+      content = '여기에 사용자 정보를 표시합니다.';
+    } else if (detail == '내 주문 및 배송') {
+      content = '여기에 주문 내역과 배송 정보를 표시합니다.';
+    } else if (detail == '주소지 및 배송지 변경') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddressChangePage(), // 주소지 변경 페이지로 이동
+        ),
+      );
+    } else if (detail == '알림') {
+      content = '여기에 알림 관련 내용을 표시합니다.';
+    } else if (detail == '공지사항') {
+      content = '여기에 공지사항을 표시합니다.';
+    } else if (detail == '설정') {
+      content = '여기에 설정 관련 내용을 표시합니다.';
+    } else if (detail == '약관 및 정책') {
+      content = '여기에 약관 및 정책 내용을 표시합니다.';
+    } else if (detail == '앱 사용 도우미') {
+      content = '여기에 앱 사용 도우미 내용을 표시합니다.';
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(detail),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Text(
+            content,
+            style: const TextStyle(fontSize: 18),
+          ),
+        ),
+      ),
+    );
+  }
+}*/
+
+
 class DetailPage extends StatelessWidget {
   final String detail;
 
