@@ -16,11 +16,7 @@ class MyApp extends StatelessWidget {
 
       home: MyHomePage(),
     );
-    //이거 기범이 코드 실행방법
-    // return MaterialApp(
-    //
-    //       home: SecondScreen(),
-    //     );
+
 
   }
 }
