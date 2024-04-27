@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:bodyguard/utils/calculateUtil.dart';
+import 'package:bodyguard/utils/DietUtil.dart';
 
 import 'package:bodyguard/database/configDatabase.dart';
 import 'package:bodyguard/widgets/circle_chart.dart';
@@ -75,7 +76,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
 
 
   }
-
 
 
   @override
@@ -193,8 +193,10 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                 }),
               ),
               const SizedBox(height: 20),
+
               SizedBox(
-                height: 200,
+                height: MediaQuery.of(context).size.height * 0.3,
+
                 child: Row(
 
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -206,23 +208,87 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 5,
-                        child:  Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                '아침',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                 _breakfast.map((diet) => diet.menuName).toString(),
-                                style: const TextStyle(fontSize: 15),
-                              ),
-                              SizedBox(height: 30),
-                            ],
+
+                        child: InkWell(
+                          child:  Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '아침',
+                                  style: TextStyle(
+                                      fontSize: 15, fontWeight: FontWeight.bold),
+                                ),
+                                ListView.builder(
+                                  shrinkWrap: true, // ListView 높이 제한
+                                  itemCount: _breakfast.length,
+                                  itemBuilder: (context, index) {
+                                    final diet = _breakfast[index];
+                                    return Column(
+                                      children: [
+                                        ListTile( // ListTile 사용하여 메뉴 이름 표시
+                                          title: Text(diet.menuName),
+                                          subtitle: Text('${diet.calories}kcal'), // 칼로리 정보 표시
+                                          onTap: () => DietUtil().showDietDetails(context, diet),
+                                        ),
+                                        Divider(), // 각 메뉴 구분선 추가
+                                      ],
+                                    );
+                                  },
+                                ),
+
+                                SizedBox(height: 30),
+                              ],
+                            ),
                           ),
+
+                        ),
+
+
+                      ),
+                    ),
+                    Expanded(
+                      child: Card(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 5,
+                        child: InkWell(
+                          child:  Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '점심',
+                                  style: TextStyle(
+                                      fontSize: 15, fontWeight: FontWeight.bold),
+                                ),
+                                ListView.builder(
+                                  shrinkWrap: true, // ListView 높이 제한
+                                  itemCount: _dinner.length,
+                                  itemBuilder: (context, index) {
+                                    final diet = _dinner[index];
+                                    return Column(
+                                      children: [
+                                        ListTile( // ListTile 사용하여 메뉴 이름 표시
+                                          title: Text(diet.menuName),
+                                          subtitle: Text('${diet.calories}kcal'), // 칼로리 정보 표시
+                                          onTap: () => DietUtil().showDietDetails(context, diet),
+                                        ),
+                                        Divider(), // 각 메뉴 구분선 추가
+                                      ],
+                                    );
+                                  },
+                                ),
+
+                                SizedBox(height: 30),
+                              ],
+                            ),
+                          ),
+
                         ),
                       ),
                     ),
@@ -233,50 +299,40 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 5,
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                '점심',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                _lunch.map((diet) => diet.menuName).toString(),
-                                style: const TextStyle(fontSize: 15),
-                              ),
-                              SizedBox(height: 30),
-                            ],
+                        child: InkWell(
+                          child:  Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '저녁',
+                                  style: TextStyle(
+                                      fontSize: 15, fontWeight: FontWeight.bold),
+                                ),
+                                ListView.builder(
+                                  shrinkWrap: true, // ListView 높이 제한
+                                  itemCount: _dinner.length,
+                                  itemBuilder: (context, index) {
+                                    final diet = _dinner[index];
+                                    return Column(
+                                      children: [
+                                        ListTile( // ListTile 사용하여 메뉴 이름 표시
+                                          title: Text(diet.menuName),
+                                          subtitle: Text('${diet.calories}kcal'), // 칼로리 정보 표시
+                                          onTap: () => DietUtil().showDietDetails(context, diet),
+                                        ),
+                                        Divider(), // 각 메뉴 구분선 추가
+                                      ],
+                                    );
+                                  },
+                                ),
+
+                                SizedBox(height: 30),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 5,
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                '저녁',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                _dinner.map((diet) => diet.menuName).toString(),
-                                style: const TextStyle(fontSize: 15),
-                              ),
-                              SizedBox(height: 30),
-                            ],
-                          ),
+
                         ),
                       ),
                     ),
