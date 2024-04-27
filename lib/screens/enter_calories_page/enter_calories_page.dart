@@ -76,18 +76,18 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
       _dinner = _diets.where((diet) => diet.classfication == 2).toList();
 
       _totalNutritionalInfo = DietRecord(
-        calories: CalculateUtil().getSumOfLists(
-            _diets.map((diet) => diet.calories).toList()),
-        carbohydrates: CalculateUtil().getSumOfLists(
-            _diets.map((diet) => diet.carbohydrate).toList()),
-        protein: CalculateUtil().getSumOfLists(
-            _diets.map((diet) => diet.protein).toList()),
-        fat: CalculateUtil().getSumOfLists(
-            _diets.map((diet) => diet.fat).toList()),
-        sodium: CalculateUtil().getSumOfLists(
-            _diets.map((diet) => diet.sodium).toList()),
-        sugar: CalculateUtil().getSumOfLists(
-            _diets.map((diet) => diet.sugar).toList()),
+        calories: CalculateUtil()
+            .getSumOfLists(_diets.map((diet) => diet.calories).toList()),
+        carbohydrates: CalculateUtil()
+            .getSumOfLists(_diets.map((diet) => diet.carbohydrate).toList()),
+        protein: CalculateUtil()
+            .getSumOfLists(_diets.map((diet) => diet.protein).toList()),
+        fat: CalculateUtil()
+            .getSumOfLists(_diets.map((diet) => diet.fat).toList()),
+        sodium: CalculateUtil()
+            .getSumOfLists(_diets.map((diet) => diet.sodium).toList()),
+        sugar: CalculateUtil()
+            .getSumOfLists(_diets.map((diet) => diet.sugar).toList()),
       );
     });
   }
@@ -220,18 +220,14 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                       title: "아침",
                       diets: _breakfast,
                     ),
-
                     DietsCard(
                       title: "점심",
                       diets: _lunch,
                     ),
-
                     DietsCard(
                       title: "저녁",
                       diets: _dinner,
                     ),
-
-
                   ],
                 ),
               ),
@@ -371,7 +367,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                 String sugar = '';
                 String amount = '';
                 String menuName = '';
-                String classification = '';
+                int classification = 0;
                 DateTime eatingTime = DateTime.now();
 
                 return AlertDialog(
@@ -495,15 +491,31 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                               ],
                             ),
                           ),
-                          TextField(
-                            onChanged: (value) {
-                              classification = value;
+                          SegmentedButton<int>(
+                            //multiSelectionEnabled: false,
+                              segments: const <ButtonSegment<int>>[
+                                ButtonSegment<int> (
+                                    value: 0,
+                                  label: Text('아침'),
+                                ),
+
+                                ButtonSegment<int> (
+                                  value: 1,
+                                  label: Text('점심'),
+                                ),
+
+                                ButtonSegment<int> (
+                                  value: 2,
+                                  label: Text('저녁'),
+                                )
+                              ],
+                              selected: <int>{classification},
+                            onSelectionChanged: (selected) {
+                                setState(() {
+                                  classification = selected.first;
+                                });
                             },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: '식사 구분 입력(type: int) 0:아침',
-                            ),
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -516,7 +528,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           menuName: Value(menuName),
                           amount: Value(double.tryParse(amount) ?? 0.0),
                           classfication:
-                              Value(int.tryParse(classification) ?? 0),
+                              Value(classification),
                           calories: Value(double.tryParse(calories) ?? 0.0),
                           carbohydrate:
                               Value(double.tryParse(carbohydrates) ?? 0.0),
@@ -527,7 +539,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                         ));
 
                         _setDiets();
-
 
                         Navigator.of(context).pop();
                       },
