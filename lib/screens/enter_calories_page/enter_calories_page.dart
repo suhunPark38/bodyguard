@@ -1,3 +1,4 @@
+import 'package:bodyguard/screens/enter_calories_page/widgets/diets_card.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,8 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   late List<DietData> _breakfast;
   late List<DietData> _lunch;
   late List<DietData> _dinner;
-  DietRecord _totalNutritionalInfo = DietRecord(calories: 0, carbohydrates: 0, protein: 0, fat: 0, sodium: 0, sugar: 0);
+  DietRecord _totalNutritionalInfo = DietRecord(
+      calories: 0, carbohydrates: 0, protein: 0, fat: 0, sodium: 0, sugar: 0);
 
   @override
   void initState() {
@@ -59,12 +61,12 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
     _calendarFormat = CalendarFormat.month;
 
     _setDiets();
-
   }
 
   // 화면 불러올 때, 식단 입력할 때, 날짜 바꿀 때 diets 정보 갱신하는 메소드
   Future<void> _setDiets() async {
-    List<DietData> dietList = await _configDatabase.getDietByEatingTime(_selectedDay);
+    List<DietData> dietList =
+        await _configDatabase.getDietByEatingTime(_selectedDay);
 
     setState(() {
       _diets = dietList;
@@ -72,11 +74,23 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
       _breakfast = _diets.where((diet) => diet.classfication == 0).toList();
       _lunch = _diets.where((diet) => diet.classfication == 1).toList();
       _dinner = _diets.where((diet) => diet.classfication == 2).toList();
+
+      _totalNutritionalInfo = DietRecord(
+        calories: CalculateUtil().getSumOfLists(
+            _diets.map((diet) => diet.calories).toList()),
+        carbohydrates: CalculateUtil().getSumOfLists(
+            _diets.map((diet) => diet.carbohydrate).toList()),
+        protein: CalculateUtil().getSumOfLists(
+            _diets.map((diet) => diet.protein).toList()),
+        fat: CalculateUtil().getSumOfLists(
+            _diets.map((diet) => diet.fat).toList()),
+        sodium: CalculateUtil().getSumOfLists(
+            _diets.map((diet) => diet.sodium).toList()),
+        sugar: CalculateUtil().getSumOfLists(
+            _diets.map((diet) => diet.sugar).toList()),
+      );
     });
-
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -139,24 +153,28 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                     _calendarFormat = format;
                   });
                 },
-                onDaySelected: (selectedDay, focusedDay)  {
-                  setState(()   {
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
                   });
 
                   _setDiets();
 
-
                   _totalNutritionalInfo = DietRecord(
-                      calories: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.calories).toList()),
-                      carbohydrates: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.carbohydrate).toList()),
-                      protein: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.protein).toList()),
-                      fat: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.fat).toList()),
-                      sodium: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.sodium).toList()),
-                      sugar: CalculateUtil().getSumOfLists(_diets.map((diet) => diet.sugar).toList()),
+                    calories: CalculateUtil().getSumOfLists(
+                        _diets.map((diet) => diet.calories).toList()),
+                    carbohydrates: CalculateUtil().getSumOfLists(
+                        _diets.map((diet) => diet.carbohydrate).toList()),
+                    protein: CalculateUtil().getSumOfLists(
+                        _diets.map((diet) => diet.protein).toList()),
+                    fat: CalculateUtil()
+                        .getSumOfLists(_diets.map((diet) => diet.fat).toList()),
+                    sodium: CalculateUtil().getSumOfLists(
+                        _diets.map((diet) => diet.sodium).toList()),
+                    sugar: CalculateUtil().getSumOfLists(
+                        _diets.map((diet) => diet.sugar).toList()),
                   );
-
                 },
                 headerStyle: const HeaderStyle(
                   formatButtonVisible: true,
@@ -193,12 +211,34 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                 }),
               ),
               const SizedBox(height: 20),
-
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-
+                height: MediaQuery.of(context).size.height * 0.4,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    DietsCard(
+                      title: "아침",
+                      diets: _breakfast,
+                    ),
 
+                    DietsCard(
+                      title: "점심",
+                      diets: _lunch,
+                    ),
+
+                    DietsCard(
+                      title: "저녁",
+                      diets: _dinner,
+                    ),
+
+
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 300,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
@@ -208,225 +248,85 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 5,
-
-                        child: InkWell(
-                          child:  Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '아침',
-                                  style: TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                                ListView.builder(
-                                  shrinkWrap: true, // ListView 높이 제한
-                                  itemCount: _breakfast.length,
-                                  itemBuilder: (context, index) {
-                                    final diet = _breakfast[index];
-                                    return Column(
-                                      children: [
-                                        ListTile( // ListTile 사용하여 메뉴 이름 표시
-                                          title: Text(diet.menuName),
-                                          subtitle: Text('${diet.calories}kcal'), // 칼로리 정보 표시
-                                          onTap: () => DietUtil().showDietDetails(context, diet),
-                                        ),
-                                        Divider(), // 각 메뉴 구분선 추가
-                                      ],
-                                    );
-                                  },
-                                ),
-
-                                SizedBox(height: 30),
-                              ],
-                            ),
-                          ),
-
-                        ),
-
-
-                      ),
-                    ),
-                    Expanded(
-                      child: Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 5,
-                        child: InkWell(
-                          child:  Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '점심',
-                                  style: TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                                ListView.builder(
-                                  shrinkWrap: true, // ListView 높이 제한
-                                  itemCount: _dinner.length,
-                                  itemBuilder: (context, index) {
-                                    final diet = _dinner[index];
-                                    return Column(
-                                      children: [
-                                        ListTile( // ListTile 사용하여 메뉴 이름 표시
-                                          title: Text(diet.menuName),
-                                          subtitle: Text('${diet.calories}kcal'), // 칼로리 정보 표시
-                                          onTap: () => DietUtil().showDietDetails(context, diet),
-                                        ),
-                                        Divider(), // 각 메뉴 구분선 추가
-                                      ],
-                                    );
-                                  },
-                                ),
-
-                                SizedBox(height: 30),
-                              ],
-                            ),
-                          ),
-
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 5,
-                        child: InkWell(
-                          child:  Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '저녁',
-                                  style: TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                                ListView.builder(
-                                  shrinkWrap: true, // ListView 높이 제한
-                                  itemCount: _dinner.length,
-                                  itemBuilder: (context, index) {
-                                    final diet = _dinner[index];
-                                    return Column(
-                                      children: [
-                                        ListTile( // ListTile 사용하여 메뉴 이름 표시
-                                          title: Text(diet.menuName),
-                                          subtitle: Text('${diet.calories}kcal'), // 칼로리 정보 표시
-                                          onTap: () => DietUtil().showDietDetails(context, diet),
-                                        ),
-                                        Divider(), // 각 메뉴 구분선 추가
-                                      ],
-                                    );
-                                  },
-                                ),
-
-                                SizedBox(height: 30),
-                              ],
-                            ),
-                          ),
-
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              SizedBox(
-                height: 300,
-              child: Row(
-
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                  child:Card(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            '먹은 칼로리',
-                            style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 30),
-                          Text(
-                            '탄수화물 ${_totalNutritionalInfo.calories}g',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '단백질 ${_totalNutritionalInfo.protein}g',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '지방 ${_totalNutritionalInfo.fat}g',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '나트륨 ${_totalNutritionalInfo.sodium}mg',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '당 ${_totalNutritionalInfo.sugar}g',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            '총 ${_totalNutritionalInfo.calories} kcal',
-                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  ),
-                  Expanded(
-                    child:
-                  Card(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            '마신 물',
-                            style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 30),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              if (0 >= 6)
-                                const Icon(
-                                  Icons.local_drink,
-                                  size: 100, // 큰 아이콘 크기
-                                  color: Colors.blue,
-                                ),
-                              if (0 >= 6)
-                                const SizedBox(width: 5), // 물 컵 아이콘 간격 조절
-                              if (0 < 6)
-                                ...List.generate(
-                                  (0),
+                              const Text(
+                                '먹은 칼로리',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 30),
+                              Text(
+                                '탄수화물 ${_totalNutritionalInfo.calories}g',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '단백질 ${_totalNutritionalInfo.protein}g',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '지방 ${_totalNutritionalInfo.fat}g',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '나트륨 ${_totalNutritionalInfo.sodium}mg',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '당 ${_totalNutritionalInfo.sugar}g',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                '총 ${_totalNutritionalInfo.calories} kcal',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Card(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                '마신 물',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (0 >= 6)
+                                    const Icon(
+                                      Icons.local_drink,
+                                      size: 100, // 큰 아이콘 크기
+                                      color: Colors.blue,
+                                    ),
+                                  if (0 >= 6)
+                                    const SizedBox(width: 5), // 물 컵 아이콘 간격 조절
+                                  if (0 < 6)
+                                    ...List.generate(
+                                      (0),
                                       (index) {
                                         return const Icon(
                                           Icons.local_drink,
@@ -451,7 +351,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                   ],
                 ),
               ),
-
             ],
           ),
         ),
@@ -561,12 +460,14 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime(2023),
-                                lastDate: DateTime.now().add(const Duration(days: 365)),
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 365)),
                               );
                               if (selectedDate != null) {
                                 final selectedTime = await showTimePicker(
                                   context: context,
-                                  initialTime: TimeOfDay.fromDateTime(selectedDate),
+                                  initialTime:
+                                      TimeOfDay.fromDateTime(selectedDate),
                                 );
                                 if (selectedTime != null) {
                                   setState(() {
@@ -589,13 +490,11 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Text(
-                                    DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(eatingTime)
-                                ),
+                                Text(DateFormat('yyyy년 MM월 dd일 HH시 mm분')
+                                    .format(eatingTime)),
                               ],
                             ),
                           ),
-
                           TextField(
                             onChanged: (value) {
                               classification = value;
@@ -611,15 +510,16 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                   ),
                   actions: <Widget>[
                     ElevatedButton(
-                      onPressed: ()  {
-
+                      onPressed: () {
                         _configDatabase.insertDiet(DietCompanion(
                           eatingTime: Value(eatingTime),
                           menuName: Value(menuName),
                           amount: Value(double.tryParse(amount) ?? 0.0),
-                          classfication: Value(int.tryParse(classification) ?? 0),
+                          classfication:
+                              Value(int.tryParse(classification) ?? 0),
                           calories: Value(double.tryParse(calories) ?? 0.0),
-                          carbohydrate: Value(double.tryParse(carbohydrates) ?? 0.0),
+                          carbohydrate:
+                              Value(double.tryParse(carbohydrates) ?? 0.0),
                           protein: Value(double.tryParse(protein) ?? 0.0),
                           fat: Value(double.tryParse(fat) ?? 0.0),
                           sodium: Value(double.tryParse(sodium) ?? 0.0),
