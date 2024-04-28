@@ -33,7 +33,7 @@ class StoreService {
 
   Stream<List<Store>> getStores() {
     return _storeCollection.snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => Store.fromJson(doc.data() as Map<String, dynamic>?)).toList());
+        snapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>?)).toList());
   }
 
   Stream<List<Menu>> getStoreMenu(String storeId) {
