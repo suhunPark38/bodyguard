@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -20,13 +21,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
 
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+
+      supportedLocales: [
+        const Locale('ko', 'KR'),
+      ],
+
       home: MyHomePage(),
     );
-    //이거 기범이 코드 실행방법
-    // return MaterialApp(
-    //
-    //       home: SecondScreen(),
-    //     );
 
   }
 }
