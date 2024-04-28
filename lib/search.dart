@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 class Value2 {
 
   /*
-
   1	NUM	번호
 2	FOOD_CD	식품코드
 3	SAMPLING_REGION_NAME	지역명
