@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../search_page/search_page.dart';
+import '../shopping_page/shopping_page.dart';
 
 
 // 데이터와 색상을 관리하는 클래스
@@ -102,7 +103,7 @@ class _SecondScreenState extends State<HomePage> {
                         );
                       },
                       icon: Icon(Icons.search), // 버튼에 들어갈 아이콘
-                      label: Text('검색'), // 버튼에 들어갈 텍스트 라벨
+                      label: Text('검색어를 입력하세요'), // 버튼에 들어갈 텍스트 라벨
                       style: ElevatedButton.styleFrom(
                         alignment: Alignment.centerLeft, // 아이콘과 텍스트를 왼쪽으로 정렬
                       ),
@@ -121,59 +122,9 @@ class _SecondScreenState extends State<HomePage> {
                   ),
                 ],
               ),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SearchAnchor(
-                      builder: (context, controller) {
-                        return SearchBar(
-                          trailing: [Icon(Icons.search)],
-                          controller: controller,
-                          onTap: () => controller.openView(),
-                          onChanged: (_) => controller.openView(),
-                          onSubmitted: (value) {
-                            setState(() => inputText = value);
-                          },
-                        );
-                      },
-                      suggestionsBuilder: (context, controller) {
-                        return [
-                          ListTile(
-                            title: const Text("추천검색어1"),
-                            onTap: () {
-                              setState(() => controller.closeView("추천검색어1"));
-                            },
-                          ),
-                          ListTile(
-                            title: const Text("추천검색어2"),
-                            onTap: () {
-                              setState(() => controller.closeView("추천검색어2"));
-                            },
-                          ),
-                        ];
-                      },
-                    ),
-                  ),
-                  Text("Input Text = $inputText", style: TextStyle(fontSize: 30))
-                ],
-              ),
 
-              /*SearchBar(
 
-                leading: Icon(Icons.search),
-                trailing: [
-                  IconButton(
-                    icon: Icon(Icons.shopping_cart),
-                    onPressed: () {
-                      print('장보기');
-                    },
-                  ),
-                ],
 
-                hintText: "검색어를 입력하세요",
-
-              ),*/
               SizedBox(height: 10),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -189,7 +140,12 @@ class _SecondScreenState extends State<HomePage> {
                   ElevatedButton(
 
                     onPressed: () {
-                      print('주문');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShoppingPage(),
+                        ),
+                      );
                     },
                     child: Text("배달음식 주문하러 가기"),
                   ),
