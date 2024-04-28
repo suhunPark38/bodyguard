@@ -44,7 +44,8 @@ class _SecondScreenState extends State<HomePage> {
   Widget build(BuildContext context) {
     double bodyfat=13;
     double weight =70.0;
-    double SkeletalMuscleMass= 40;
+    double Fweight= 80;
+    double Lweight =60.0;
     double stairClimbingCalories = 200; // 계단 오르기
     double walkingCalories = 500; // 걷기
     double gymCalories = 300; // 헬스
@@ -183,8 +184,10 @@ class _SecondScreenState extends State<HomePage> {
                     height: 200,
                     width: 300,
                   ),
-                  SizedBox(height: 10), // Adjust spacing between image and text
-                  TextButton(
+                  SizedBox(height: 10),
+                  // Adjust spacing between image and text
+                  ElevatedButton(
+
                     onPressed: () {
                       print('주문');
                     },
@@ -282,6 +285,22 @@ class _SecondScreenState extends State<HomePage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center, // 정보 가운데 정렬
+                        children: [
+                          Text(
+                            '시작 몸무게:', // 체중 레이블
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(width: 10), // 레이블과 체중 사이 여백
+                          Text(
+                            '${Fweight.toString()} kg', // 체중 표시 (변수로 바꿔야 함)
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ),
                       SizedBox(height: 20), // 여백 추가 (외관 향상)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center, // 정보 가운데 정렬
@@ -302,27 +321,12 @@ class _SecondScreenState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.center, // 정보 가운데 정렬
                         children: [
                           Text(
-                            '골격근:', // 체중 레이블
+                            '목표 몸무게:', // 체중 레이블
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(width: 10), // 레이블과 체중 사이 여백
                           Text(
-                            '${SkeletalMuscleMass.toString()} kg', // 체중 표시 (변수로 바꿔야 함)
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center, // 정보 가운데 정렬
-                        children: [
-                          Text(
-                            '체지방:', // 체중 레이블
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(width: 10), // 레이블과 체중 사이 여백
-                          Text(
-                            '${bodyfat.toString()} %', // 체중 표시 (변수로 바꿔야 함)
+                            '${Lweight.toString()} kg', // 체중 표시 (변수로 바꿔야 함)
                             style: TextStyle(fontSize: 20),
                           ),
                         ],
@@ -392,7 +396,7 @@ class _SecondScreenState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: IconButton(
+      /*bottomNavigationBar: IconButton(
         onPressed: () {
           showDialog(
             context: context,
@@ -524,7 +528,7 @@ class _SecondScreenState extends State<HomePage> {
           );
         },
         icon: Icon(Icons.edit),
-      ),
+      ),*/
 
 
     );
