@@ -20,6 +20,31 @@ class StoreMenu {
     required this.sodium,
     required this.sugar,
   });
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StoreMenu &&
+        other.menuName == menuName &&
+        other.price == price &&
+        other.calories == calories &&
+        other.carbohydrate == carbohydrate &&
+        other.protein == protein &&
+        other.fat == fat &&
+        other.sodium == sodium &&
+        other.sugar == sugar;
+  }
+  @override
+  int get hashCode {
+    return menuName.hashCode ^
+    price.hashCode ^
+    calories.hashCode ^
+    carbohydrate.hashCode ^
+    protein.hashCode ^
+    fat.hashCode ^
+    sodium.hashCode ^
+    sugar.hashCode;
+  }
 
   factory StoreMenu.fromJson(String id, Map<String, dynamic>? json) {
     if (json == null) {
