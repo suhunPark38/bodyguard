@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -75,11 +72,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDBAi-yovpJsPD2jX7vLdKJEhb5pXNlG3Y',
-    appId: '1:1038391091623:ios:074755f22dfe5538c65682',
+    appId: '1:1038391091623:ios:384e585d3db478b6c65682',
     messagingSenderId: '1038391091623',
     projectId: 'bodyguard-d274c',
     databaseURL: 'https://bodyguard-d274c-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'bodyguard-d274c.appspot.com',
-    iosBundleId: 'com.example.bodyguard.RunnerTests',
+    iosBundleId: 'com.example.bodyguard',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCbRLbQ1eueEZa2vqG1diOfV9PcNt8SR-s',
+    appId: '1:1038391091623:web:07c153065f05aad7c65682',
+    messagingSenderId: '1038391091623',
+    projectId: 'bodyguard-d274c',
+    authDomain: 'bodyguard-d274c.firebaseapp.com',
+    databaseURL: 'https://bodyguard-d274c-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'bodyguard-d274c.appspot.com',
+    measurementId: 'G-LDM93YV4KT',
+  );
+
 }

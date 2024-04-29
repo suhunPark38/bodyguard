@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../model/data_color_pair.dart';
 import '../AddressChangePage/AddressChangePage.dart';
 import '../Body_page/Body_page.dart';
 import '../OrderHistoryPage/OrderHistoryPage.dart';
@@ -12,21 +13,18 @@ import '../search_page/search_page.dart';
 import '../shopping_page/shopping_page.dart';
 
 
-// 데이터와 색상을 관리하는 클래스
-class DataColorPair {
-  final double data;
-  final Color color;
-  final String label;
+import '../../widgets/pie_chart.dart'; // PieChart 클래스를 포함한 파일 import
+import '../../widgets/donut_chart.dart'; // DonutChart 클래스를 포함한 파일 import
+import '../../widgets/nutrition_donut.dart'; // NutritionDonut 클래스를 포함한 파일 import
 
-  DataColorPair({required this.data, required this.color, required this.label});
-}
+
 
 class HomePage extends StatefulWidget {
   @override
-  _SecondScreenState createState() => _SecondScreenState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _SecondScreenState extends State<HomePage> {
+class _HomePageState extends State<HomePage> {
   // 예시용 칼로리와 영양소 비율
   double recommendedCalories = 1; // 예시용 권장 칼로리
   double consumedCalories = 0; // 예시용 섭취한 칼로리
@@ -38,7 +36,6 @@ class _SecondScreenState extends State<HomePage> {
   double consumedFat = 0; // 예시용 지방 섭취량
   double recommendedSugar = 1; // 예시용 당 권장량
   double consumedSugar = 0;
-
   var inputText; // 예시용 당 섭취량
 
   @override
@@ -61,6 +58,7 @@ class _SecondScreenState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
+
         title: const Text('BODYGUARD'),
         centerTitle: true,
         leading: IconButton(
@@ -84,12 +82,20 @@ class _SecondScreenState extends State<HomePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body:
+      Container(
+        color: Colors.grey[200],
+        child: SingleChildScrollView(
+
         child: Center(
+          child: Container(
+            color: Colors.white,
           child: Column(
+
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
+
                 children: [
                   SizedBox(width: 20),
                   Expanded(
@@ -127,14 +133,29 @@ class _SecondScreenState extends State<HomePage> {
 
               SizedBox(height: 10),
               Column(
+
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/order.png',
-                    fit: BoxFit.cover,
-                    height: 200,
-                    width: 300,
+                  GestureDetector(
+
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShoppingPage(),
+                        ),
+                      );
+                    },
+                    child: Image.asset(
+                      'assets/order.png',
+                      fit: BoxFit.cover,
+                      height: 200,
+                      width: 300,
+                    ),
                   ),
+
+
+
                   SizedBox(height: 10),
                   // Adjust spacing between image and text
                   ElevatedButton(
@@ -152,43 +173,9 @@ class _SecondScreenState extends State<HomePage> {
                 ],
               ),
               CarouselSlider(
+
                 items: [
-                  Column(
-                    children: [
-                      SizedBox(height: 20),
-                      Column(
-                        children: [
-                          SizedBox(height: 20),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  DonutChart(ratio: consumedCalories / recommendedCalories),
-                                  SizedBox(width: 30),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '섭취한칼로리: ${consumedCalories.toString()} kcal\n'
-                                            '권장 칼로리 : ${recommendedCalories.toString()} kcal',
 
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -312,46 +299,98 @@ class _SecondScreenState extends State<HomePage> {
                   enableInfiniteScroll: true,
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        NutritionDonut(label: '탄수화물', recommendedAmount: recommendedCarbs, consumedAmount: consumedCarbs),
-                        NutritionDonut(label: '단백질', recommendedAmount: recommendedProtein, consumedAmount: consumedProtein),
-
-
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        NutritionDonut(label: '지방', recommendedAmount: recommendedFat, consumedAmount: consumedFat),
-                        NutritionDonut(label: '당', recommendedAmount: recommendedSugar, consumedAmount: consumedSugar),
-                      ],
+              GestureDetector(
+                onTap: () {
+                  // 원하는 OnTap 기능 구현 (예: 새로운 페이지로 이동)
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyEnterCaloriesPage(),
                     ),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MyEnterCaloriesPage(),
+                  );
+                },
+                child: Container(
+
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 20),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          DonutChart(ratio: consumedCalories / recommendedCalories),
+                          SizedBox(height: 20),
+                          Text(
+                            '섭취한칼로리: ${consumedCalories.toString()} kcal\n'
+                                '권장 칼로리 : ${recommendedCalories.toString()} kcal',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        );
-                      },
-                      child: const Text('칼로리 입력 화면'),
-                    ),
-                  ],
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 30,
+                        children: [
+                          NutritionDonut(
+                            label: '탄수화물',
+                            recommendedAmount: recommendedCarbs,
+                            consumedAmount: consumedCarbs,
+                          ),
+                          NutritionDonut(
+                            label: '단백질',
+                            recommendedAmount: recommendedProtein,
+                            consumedAmount: consumedProtein,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Wrap(
+                        spacing: 30,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          NutritionDonut(
+                            label: '지방',
+                            recommendedAmount: recommendedFat,
+                            consumedAmount: consumedFat,
+                          ),
+                          NutritionDonut(
+                            label: '당',
+                            recommendedAmount: recommendedSugar,
+                            consumedAmount: consumedSugar,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MyEnterCaloriesPage(),
+                            ),
+                          );
+                        },
+                        child: const Text('칼로리 입력 화면'),
+                      ),
+                    ],
+                  ),
                 ),
+
               ),
+
             ],
           ),
         ),
+        ),
       ),
+    ),
       /*bottomNavigationBar: IconButton(
         onPressed: () {
           showDialog(
@@ -503,231 +542,14 @@ class _SecondScreenState extends State<HomePage> {
   }
 }
 
-class PieChart extends StatelessWidget {
-  final List<DataColorPair> data;
-  final double total; // 총합 추가
-  const PieChart({required this.data, required this.total});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      width: 150,
-      child: CustomPaint(
-        size: Size(150, 150),
-        painter: PieChartPainter(data: data, total: total),
-      ),
-    );
-  }
-}
-
-class PieChartPainter extends CustomPainter {
-  final List<DataColorPair> data;
-  final double total;
-
-  PieChartPainter({required this.data, required this.total});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = min(size.width, size.height) / 2;
-    final strokeWidth = radius * 0.2;
-    final double total = data.fold(0, (previousValue, element) => previousValue + element.data);
-
-    double startAngle = -pi / 2;
-
-    for (int i = 0; i < data.length; i++) {
-      final double sweepAngle = 2 * pi * (data[i].data / total);
-      final paint = Paint()
-        ..color = data[i].color // 데이터에 대응하는 색상 사용
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth
-        ..strokeCap = StrokeCap.round;
-
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        startAngle,
-        sweepAngle,
-        false,
-        paint,
-      );
-
-      startAngle += sweepAngle;
-    }
-
-    // 총합 텍스트 표시
-    // 총합 텍스트 표시
-    final textStyle = TextStyle(fontSize: 14, color: Colors.black); // 텍스트 스타일 설정
-    final textSpan = TextSpan(
-      text: 'Total: $total kcal', // 텍스트 내용과 포맷 설정
-      style: textStyle,
-    );
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-
-    textPainter.layout(); // 텍스트 레이아웃 설정
-    final textWidth = textPainter.width;
-    final textHeight = textPainter.height;
-    final textOffset = Offset(center.dx - textWidth / 2, center.dy - textHeight / 2); // 텍스트 위치 계산
-
-    textPainter.paint(canvas, textOffset); // 캔버스에 텍스트 그리기
-
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-}
 
 
-class DonutChart extends StatelessWidget {
-  final double ratio;
-
-  const DonutChart({required this.ratio});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      width: 150,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CustomPaint(
-            size: Size(150, 150),
-            painter: DonutChartPainter(ratio: ratio),
-          ),
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                '${(ratio * 100).toStringAsFixed(0)}%',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class DonutChartPainter extends CustomPainter {
-  final double ratio;
-
-  DonutChartPainter({required this.ratio});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = min(size.width, size.height) / 2;
-    final strokeWidth = radius * 0.2;
-
-    final paint = Paint()
-      ..color = Colors.blue // 그래프 색상
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    final backgroundPaint = Paint()
-      ..color = Colors.grey[300]! // 배경 색상
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    // 배경 그리기
-    canvas.drawCircle(center, radius, backgroundPaint);
-
-    // 그래프 그리기
-    final sweepAngle = 2 * pi * ratio;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -pi / 2,
-      sweepAngle,
-      false,
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
-class NutritionDonut extends StatelessWidget {
-  final String label;
-  final double recommendedAmount; // 권장량
-  final double consumedAmount; // 섭취량
-
-  const NutritionDonut({required this.label, required this.recommendedAmount, required this.consumedAmount});
-
-  @override
-  Widget build(BuildContext context) {
-    final ratio = consumedAmount / recommendedAmount; // 비율 계산
-    final remainingRatio = 1.0 - ratio; // 권장량 대비 남은 비율 계산
-
-    return SizedBox(
-      height: 200,
-      width: 150,
-      child: Column(
-        children: [
-          DonutChart(ratio: ratio),
-          SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-
-        ],
-      ),
-    );
-  }
-}
 
 
-/*class HomePage extends StatelessWidget {
-  const HomePage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        centerTitle: true,
-      ),
-      body: Column(children: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyEnterCaloriesPage(),
-              ),
-            );
-          },
-          child: const Text('칼로리 입력 화면'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ActivityPage(),
-              ),
-            );
-          },
-          child: const Text('활동 화면'),
-        ),
-      ]),
-    );
-  }
-}*/
+
+
+
+
+
