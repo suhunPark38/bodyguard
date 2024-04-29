@@ -1,5 +1,4 @@
 import 'package:bodyguard/screens/enter_calories_page/widgets/diets_card.dart';
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
