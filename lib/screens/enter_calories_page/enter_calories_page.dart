@@ -370,153 +370,155 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
 
                 return AlertDialog(
                   title: const Text('값을 입력하세요'),
-                  content: SingleChildScrollView(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          TextField(
-                            onChanged: (value) {
-                              calories = value;
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: '칼로리 입력(type: double)',
-                            ),
-                          ),
-                          TextField(
-                            onChanged: (value) {
-                              carbohydrates = value;
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: '탄수화물 입력(type: double)',
-                            ),
-                          ),
-                          TextField(
-                            onChanged: (value) {
-                              protein = value;
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: '단백질 입력(type: double)',
-                            ),
-                          ),
-                          TextField(
-                            onChanged: (value) {
-                              fat = value;
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: '지방 입력(type: double)',
-                            ),
-                          ),
-                          TextField(
-                            onChanged: (value) {
-                              sodium = value;
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: '나트륨 입력(type: double)',
-                            ),
-                          ),
-                          TextField(
-                            onChanged: (value) {
-                              sugar = value;
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: '당 입력(type: double)',
-                            ),
-                          ),
-                          TextField(
-                            onChanged: (value) {
-                              menuName = value;
-                            },
-                            keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                              hintText: '메뉴 이름 입력(type: String)',
-                            ),
-                          ),
-                          TextField(
-                            onChanged: (value) {
-                              amount = value;
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: '먹은 양 입력(type: double)',
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              final selectedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2023),
-                                lastDate: DateTime.now()
-                                    .add(const Duration(days: 365)),
-                              );
-                              if (selectedDate != null) {
-                                final selectedTime = await showTimePicker(
-                                  context: context,
-                                  initialTime:
-                                      TimeOfDay.fromDateTime(selectedDate),
-                                );
-                                if (selectedTime != null) {
-                                  setState(() {
-                                    eatingTime = DateTime(
-                                      selectedDate.year,
-                                      selectedDate.month,
-                                      selectedDate.day,
-                                      selectedTime.hour,
-                                      selectedTime.minute,
+                  content: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return SingleChildScrollView(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              TextField(
+                                onChanged: (value) {
+                                  calories = value;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  hintText: '칼로리 입력(type: double)',
+                                ),
+                              ),
+                              TextField(
+                                onChanged: (value) {
+                                  carbohydrates = value;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  hintText: '탄수화물 입력(type: double)',
+                                ),
+                              ),
+                              TextField(
+                                onChanged: (value) {
+                                  protein = value;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  hintText: '단백질 입력(type: double)',
+                                ),
+                              ),
+                              TextField(
+                                onChanged: (value) {
+                                  fat = value;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  hintText: '지방 입력(type: double)',
+                                ),
+                              ),
+                              TextField(
+                                onChanged: (value) {
+                                  sodium = value;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  hintText: '나트륨 입력(type: double)',
+                                ),
+                              ),
+                              TextField(
+                                onChanged: (value) {
+                                  sugar = value;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  hintText: '당 입력(type: double)',
+                                ),
+                              ),
+                              TextField(
+                                onChanged: (value) {
+                                  menuName = value;
+                                },
+                                keyboardType: TextInputType.text,
+                                decoration: const InputDecoration(
+                                  hintText: '메뉴 이름 입력(type: String)',
+                                ),
+                              ),
+                              TextField(
+                                onChanged: (value) {
+                                  amount = value;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  hintText: '먹은 양 입력(type: double)',
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  final selectedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2023),
+                                    lastDate: DateTime.now()
+                                        .add(const Duration(days: 365)),
+                                  );
+                                  if (selectedDate != null) {
+                                    final selectedTime = await showTimePicker(
+                                      context: context,
+                                      initialTime:
+                                          TimeOfDay.fromDateTime(selectedDate),
                                     );
-                                  });
-                                }
-                              }
-                            },
-                            child: Column(
-                              children: <Widget>[
-                                const Text(
-                                  '먹은 시간 입력: ',
+                                    if (selectedTime != null) {
+                                      setState(() {
+                                        eatingTime = DateTime(
+                                          selectedDate.year,
+                                          selectedDate.month,
+                                          selectedDate.day,
+                                          selectedTime.hour,
+                                          selectedTime.minute,
+                                        );
+                                      });
+                                    }
+                                  }
+                                },
+                                child: Column(
+                                  children: <Widget>[
+                                    const Text(
+                                      '먹은 시간 입력: ',
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(DateFormat('yyyy년 MM월 dd일 HH시 mm분')
+                                        .format(eatingTime)),
+                                  ],
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(DateFormat('yyyy년 MM월 dd일 HH시 mm분')
-                                    .format(eatingTime)),
-                              ],
-                            ),
-                          ),
-                          SegmentedButton<int>(
-                            //multiSelectionEnabled: false,
-                              segments: const <ButtonSegment<int>>[
-                                ButtonSegment<int> (
+                              ),
+                              SegmentedButton<int>(
+                                //multiSelectionEnabled: false,
+                                segments: const <ButtonSegment<int>>[
+                                  ButtonSegment<int>(
                                     value: 0,
-                                  label: Text('아침'),
-                                ),
-
-                                ButtonSegment<int> (
-                                  value: 1,
-                                  label: Text('점심'),
-                                ),
-
-                                ButtonSegment<int> (
-                                  value: 2,
-                                  label: Text('저녁'),
-                                )
-                              ],
-                              selected: <int>{classification},
-                            onSelectionChanged: (selected) {
-                                setState(() {
-                                  classification = selected.first;
-                                });
-                            },
-                          )
-                        ],
-                      ),
-                    ),
+                                    label: Text('아침'),
+                                  ),
+                                  ButtonSegment<int>(
+                                    value: 1,
+                                    label: Text('점심'),
+                                  ),
+                                  ButtonSegment<int>(
+                                    value: 2,
+                                    label: Text('저녁'),
+                                  )
+                                ],
+                                selected: <int>{classification},
+                                onSelectionChanged: (selected) {
+                                  setState(() {
+                                    classification = selected.first;
+                                  });
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   actions: <Widget>[
                     ElevatedButton(
@@ -525,15 +527,13 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                       },
                       child: const Text('취소'),
                     ),
-
                     ElevatedButton(
                       onPressed: () {
                         _configDatabase.insertDiet(DietCompanion(
                           eatingTime: Value(eatingTime),
                           menuName: Value(menuName),
                           amount: Value(double.tryParse(amount) ?? 0.0),
-                          classfication:
-                              Value(classification),
+                          classfication: Value(classification),
                           calories: Value(double.tryParse(calories) ?? 0.0),
                           carbohydrate:
                               Value(double.tryParse(carbohydrates) ?? 0.0),
