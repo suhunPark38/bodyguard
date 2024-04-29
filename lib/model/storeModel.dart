@@ -2,14 +2,14 @@ import 'dart:developer';
 
 class Store {
   final String id;
-  final String name;
+  final String StoreName;
   final double latitude;
   final double longitude;
   final String subscript;
 
   Store({
     required this.id,
-    required this.name,
+    required this.StoreName,
     required this.subscript,
     required this.latitude,
     required this.longitude,
@@ -19,16 +19,16 @@ class Store {
     if (json == null) {
       throw ArgumentError("json data is null");
     }
-    final name = json["name"];
+    final StoreName = json["storeName"];
     final subscript = json["subscript"];
     final latitude = (json["latitude"] ?? 0).toDouble();
     final longitude = (json["longitude"] ?? 0).toDouble();
 
-    log("$name $subscript $latitude $longitude");
+    log("받은 값: $id $StoreName $subscript $latitude $longitude");
 
     return Store(
       id: id,
-      name: name,
+      StoreName: StoreName,
       subscript: subscript,
       latitude: latitude,
       longitude: longitude,
@@ -37,7 +37,7 @@ class Store {
 
   Map<String, dynamic> toJson() {
     return {
-      "name": name,
+      "storeName": StoreName,
       "subscript": subscript,
       "latitude": latitude,
       "longitude": longitude,

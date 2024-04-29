@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bodyguard/model/storeModel.dart';
+import 'package:bodyguard/model/storeMenu.dart';
 
 import '../model/menuModel.dart';
 
@@ -36,9 +39,20 @@ class StoreService {
         snapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>?)).toList());
   }
 
-  Stream<List<Menu>> getStoreMenu(String storeId) {
-    return _storeCollection.doc(storeId).collection('menu').snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => Menu.fromJson(doc.data() as Map<String, dynamic>?)).toList());
+  Stream<List<StoreMenu>> getStoreMenu(String storeId) {
+    log("메뉴 받아오기 시작");
+    return _storeCollection.doc(storeId).collection('menu').snapshots().map((snapshot) {
+      log("Snapshot 데이터 수: ${snapshot.docs.length}");  // Snapshot 내 문서 수 로그
+
+      List<StoreMenu> menus = snapshot.docs.map((doc) {
+        StoreMenu menu = StoreMenu.fromJson(doc.id, doc.data());
+        log("메뉴 처리: ${menu.menuName}");  // 각 메뉴 이름 로그
+        return menu;
+      }).toList();
+
+      log("가공된 메뉴 리스트: ${menus.map((m) => m.menuName).join(', ')}");  // 가공된 메뉴 리스트 로그
+      return menus;
+    });
   }
 }
 

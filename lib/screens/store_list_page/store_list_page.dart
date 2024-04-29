@@ -1,4 +1,7 @@
 
+import 'dart:developer';
+
+import 'package:bodyguard/model/storeMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:bodyguard/model/storeModel.dart';
 import '../../model/menuModel.dart';
@@ -10,75 +13,71 @@ class StoreListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: const Text('가게 목록'),
-    centerTitle: true,
-    ),
-    body: StreamBuilder<List
-    <Store>>(
+        centerTitle: true,
+      ),
+      body: StreamBuilder<List
+      <Store>>(
         stream: StoreService().getStores(),
-    builder: (context, snapshot) {
-    if (!snapshot.hasData) {
-    return const Center(
-    child: CircularProgressIndicator(),
-    );
-    }
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-    List
-    <Store> stores = snapshot.data!;
+          List
+          <Store> stores = snapshot.data!;
 
-    return ListView.builder(
-      itemCount: stores.length,
-      itemBuilder: (context, index) {
-        Store store = stores[index];
-        return ListTile(
-          title: Text("가게 이름 : ${store.name}, 가게 소개 : ${store.subscript}"),
-          onTap: () {
-            _showMenuDialog(context, store);
-          },
-        );
-      },
-    );
-    },
-    ),
+          return ListView.builder(
+            itemCount: stores.length,
+            itemBuilder: (context, index) {
+              Store store = stores[index];
+              return ListTile(
+                title: Text("가게 이름 : ${store.StoreName}, 가게 소개 : ${store.subscript}"),
+                onTap: () {
+                  _showMenuDialog(context, store);
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
   // 메뉴 다이얼로그 표시 메서드
- _showMenuDialog(BuildContext context, Store store) {
-
+  void _showMenuDialog(BuildContext context, Store store) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('${store.name} 메뉴'),
-          content: StreamBuilder<List<Menu>>(//
-            stream: StoreService().getStoreMenu('JtxEXh1htARMYrmj8PeC'),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+          title: Text('${store.StoreName} 메뉴'),
+          content: Container(
+            height: 200, // 또는 적절한 높이 지정
+            width: double.maxFinite,
+            child: StreamBuilder<List<StoreMenu>>(
+              stream: StoreService().getStoreMenu(store.id),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              List<Menu> menuList = snapshot.data!;
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: menuList.map((menu) {
-                  return ListTile(
-                    title: Text(menu.foodName),
+                List<StoreMenu> menuList = snapshot.data!;
+                return ListView(
+                  children: menuList.map((menu) => ListTile(
+                    title: Text(menu.menuName),
                     subtitle: Text('가격: ${menu.price}'),
-                  );
-                }).toList(),
-              );
-            },
+
+                  )).toList(),
+                );
+              },
+            ),
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('닫기'),
             ),
           ],
