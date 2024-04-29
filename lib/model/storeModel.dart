@@ -14,7 +14,26 @@ class Store {
     required this.latitude,
     required this.longitude,
   });
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
+    return other is Store &&
+        other.id == id &&
+        other.StoreName == StoreName &&
+        other.latitude == latitude &&
+        other.longitude == longitude &&
+        other.subscript == subscript;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+    StoreName.hashCode ^
+    latitude.hashCode ^
+    longitude.hashCode ^
+    subscript.hashCode;
+  }
   factory Store.fromJson(String id,Map<String, dynamic>? json) {
     if (json == null) {
       throw ArgumentError("json data is null");

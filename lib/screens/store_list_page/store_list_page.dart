@@ -12,7 +12,9 @@ class StoreListPage extends StatefulWidget {
 }
 
 class _StoreListPageState extends State<StoreListPage> {
+  final List<Store> _selectedStores = [];
   final List<StoreMenu> _selectedMenus = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class _StoreListPageState extends State<StoreListPage> {
               return ListTile(
                 title: Text("가게 이름: ${store.StoreName}, 가게 소개: ${store.subscript}"),
                 onTap: () {
+
                   _showMenuDialog(context, store);
                 },
               );
@@ -48,9 +51,9 @@ class _StoreListPageState extends State<StoreListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showShoppingPage(context, _selectedMenus);
+          _showShoppingPage(context, _selectedMenus, _selectedStores);
         },
-        child: Icon(Icons.shopping_cart),
+        child: const Icon(Icons.shopping_cart),
       ),
     );
   }
@@ -60,7 +63,7 @@ class _StoreListPageState extends State<StoreListPage> {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (context,setState) {
+          builder: (context, setState) {
             return AlertDialog(
               title: Text('${store.StoreName} 메뉴'),
               content: SizedBox(
@@ -86,8 +89,12 @@ class _StoreListPageState extends State<StoreListPage> {
                           onChanged: (newValue) {
                             setState(() {
                               if (newValue!) {
+                                if(_selectedStores.contains(store)==false) {
+                                  _selectedStores.add(store);
+                                }
                                 _selectedMenus.add(menu);
                               } else {
+                                _selectedStores.remove(store);
                                 _selectedMenus.remove(menu);
                               }
                             });
@@ -102,7 +109,6 @@ class _StoreListPageState extends State<StoreListPage> {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    //_showShoppingPage(context, _selectedMenus);
                   },
                   child: const Text('닫기'),
                 ),
@@ -115,21 +121,16 @@ class _StoreListPageState extends State<StoreListPage> {
   }
 
 
-  void _showShoppingPage(BuildContext context, List<StoreMenu> selectedMenus) {
+
+  void _showShoppingPage(BuildContext context, List<StoreMenu> selectedMenus, List<Store> selectedStores) {
     if (selectedMenus.isNotEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ShoppingPage(selectedMenus: selectedMenus),
+          builder: (context) => ShoppingPage(selectedStores: selectedStores,selectedMenus: selectedMenus),
         ),
       );
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ShoppingPage(selectedMenus: selectedMenus),
-        ),
-      );
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('음식이 텅 비었어요.'),
       ));
