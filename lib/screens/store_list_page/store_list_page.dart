@@ -5,15 +5,23 @@ import '../../services/store_service.dart';
 import '../shopping_page/shopping_page.dart';
 
 class StoreListPage extends StatefulWidget {
-  const StoreListPage({Key? key}) : super(key: key);
+  final List<StoreMenu>? selectedMenus;
+
+  const StoreListPage({Key? key, required this.selectedMenus})
+      : super(key: key);
 
   @override
   _StoreListPageState createState() => _StoreListPageState();
 }
 
 class _StoreListPageState extends State<StoreListPage> {
-  final List<StoreMenu> _selectedMenus = [];
+  List<StoreMenu> _selectedMenus = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _selectedMenus = widget.selectedMenus ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +46,9 @@ class _StoreListPageState extends State<StoreListPage> {
             itemBuilder: (context, index) {
               Store store = stores[index];
               return ListTile(
-                title: Text("가게 이름: ${store.StoreName}, 가게 소개: ${store.subscript}"),
+                title: Text(
+                    "가게 이름: ${store.StoreName}, 가게 소개: ${store.subscript}"),
                 onTap: () {
-
                   _showMenuDialog(context, store);
                 },
               );
@@ -50,7 +58,7 @@ class _StoreListPageState extends State<StoreListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showShoppingPage(context, _selectedMenus);
+          Navigator.pop(context, _selectedMenus);
         },
         child: const Icon(Icons.shopping_cart),
       ),
@@ -88,11 +96,8 @@ class _StoreListPageState extends State<StoreListPage> {
                           onChanged: (newValue) {
                             setState(() {
                               if (newValue!) {
-
-
                                 _selectedMenus.add(menu);
                               } else {
-
                                 _selectedMenus.remove(menu);
                               }
                             });
@@ -118,20 +123,4 @@ class _StoreListPageState extends State<StoreListPage> {
     );
   }
 
-
-
-  void _showShoppingPage(BuildContext context, List<StoreMenu> selectedMenus) {
-    if (selectedMenus.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ShoppingPage(selectedMenus: selectedMenus),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('음식이 텅 비었어요.'),
-      ));
-    }
-  }
 }

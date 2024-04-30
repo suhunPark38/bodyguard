@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../shopping_page/shopping_page.dart';
 import 'home_page.dart';
 import '../search_page/search_page.dart';
 import '../favorite_page/favorite_page.dart';
@@ -20,7 +21,7 @@ class MyHomePage extends StatelessWidget {
             SearchPage(),
             FavoritePage(),
             HomePage(),
-            const StoreListPage(),
+            ShoppingPage(),
             IdentityPage(),
           ],
         ),

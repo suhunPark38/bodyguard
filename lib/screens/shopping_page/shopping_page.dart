@@ -1,3 +1,4 @@
+import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:flutter/material.dart';
 import '../../model/payment.dart';
 import '../../model/storeMenu.dart';
@@ -6,11 +7,8 @@ import '../../services/payment_service.dart';
 import 'package:uuid/uuid.dart';
 
 class ShoppingPage extends StatefulWidget {
-  final List<StoreMenu>? selectedMenus;
-
   const ShoppingPage({
     Key? key,
-    this.selectedMenus,
   }) : super(key: key);
 
   @override
@@ -27,15 +25,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
   @override
   void initState() {
     super.initState();
-    _selectedMenus = widget.selectedMenus;
-    _selectedMenus?.forEach((menu) {
-      _menuQuantities[menu] = 1;
-      if (_storeMenuMap.containsKey(menu.storeName)) {
-        _storeMenuMap[menu.storeName]!.add(menu);
-      } else {
-        _storeMenuMap[menu.storeName] = [menu];
-      }
-    });
 
     _calculateTotalPrice();
   }
@@ -292,8 +281,38 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 width: 90,
                                 height: 20,
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
+                                  onPressed: () async {
+                                    final dynamic returnValue =
+                                        await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => StoreListPage(
+                                            selectedMenus: _selectedMenus),
+                                      ),
+                                    );
+
+                                    setState(() {
+                                      if (returnValue != null) {
+                                        _selectedMenus = returnValue;
+                                        final List<StoreMenu> newMenus =
+                                            returnValue;
+
+                                        // 새로운 메뉴로 업데이트
+                                        _selectedMenus = newMenus;
+
+                                        // _storeMenuMap 업데이트
+                                        _storeMenuMap.clear();
+                                        _selectedMenus?.forEach((menu) {
+                                          _menuQuantities[menu] = 1;
+                                          _storeMenuMap
+                                              .putIfAbsent(
+                                                  menu.storeName, () => [])
+                                              .add(menu);
+                                        });
+
+                                        _calculateTotalPrice();
+                                      }
+                                    });
                                   },
                                   child: const Text(
                                     '메뉴 담기',
@@ -328,7 +347,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             ],
                           ),
                           const SizedBox(height: 10),
-
                           SizedBox(
                             width: double.maxFinite,
                             height: 40,
@@ -339,15 +357,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                             content:
-                                            Text('배달 또는 포장을 선택해주세요.')));
-                                  }
-                                  else if(_selectedMenus!.isEmpty){
+                                                Text('배달 또는 포장을 선택해주세요.')));
+                                  } else if (_selectedMenus!.isEmpty) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
-                                            content:
-                                            Text('음식이 텅 비었어요.')));
-                                  }
-                                  else {
+                                            content: Text('음식이 텅 비었어요.')));
+                                  } else {
                                     _completePayment();
                                   }
                                 });
