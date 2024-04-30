@@ -12,7 +12,6 @@ class StoreListPage extends StatefulWidget {
 }
 
 class _StoreListPageState extends State<StoreListPage> {
-  final List<Store> _selectedStores = [];
   final List<StoreMenu> _selectedMenus = [];
 
 
@@ -51,7 +50,7 @@ class _StoreListPageState extends State<StoreListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showShoppingPage(context, _selectedMenus, _selectedStores);
+          _showShoppingPage(context, _selectedMenus);
         },
         child: const Icon(Icons.shopping_cart),
       ),
@@ -89,12 +88,11 @@ class _StoreListPageState extends State<StoreListPage> {
                           onChanged: (newValue) {
                             setState(() {
                               if (newValue!) {
-                                if(_selectedStores.contains(store)==false) {
-                                  _selectedStores.add(store);
-                                }
+
+
                                 _selectedMenus.add(menu);
                               } else {
-                                _selectedStores.remove(store);
+
                                 _selectedMenus.remove(menu);
                               }
                             });
@@ -122,12 +120,12 @@ class _StoreListPageState extends State<StoreListPage> {
 
 
 
-  void _showShoppingPage(BuildContext context, List<StoreMenu> selectedMenus, List<Store> selectedStores) {
+  void _showShoppingPage(BuildContext context, List<StoreMenu> selectedMenus) {
     if (selectedMenus.isNotEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ShoppingPage(selectedStores: selectedStores,selectedMenus: selectedMenus),
+          builder: (context) => ShoppingPage(selectedMenus: selectedMenus),
         ),
       );
     } else {
