@@ -5,8 +5,6 @@ import '../../map.dart';
 import '../../services/payment_service.dart';
 import 'package:uuid/uuid.dart';
 
-
-
 class ShoppingPage extends StatefulWidget {
   final List<StoreMenu>? selectedMenus;
 
@@ -24,7 +22,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   final Map<StoreMenu, int> _menuQuantities = {};
   List<StoreMenu>? _selectedMenus;
   int? _totalPrice;
-  Map<String, List<StoreMenu>> _storeMenuMap = {};
+  final Map<String, List<StoreMenu>> _storeMenuMap = {};
 
   @override
   void initState() {
@@ -66,7 +64,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       currency: 'KRW',
       status: PaymentStatus.completed,
       timestamp: DateTime.now(),
-      storeNames: _selectedMenus!.map((menu) => menu.storeName).toList(),
+      totalPrice: _totalPrice!,
       menus: _selectedMenus!,
       deliveryType: _deliveryType!,
     );
@@ -156,16 +154,16 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       padding: const EdgeInsets.all(10),
                                       child: Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 menu.menuName,
-                                                style:
-                                                const TextStyle(fontSize: 15),
+                                                style: const TextStyle(
+                                                    fontSize: 15),
                                               ),
                                               Text(
                                                 '개당 ${menu.price}원',
@@ -185,7 +183,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                           ),
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                                CrossAxisAlignment.end,
                                             children: [
                                               InkWell(
                                                 onTap: () {
@@ -197,15 +195,17 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                               Row(
                                                 children: [
                                                   IconButton(
-                                                    icon:
-                                                    const Icon(Icons.remove),
+                                                    icon: const Icon(
+                                                        Icons.remove),
                                                     onPressed: () {
                                                       setState(() {
-                                                        if (_menuQuantities[menu]! >
+                                                        if (_menuQuantities[
+                                                                menu]! >
                                                             1) {
-                                                          _menuQuantities[menu] =
+                                                          _menuQuantities[
+                                                                  menu] =
                                                               _menuQuantities[
-                                                              menu]! -
+                                                                      menu]! -
                                                                   1;
                                                           _calculateTotalPrice();
                                                         }
@@ -223,8 +223,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                                       setState(() {
                                                         _menuQuantities[menu] =
                                                             (_menuQuantities[
-                                                            menu] ??
-                                                                1) +
+                                                                        menu] ??
+                                                                    1) +
                                                                 1;
                                                         _calculateTotalPrice();
                                                       });
@@ -240,7 +240,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                   ),
                               ],
                             ),
-                          Spacer(),
+                          const Spacer(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -328,19 +328,27 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             ],
                           ),
                           const SizedBox(height: 10),
+
                           SizedBox(
                             width: double.maxFinite,
                             height: 40,
                             child: ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  if (_deliveryType != null) {
-                                    _completePayment();
-                                  } else {
+                                  if (_deliveryType == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
-                                            content: Text(
-                                                '배달 또는 포장을 선택해주세요.')));
+                                            content:
+                                            Text('배달 또는 포장을 선택해주세요.')));
+                                  }
+                                  else if(_selectedMenus!.isEmpty){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                            Text('음식이 텅 비었어요.')));
+                                  }
+                                  else {
+                                    _completePayment();
                                   }
                                 });
                               },
@@ -376,11 +384,15 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         itemCount: payments.length,
                         itemBuilder: (context, index) {
                           final payment = payments[index];
-                          return ListTile(
-                            title: Text('주문 ID: ${payment.orderId}'),
+                          return Card(
+                              child: ListTile(
+                            title: Text('주문 번호: ${payment.orderId}'),
                             subtitle: Text(
-                                '결제 상태: ${payment.status.toString().split('.').last} 결제 일시: ${payment.timestamp}'),
-                          );
+                                '결제 상태: ${payment.status.toString().split('.').last}'
+                                '\n결제 일시: ${payment.timestamp}'
+                                '\n결제 금액: ${payment.totalPrice}'
+                                '\n배달 방식: ${payment.deliveryType}'),
+                          ));
                         },
                       );
                     }

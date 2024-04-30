@@ -9,7 +9,7 @@ class Payment {
   final String currency;
   final PaymentStatus status;
   final DateTime timestamp;
-  final List<String> storeNames;
+  final int totalPrice;
   final List<StoreMenu> menus;
   final String deliveryType;
 
@@ -18,7 +18,7 @@ class Payment {
     required this.currency,
     required this.status,
     required this.timestamp,
-    required this.storeNames,
+    required this. totalPrice,
     required this.menus,
     required this.deliveryType,
   });
@@ -30,7 +30,7 @@ class Payment {
       status: PaymentStatus.values.firstWhere((status) =>
       status.toString() == 'PaymentStatus.${json['status']}'),
       timestamp: (json['timestamp'] as Timestamp).toDate(),
-      storeNames: List<String>.from(json['storeNames']),
+      totalPrice: json['totalPrice'],
       menus: (json['menus'] as List<dynamic>).map((menuData) {
         return StoreMenu.fromJson(menuData['menuName'], menuData);
       }).toList(),
@@ -46,7 +46,7 @@ class Payment {
       "currency": currency,
       "status": status.toString().split('.').last,
       "timestamp": timestamp,
-      "storeNames": storeNames,
+      "totalPrice": totalPrice,
       "menus": menusJson,
       "deliveryType": deliveryType,
     };

@@ -15,7 +15,7 @@ class PaymentService {
         'currency': payment.currency,
         'status': payment.status.toString().split('.').last,
         'timestamp': payment.timestamp,
-        'storeNames': payment.storeNames, // 리스트 형태로 저장됨
+        'totalPrice': payment.totalPrice,
         'menus': payment.menus.map((menu) => menu.toJson()).toList(),
         'deliveryType': payment.deliveryType,
       });
@@ -41,7 +41,7 @@ class PaymentService {
           status: PaymentStatus.values.firstWhere(
                   (status) => status.toString() == 'PaymentStatus.${data['status']}'),
           timestamp: (data['timestamp'] as Timestamp).toDate(),
-          storeNames: List<String>.from(data['storeNames']),
+          totalPrice: data['totalPrice'],
           menus: (data['menus'] as List<dynamic>).map((menuData) {
             // Convert each menu data to StoreMenu object
             return StoreMenu.fromJson(menuData['menuName'], menuData);
