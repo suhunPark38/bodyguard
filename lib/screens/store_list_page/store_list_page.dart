@@ -29,6 +29,12 @@ class _StoreListPageState extends State<StoreListPage> {
       appBar: AppBar(
         title: const Text('가게 목록'),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context,_selectedMenus);
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: StreamBuilder<List<Store>>(
         stream: StoreService().getStores(),
@@ -122,5 +128,4 @@ class _StoreListPageState extends State<StoreListPage> {
       },
     );
   }
-
 }
