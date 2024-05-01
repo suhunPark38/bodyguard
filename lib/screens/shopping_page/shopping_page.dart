@@ -358,7 +358,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                         const SnackBar(
                                             content:
                                                 Text('배달 또는 포장을 선택해주세요.')));
-                                  } else if (_selectedMenus!.isEmpty) {
+                                  } else if (_selectedMenus?.isEmpty ?? true) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                             content: Text('음식이 텅 비었어요.')));
