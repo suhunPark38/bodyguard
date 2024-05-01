@@ -1,14 +1,73 @@
 import 'package:flutter/material.dart';
 
+
+import '../../database/searchHistoryDatabaseHelper.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Search App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const SearchPage(),
+    );
+  }
+}
+
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   _SearchPageState createState() => _SearchPageState();
-
 }
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
-  final List<String> _recentSearches = []; // 최근 검색어 리스트
+  List<String> _recentSearches = [];
+  final SearchHistoryDatabaseHelper _databaseHelper = SearchHistoryDatabaseHelper();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSearchHistory();
+  }
+
+  Future<void> _loadSearchHistory() async {
+    List<String> searches = await _databaseHelper.getSearchHistory();
+    setState(() {
+      _recentSearches = searches;
+    });
+  }
+
+  void _addRecentSearch(String search) async {
+    if (!_recentSearches.contains(search)) {
+      setState(() {
+        _recentSearches.add(search);
+      });
+      await _databaseHelper.insertSearch(search);
+    }
+  }
+
+  void _removeRecentSearch(String search) async {
+    setState(() {
+      _recentSearches.remove(search);
+    });
+    await _databaseHelper.deleteSearch(search);
+  }
+
+  void _clearAllRecentSearches() async {
+    setState(() {
+      _recentSearches.clear();
+    });
+    await _databaseHelper.clearAllSearches();
+  }
+
   void _showCategoryDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -46,36 +105,36 @@ class _SearchPageState extends State<SearchPage> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
+        title: TextField(
+          controller: _searchController,
+          decoration: InputDecoration(
+            prefixIcon: Icon(Icons.search),
+            hintText: "검색어를 입력하세요",
+            suffixIcon: IconButton(
+              icon: Icon(Icons.clear),
+              onPressed: () {
+                _searchController.clear();
+              },
+            ),
+          ),
+          onChanged: (value) {
+            // 검색어가 변경될 때마다 호출되는 콜백 함수
+          },
+          onSubmitted: (value) {
+            // 검색 버튼을 누르거나 키보드의 '완료' 버튼을 눌렀을 때 호출되는 콜백 함수
+            _addRecentSearch(value);
+          },
+        ),
         centerTitle: true,
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
-          TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.search),
-              hintText: "검색어를 입력하세요",
-              suffixIcon: IconButton(
-                icon: Icon(Icons.clear),
-                onPressed: () {
-                  _searchController.clear();
-                },
-              ),
-            ),
-            onChanged: (value) {
-              // 검색어가 변경될 때마다 호출되는 콜백 함수
-            },
-            onSubmitted: (value) {
-              // 검색 버튼을 누르거나 키보드의 '완료' 버튼을 눌렀을 때 호출되는 콜백 함수
-              _addRecentSearch(value);
-            },
-          ),
           SizedBox(height: 20),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text(
@@ -86,7 +145,6 @@ class _SearchPageState extends State<SearchPage> {
             ),
             TextButton(
               onPressed: () {
-                // 모든 최근 검색어를 삭제하는 기능 추가
                 _clearAllRecentSearches();
               },
               child: Text(
@@ -96,7 +154,6 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ]),
           SizedBox(height: 10),
-          // 최근 검색어 표시
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _recentSearches.map((search) {
@@ -105,7 +162,6 @@ class _SearchPageState extends State<SearchPage> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        // 최근 검색어를 탭할 경우 동작
                         _handleRecentSearchTap(search);
                       },
                       child: Text(
@@ -119,7 +175,6 @@ class _SearchPageState extends State<SearchPage> {
                   IconButton(
                     icon: Icon(Icons.clear),
                     onPressed: () {
-                      // 해당 검색어를 삭제하는 기능 추가
                       _removeRecentSearch(search);
                     },
                   ),
@@ -187,42 +242,21 @@ class _SearchPageState extends State<SearchPage> {
                 fontSize: 20,
               ),
             ),
-            IconButton(onPressed: () {_showCategoryDialog(context);}, icon: Icon( Icons.menu,size: 40,)),
-
+            IconButton(
+              onPressed: () {
+                _showCategoryDialog(context);
+              },
+              icon: Icon(Icons.menu, size: 40,),
+            ),
           ]),
         ],
       ),
     );
   }
 
-  // 최근 검색어를 추가하는 함수
-  void _addRecentSearch(String search) {
-    setState(() {
-      if (!_recentSearches.contains(search)) {
-        _recentSearches.add(search);
-      }
-    });
-  }
-
-  // 최근 검색어를 탭했을 때 동작하는 함수
   void _handleRecentSearchTap(String search) {
-    // 검색어를 검색어 입력 필드에 설정
     _searchController.text = search;
-    // 이곳에 최근 검색어를 탭했을 때의 동작을 구현
     print("검색어 '$search'를 탭했습니다.");
   }
-
-  // 최근 검색어를 삭제하는 함수
-  void _removeRecentSearch(String search) {
-    setState(() {
-      _recentSearches.remove(search);
-    });
-  }
-
-  // 모든 최근 검색어를 삭제하는 함수
-  void _clearAllRecentSearches() {
-    setState(() {
-      _recentSearches.clear();
-    });
-  }
 }
+
