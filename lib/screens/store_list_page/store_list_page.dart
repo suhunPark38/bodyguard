@@ -80,7 +80,7 @@ class _StoreListPageState extends State<StoreListPage> {
             return AlertDialog(
               title: Text('${store.StoreName} 메뉴'),
               content: SizedBox(
-                height: 200, // 적절한 높이 지정
+                height: 500, // 적절한 높이 지정
                 width: double.maxFinite,
                 child: StreamBuilder<List<StoreMenu>>(
                   stream: StoreService().getStoreMenu(store.id),
@@ -96,7 +96,7 @@ class _StoreListPageState extends State<StoreListPage> {
                         StoreMenu menu = menuList[index];
                         bool isSelected = _selectedMenus.contains(menu);
                         return CheckboxListTile(
-                          title: Row(children: [Text(menu.menuName),IconButton(
+                          secondary:IconButton(
                             icon: const Icon(Icons.info),
                             onPressed: () {
                               showDialog(
@@ -117,7 +117,8 @@ class _StoreListPageState extends State<StoreListPage> {
                                 },
                               );
                             },
-                          ),]),
+                          ),
+                          title: Text(menu.menuName),
                           subtitle: Text('가격: ${menu.price}'),
                           value: isSelected,
                           onChanged: (newValue) {
