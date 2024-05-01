@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:bodyguard/model/storeModel.dart';
+import 'package:bodyguard/model/store_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:bodyguard/model/storeModel.dart';
+import 'package:bodyguard/model/store_model.dart';
 //import 'package:firebase_storage/firebase_storage.dart';
 import 'firebase_options.dart';
 

@@ -1,7 +1,7 @@
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:flutter/material.dart';
 import '../../model/payment.dart';
-import '../../model/storeMenu.dart';
+import '../../model/store_menu.dart';
 import '../../map.dart';
 import '../../services/payment_service.dart';
 import 'package:uuid/uuid.dart';

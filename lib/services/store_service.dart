@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:bodyguard/model/storeModel.dart';
-import 'package:bodyguard/model/storeMenu.dart';
+import 'package:bodyguard/model/store_model.dart';
+import 'package:bodyguard/model/store_menu.dart';
 
 
 class StoreService {

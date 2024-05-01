@@ -1,6 +1,6 @@
-import 'package:bodyguard/model/storeMenu.dart';
+import 'package:bodyguard/model/store_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:bodyguard/model/storeModel.dart';
+import 'package:bodyguard/model/store_model.dart';
 import '../../services/store_service.dart';
 import '../shopping_page/shopping_page.dart';
 

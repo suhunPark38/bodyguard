@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/search_keyword_service.dart';
-import '../../database/searchHistoryDatabaseHelper.dart';
+import '../../database/search_history_database_helper.dart';
 
 void main() {
   runApp(MyApp());

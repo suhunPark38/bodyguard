@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../model/payment.dart';
-import '../model/storeMenu.dart';
+import '../model/store_menu.dart';
 
 
 class PaymentService {

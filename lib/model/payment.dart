@@ -1,4 +1,4 @@
-import 'package:bodyguard/model/storeMenu.dart';
+import 'package:bodyguard/model/store_menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum PaymentStatus { pending, completed, failed }
