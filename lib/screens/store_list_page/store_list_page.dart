@@ -96,7 +96,28 @@ class _StoreListPageState extends State<StoreListPage> {
                         StoreMenu menu = menuList[index];
                         bool isSelected = _selectedMenus.contains(menu);
                         return CheckboxListTile(
-                          title: Text(menu.menuName),
+                          title: Row(children: [Text(menu.menuName),IconButton(
+                            icon: const Icon(Icons.info),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text(
+                                        '${menu.menuName} - 영양성분'),
+                                    content: Text(
+                                        '칼로리: ${menu.calories},'
+                                            ' 탄수화물: ${menu.carbohydrate},'
+                                            ' 지방: ${menu.fat},'
+                                            ' 단백질: ${menu.protein},'
+                                            ' 나트륨: ${menu.sodium},'
+                                            ' 당: ${menu.sugar}'),
+                                  );
+                                },
+                              );
+                            },
+                          ),]),
                           subtitle: Text('가격: ${menu.price}'),
                           value: isSelected,
                           onChanged: (newValue) {
