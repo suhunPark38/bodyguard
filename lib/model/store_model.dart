@@ -2,14 +2,14 @@ import 'dart:developer';
 
 class Store {
   final String id;
-  final String StoreName;
+  final String storeName;
   final double latitude;
   final double longitude;
   final String subscript;
 
   Store({
     required this.id,
-    required this.StoreName,
+    required this.storeName,
     required this.subscript,
     required this.latitude,
     required this.longitude,
@@ -20,7 +20,7 @@ class Store {
 
     return other is Store &&
         other.id == id &&
-        other.StoreName == StoreName &&
+        other.storeName == storeName &&
         other.latitude == latitude &&
         other.longitude == longitude &&
         other.subscript == subscript;
@@ -29,7 +29,7 @@ class Store {
   @override
   int get hashCode {
     return id.hashCode ^
-    StoreName.hashCode ^
+    storeName.hashCode ^
     latitude.hashCode ^
     longitude.hashCode ^
     subscript.hashCode;
@@ -38,16 +38,16 @@ class Store {
     if (json == null) {
       throw ArgumentError("json data is null");
     }
-    final StoreName = json["storeName"];
+    final storeName = json["storeName"];
     final subscript = json["subscript"];
     final latitude = (json["latitude"] ?? 0).toDouble();
     final longitude = (json["longitude"] ?? 0).toDouble();
 
-    log("받은 값: $id $StoreName $subscript $latitude $longitude");
+    log("받은 값: $id $storeName $subscript $latitude $longitude");
 
     return Store(
       id: id,
-      StoreName: StoreName,
+      storeName: storeName,
       subscript: subscript,
       latitude: latitude,
       longitude: longitude,
@@ -56,7 +56,7 @@ class Store {
 
   Map<String, dynamic> toJson() {
     return {
-      "storeName": StoreName,
+      "storeName": storeName,
       "subscript": subscript,
       "latitude": latitude,
       "longitude": longitude,

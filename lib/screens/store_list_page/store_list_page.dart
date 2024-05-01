@@ -53,7 +53,7 @@ class _StoreListPageState extends State<StoreListPage> {
               Store store = stores[index];
               return ListTile(
                 title: Text(
-                    "가게 이름: ${store.StoreName}, 가게 소개: ${store.subscript}"),
+                    "가게 이름: ${store.storeName}, 가게 소개: ${store.subscript}"),
                 onTap: () {
                   _showMenuDialog(context, store);
                 },
@@ -78,7 +78,7 @@ class _StoreListPageState extends State<StoreListPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('${store.StoreName} 메뉴'),
+              title: Text('${store.storeName} 메뉴'),
               content: SizedBox(
                 height: 500, // 적절한 높이 지정
                 width: double.maxFinite,

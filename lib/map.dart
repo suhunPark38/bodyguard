@@ -129,7 +129,7 @@ class NaverMapApp extends StatelessWidget {
                           itemCount: stores.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(stores[index].StoreName),
+                              title: Text(stores[index].storeName),
                               subtitle: Text('Latitude: ${stores[index].latitude}, Longitude: ${stores[index].longitude}'),
                               onTap: (){
                                 Navigator.push(
@@ -158,7 +158,7 @@ class NaverMapApp extends StatelessWidget {
     List<NMarker> markers = [];
     for (int i = 0; i < stores.length; i++) {
       NMarker marker = NMarker(
-        id: stores[i].StoreName,
+        id: stores[i].storeName,
         position: NLatLng(stores[i].latitude, stores[i].longitude),
       );
       marker.setOnTapListener((NMarker marker) {
