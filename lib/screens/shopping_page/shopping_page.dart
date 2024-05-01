@@ -149,11 +149,35 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
+                                              Row(
+                                                children: [
                                               Text(
                                                 menu.menuName,
                                                 style: const TextStyle(
                                                     fontSize: 15),
                                               ),
+                                              IconButton(
+                                                icon: const Icon(Icons.info),
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: Text(
+                                                            '${menu.menuName} - 영양성분'),
+                                                        content: Text(
+                                                            '칼로리: ${menu.calories},'
+                                                                ' 탄수화물: ${menu.carbohydrate},'
+                                                                ' 지방: ${menu.fat},'
+                                                                ' 단백질: ${menu.protein},'
+                                                                ' 나트륨: ${menu.sodium},'
+                                                                ' 당: ${menu.sugar}'),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              ),]),
                                               Text(
                                                 '개당 ${menu.price}원',
                                                 style: TextStyle(
