@@ -91,27 +91,27 @@ class _SearchPageState extends State<SearchPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('카테고리 선택'),
+          title: const Text('카테고리 선택'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // 카테고리 목록 추가
               ListTile(
-                title: Text('카테고리 1'),
+                title: const Text('카테고리 1'),
                 onTap: () {
                   // 카테고리 1 선택 시 동작
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('카테고리 2'),
+                title: const Text('카테고리 2'),
                 onTap: () {
                   // 카테고리 2 선택 시 동작
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('카테고리 3'),
+                title: const Text('카테고리 3'),
                 onTap: () {
                   // 카테고리 3 선택 시 동작
                   Navigator.pop(context);
@@ -131,7 +131,7 @@ class _SearchPageState extends State<SearchPage> {
         title: TextField(
           controller: _searchController,
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
+            prefixIcon: const Icon(Icons.search),
             hintText: "검색어를 입력하세요",
             suffixIcon: IconButton(
               icon: Icon(Icons.clear),
@@ -152,12 +152,13 @@ class _SearchPageState extends State<SearchPage> {
         ),
         centerTitle: true,
       ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
+      body: RefreshIndicator( onRefresh: ()async {_loadPopularSearches();},
+      child:ListView(
+        padding: const EdgeInsets.all(16.0),
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(
+            const Text(
               "최근 검색어",
               style: TextStyle(
                 fontSize: 20,
@@ -167,13 +168,13 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () {
                 _clearAllRecentSearches();
               },
-              child: Text(
+              child: const Text(
                 "모두 지우기",
                 style: TextStyle(),
               ),
             ),
           ]),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _recentSearches.map((search) {
@@ -193,7 +194,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.clear),
+                    icon: const Icon(Icons.clear),
                     onPressed: () {
                       _removeRecentSearch(search);
                     },
@@ -277,11 +278,11 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () {
                 _showCategoryDialog(context);
               },
-              icon: Icon(Icons.menu, size: 40,),
+              icon: const Icon(Icons.menu, size: 40,),
             ),
           ]),
         ],
-      ),
+      ),)
     );
   }
 
@@ -313,7 +314,7 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () {
                 Navigator.pop(context); // 다이얼로그를 닫음
               },
-              child: Text('닫기'),
+              child: const Text('닫기'),
             ),
           ],
         );
