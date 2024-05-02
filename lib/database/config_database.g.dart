@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'configDatabase.dart';
+part of 'config_database.dart';
 
 // ignore_for_file: type=lint
 class $DietTable extends Diet with TableInfo<$DietTable, DietData> {

@@ -5,10 +5,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:bodyguard/database/config_database.dart';
+import 'package:drift/drift.dart' show Value;
+import 'package:intl/intl.dart';
+
 class Value2 {
 
   /*
-
   1	NUM	번호
 2	FOOD_CD	식품코드
 3	SAMPLING_REGION_NAME	지역명
@@ -60,15 +63,15 @@ class Value2 {
       MAKER_NAME: json['MAKER_NAME'].isEmpty ? "미확인" : json['MAKER_NAME'],
       SERVING_SIZE: json['SERVING_SIZE'].isEmpty ? "미확인" : json['SERVING_SIZE'],
       SERVING_UNIT: json['SERVING_UNIT'].isEmpty ? "미확인" : json['SERVING_UNIT'],
-      NUTR_CONT1: json['NUTR_CONT1'].isEmpty ? "미확인" : json['NUTR_CONT1']+' kcal',
-      NUTR_CONT2: json['NUTR_CONT2'].isEmpty ? "미확인" : json['NUTR_CONT2']+' g',
-      NUTR_CONT3: json['NUTR_CONT3'].isEmpty ? "미확인" : json['NUTR_CONT3']+' g',
-      NUTR_CONT4: json['NUTR_CONT4'].isEmpty ? "미확인" : json['NUTR_CONT4']+' g',
-      NUTR_CONT5: json['NUTR_CONT5'].isEmpty ? "미확인" : json['NUTR_CONT5']+' g',
-      NUTR_CONT6: json['NUTR_CONT6'].isEmpty ? "미확인" : json['NUTR_CONT6']+' mg',
-      NUTR_CONT7: json['NUTR_CONT7'].isEmpty ? "미확인" : json['NUTR_CONT7']+' mg',
-      NUTR_CONT8: json['NUTR_CONT8'].isEmpty ? "미확인" : json['NUTR_CONT8']+' g',
-      NUTR_CONT9: json['NUTR_CONT9'].isEmpty ? "미확인" : json['NUTR_CONT9']+' g',
+      NUTR_CONT1: json['NUTR_CONT1'].isEmpty ? "미확인" : json['NUTR_CONT1'],
+      NUTR_CONT2: json['NUTR_CONT2'].isEmpty ? "미확인" : json['NUTR_CONT2'],
+      NUTR_CONT3: json['NUTR_CONT3'].isEmpty ? "미확인" : json['NUTR_CONT3'],
+      NUTR_CONT4: json['NUTR_CONT4'].isEmpty ? "미확인" : json['NUTR_CONT4'],
+      NUTR_CONT5: json['NUTR_CONT5'].isEmpty ? "미확인" : json['NUTR_CONT5'],
+      NUTR_CONT6: json['NUTR_CONT6'].isEmpty ? "미확인" : json['NUTR_CONT6'],
+      NUTR_CONT7: json['NUTR_CONT7'].isEmpty ? "미확인" : json['NUTR_CONT7'],
+      NUTR_CONT8: json['NUTR_CONT8'].isEmpty ? "미확인" : json['NUTR_CONT8'],
+      NUTR_CONT9: json['NUTR_CONT9'].isEmpty ? "미확인" : json['NUTR_CONT9'],
     );
   }
 }
@@ -202,6 +205,7 @@ class _CustomSearchbar extends State<CustomSearchbar> {
          DataColumn(label: Text('콜레스테롤')),
          DataColumn(label: Text('포화지방산')),
          DataColumn(label: Text('트랜스지방')),
+         DataColumn(label: Text('선택')),
        ],
        rows: List<DataRow>.generate(
          snapshot.data!.length,
@@ -218,13 +222,180 @@ class _CustomSearchbar extends State<CustomSearchbar> {
              DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT7))),
              DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT8))),
              DataCell(Center(child: Text(snapshot.data![index].NUTR_CONT9))),
+             DataCell(
+               Row(
+                 children: [
+                   ElevatedButton(
+                     onPressed: () => _showDialog(context, snapshot.data![index]),
+                     child: const Text('선택'),
+                   ),
+                 ],
+               ),
+             ),
            ],
          ),
        ),
+
      );
     }
 
 }
+
+void _showDialog(BuildContext context, Value2 selectedData){
+  showDialog(
+    context: context,
+    builder: (BuildContext builder) {
+      String calories = '';
+      String carbohydrates = '';
+      String protein = '';
+      String fat = '';
+      String sodium = '';
+      String sugar = '';
+      double amount = 0.0;
+      String menuName = '';
+      int classification = 0;
+      DateTime eatingTime = DateTime.now();
+      ConfigDatabase _configDatabase = ConfigDatabase();
+
+      return AlertDialog(
+        title: const Text('값을 입력하세요'),
+        content: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+
+            menuName = selectedData.DESC_KOR;
+            calories = selectedData.NUTR_CONT1;
+            carbohydrates = selectedData.NUTR_CONT2;
+            protein = selectedData.NUTR_CONT3;
+            fat = selectedData.NUTR_CONT4;
+            sugar = selectedData.NUTR_CONT5;
+            sodium = selectedData.NUTR_CONT6;
+
+
+            return SingleChildScrollView(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Slider(
+                        value: amount,
+                        min: 0.0,
+                        max: 3.0,
+                        divisions: 6,
+                        label: amount.toStringAsFixed(1),
+                        onChanged: (double newValue){
+                          setState( () {
+                            amount = newValue;
+                          });
+                        }
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        final selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2023),
+                          lastDate: DateTime.now()
+                              .add(const Duration(days: 365)),
+                        );
+                        if (selectedDate != null) {
+                          final selectedTime = await showTimePicker(
+                            context: context,
+                            initialTime:
+                            TimeOfDay.fromDateTime(selectedDate),
+                          );
+                          if (selectedTime != null) {
+                            setState(() {
+                              eatingTime = DateTime(
+                                selectedDate.year,
+                                selectedDate.month,
+                                selectedDate.day,
+                                selectedTime.hour,
+                                selectedTime.minute,
+                              );
+                            });
+                          }
+                        }
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          const Text(
+                            '먹은 시간 입력: ',
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(DateFormat('yyyy년 MM월 dd일 HH시 mm분')
+                              .format(eatingTime)),
+                        ],
+                      ),
+                    ),
+                    SegmentedButton<int>(
+                      //multiSelectionEnabled: false,
+                      segments: const <ButtonSegment<int>>[
+                        ButtonSegment<int>(
+                          value: 0,
+                          label: Text('아침'),
+                        ),
+                        ButtonSegment<int>(
+                          value: 1,
+                          label: Text('점심'),
+                        ),
+                        ButtonSegment<int>(
+                          value: 2,
+                          label: Text('저녁'),
+                        )
+                      ],
+                      selected: <int>{classification},
+                      onSelectionChanged: (selected) {
+                        setState(() {
+                          classification = selected.first;
+                        });
+                      },
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              // 두 번 쓰는 이유는 다이어로그 && 검색 결과 창 같이 닫으려고. 나중에 다른 방법 찾아봄. searchValue에서 쓰면 dialog가 안 닫힘.
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+            child: const Text('취소'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _configDatabase.insertDiet(DietCompanion(
+                eatingTime: Value(eatingTime),
+                menuName: Value(menuName),
+                amount: Value(amount),
+                classfication: Value(classification),
+                calories: Value((double.tryParse(calories) ?? 0.0) * amount),
+                carbohydrate: Value((double.tryParse(carbohydrates) ?? 0.0) * amount),
+                protein: Value((double.tryParse(protein) ?? 0.0)* amount),
+                fat: Value((double.tryParse(fat) ?? 0.0)* amount),
+                sodium: Value((double.tryParse(sodium) ?? 0.0)* amount),
+                sugar: Value((double.tryParse(sugar) ?? 0.0)* amount),
+              ));
+
+              // 두 번 쓰는 이유는 다이어로그 && 검색 결과 창 같이 닫으려고. 나중에 다른 방법 찾아봄. searchValue에서 쓰면 dialog가 안 닫힘.
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+            child: const Text('확인'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
 
 

@@ -1,7 +1,7 @@
 import 'package:bodyguard/model/diet.dart';
-import 'package:bodyguard/model/personalSettings.dart';
-import 'package:bodyguard/model/dailyActivityInfo.dart';
-import 'package:bodyguard/model/dailyActivityDetail.dart';
+import 'package:bodyguard/model/personal_settings.dart';
+import 'package:bodyguard/model/daily_activity_info.dart';
+import 'package:bodyguard/model/daily_activity_detail.dart';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -11,7 +11,7 @@ import 'dart:io';
 
 
 
-part 'configDatabase.g.dart';
+part 'config_database.g.dart';
 
 
 /// localdb 관리 클래스
