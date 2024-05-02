@@ -1,13 +1,12 @@
 import 'package:bodyguard/screens/enter_calories_page/widgets/diets_card.dart';
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
+import 'package:bodyguard/widgets/search.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:bodyguard/utils/calculateUtil.dart';
 
-import 'package:bodyguard/database/configDatabase.dart';
+import 'package:bodyguard/database/config_database.dart';
 import '../home_page/my_home_page.dart';
 
 /// 사용자로부터 입력받은 식단 데이터
