@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../database/configDatabase.dart';
+import '../database/config_database.dart';
 
 class DietUtil {
   static final DietUtil _instance = DietUtil._internal();

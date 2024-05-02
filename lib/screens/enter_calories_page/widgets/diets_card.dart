@@ -1,4 +1,4 @@
-import 'package:bodyguard/database/configDatabase.dart';
+import 'package:bodyguard/database/config_database.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/DietUtil.dart';

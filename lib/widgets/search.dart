@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:bodyguard/database/configDatabase.dart';
+import 'package:bodyguard/database/config_database.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:intl/intl.dart';
 
@@ -280,8 +280,8 @@ void _showDialog(BuildContext context, Value2 selectedData){
                     Slider(
                         value: amount,
                         min: 0.0,
-                        max: 10.0,
-                        divisions: 20,
+                        max: 3.0,
+                        divisions: 6,
                         label: amount.toStringAsFixed(1),
                         onChanged: (double newValue){
                           setState( () {

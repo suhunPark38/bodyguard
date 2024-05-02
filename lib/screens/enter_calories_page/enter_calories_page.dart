@@ -6,7 +6,7 @@ import 'package:bodyguard/widgets/search.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:bodyguard/utils/calculateUtil.dart';
 
-import 'package:bodyguard/database/configDatabase.dart';
+import 'package:bodyguard/database/config_database.dart';
 import '../home_page/my_home_page.dart';
 
 /// 사용자로부터 입력받은 식단 데이터
@@ -296,7 +296,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                         ),
                       ),
                     ),
-                    Expanded(
+                    /*Expanded(
                       child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
@@ -348,7 +348,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           ),
                         ),
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),
