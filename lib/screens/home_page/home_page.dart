@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../model/data_color_pair.dart';
-import '../AddressChangePage/AddressChangePage.dart';
+import '../AddressChangePage/address_change_page.dart';
 import '../Body_page/Body_page.dart';
 import '../OrderHistoryPage/OrderHistoryPage.dart';
 import '../enter_calories_page/enter_calories_page.dart';
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
 
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
+                  InkWell (
 
                     onTap: () {
                       Navigator.push(
@@ -146,12 +146,16 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                     },
+
                     child: Image.asset(
                       'assets/order.png',
                       fit: BoxFit.cover,
                       height: 200,
                       width: 300,
                     ),
+
+
+
                   ),
 
 
@@ -179,7 +183,17 @@ class _HomePageState extends State<HomePage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
+                      InkWell (
+                        onTap: () {
+                          // 원하는 OnTap 기능 구현 (예: 새로운 페이지로 이동)
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ActivityPage(),
+                            ),
+                          );
+                        },
+                        child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           PieChart(data: pieChartData, total: sum), // 총합 전달
@@ -187,9 +201,15 @@ class _HomePageState extends State<HomePage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                '활동별 소모 칼로리',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              Row( // Text와 Icon을 묶는 Row 추가
+                                children: [
+                                  Text(
+                                    '활동별 소모 칼로리',
+                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(width: 20),
+                                  Icon(Icons.add_circle_outline, size: 40),
+                                ],
                               ),
                               SizedBox(height: 8),
                               for (var dataColorPair in pieChartData)
@@ -210,9 +230,9 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ],
-
                       ),
-                      ElevatedButton(
+                      ),
+                      /*ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -222,14 +242,25 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                         child: const Text('활동량 확인하기'),
-                      ),
+                      ),*/
                     ],
                   ),
-                  Column(
+          InkWell (
+            onTap: () {
+              // 원하는 OnTap 기능 구현 (예: 새로운 페이지로 이동)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BodyPage(),
+                ),
+              );
+            },
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
                       SizedBox(height: 20),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center, // 정보 가운데 정렬
                         children: [
@@ -244,6 +275,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
+
                       SizedBox(height: 20), // 여백 추가 (외관 향상)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center, // 정보 가운데 정렬
@@ -288,8 +320,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-
+          ),
                 ],
+
                 options: CarouselOptions(
                   height: 300,
                   enlargeCenterPage: true,
@@ -299,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                   enableInfiniteScroll: true,
                 ),
               ),
-              GestureDetector(
+              InkWell(
                 onTap: () {
                   // 원하는 OnTap 기능 구현 (예: 새로운 페이지로 이동)
                   Navigator.push(
@@ -307,32 +340,39 @@ class _HomePageState extends State<HomePage> {
                     MaterialPageRoute(
                       builder: (context) => const MyEnterCaloriesPage(),
                     ),
-
                   );
                 },
                 child: Container(
-
                   padding: EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: 20),
+
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+
                           DonutChart(ratio: consumedCalories / recommendedCalories),
                           SizedBox(height: 20),
-                          Text(
-                            '섭취한칼로리: ${consumedCalories.toString()} kcal\n'
-                                '권장 칼로리 : ${recommendedCalories.toString()} kcal',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
+                          Row(mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '섭취한칼로리: ${consumedCalories.toString()} kcal\n'
+                                    '권장 칼로리 : ${recommendedCalories.toString()} kcal',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(width: 20),
+                              Icon(Icons.add_circle_outline, size: 40),
+                            ],
                           ),
+
                         ],
                       ),
+
                       SizedBox(height: 20),
                       Wrap(
                         alignment: WrapAlignment.center,
@@ -368,22 +408,29 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const MyEnterCaloriesPage(),
-                            ),
-                          );
-                        },
-                        child: const Text('칼로리 입력 화면'),
-                      ),
+                      /*Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MyEnterCaloriesPage(),
+                                ),
+                              );
+                            },
+                            child: const Text('칼로리 입력 화면'),
+                          ),
+                          SizedBox(width: 10), // 아이콘과 버튼 사이의 간격 조절
+                           // 아이콘 추가
+                        ],
+                      ),*/
                     ],
                   ),
                 ),
-
               ),
+
 
             ],
           ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../OrderHistoryPage/OrderHistoryPage.dart';
-import 'AppInstructions.dart';
-import 'MyInfoDetailPage.dart';
-import '../AddressChangePage/AddressChangePage.dart';
-import 'Qna.dart';
-import 'SettingsPage.dart';
-import 'TOS.dart';
+import 'appInstructions_page.dart';
+import 'myInfo_detail_page.dart';
+import '../AddressChangePage/address_change_page.dart';
+import 'qna_page.dart';
+import 'settings_page.dart';
+import 'tos_page.dart';
 import 'announcement_page.dart';
 
 
