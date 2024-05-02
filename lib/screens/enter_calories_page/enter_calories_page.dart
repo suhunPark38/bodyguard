@@ -89,14 +89,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
     });
   }
 
-  void _showSearchBar() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // 스크롤 가능 여부 설정 (true로 설정)
-      builder: (context) => CustomSearchbar(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -261,33 +253,33 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                               ),
                               const SizedBox(height: 30),
                               Text(
-                                '탄수화물 ${_totalNutritionalInfo.calories.toStringAsFixed(2)}g',
+                                '탄수화물 ${_totalNutritionalInfo.calories}g',
                                 style: const TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '단백질 ${_totalNutritionalInfo.protein.toStringAsFixed(2)}g',
+                                '단백질 ${_totalNutritionalInfo.protein}g',
                                 style: const TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '지방 ${_totalNutritionalInfo.fat.toStringAsFixed(2)}g',
+                                '지방 ${_totalNutritionalInfo.fat}g',
                                 style: const TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '나트륨 ${_totalNutritionalInfo.sodium.toStringAsFixed(2)}mg',
+                                '나트륨 ${_totalNutritionalInfo.sodium}mg',
                                 style: const TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '당 ${_totalNutritionalInfo.sugar.toStringAsFixed(2)}g',
+                                '당 ${_totalNutritionalInfo.sugar}g',
                                 style: const TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                '총 ${_totalNutritionalInfo.calories.toStringAsFixed(2)} kcal',
+                                '총 ${_totalNutritionalInfo.calories} kcal',
                                 style: const TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
@@ -296,7 +288,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                         ),
                       ),
                     ),
-                    /*Expanded(
+                    Expanded(
                       child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
@@ -348,7 +340,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           ),
                         ),
                       ),
-                    ),*/
+                    ),
                   ],
                 ),
               ),
@@ -361,7 +353,205 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
         right: 20,
         child: FloatingActionButton(
           onPressed: () {
-            _showSearchBar();
+            showDialog(
+              context: context,
+              builder: (BuildContext builder) {
+                String calories = '';
+                String carbohydrates = '';
+                String protein = '';
+                String fat = '';
+                String sodium = '';
+                String sugar = '';
+                String amount = '';
+                String menuName = '';
+                int classification = 0;
+                DateTime eatingTime = DateTime.now();
+
+                return AlertDialog(
+                  title: const Text('값을 입력하세요'),
+                  content: SingleChildScrollView(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          TextField(
+                            onChanged: (value) {
+                              calories = value;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: '칼로리 입력(type: double)',
+                            ),
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              carbohydrates = value;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: '탄수화물 입력(type: double)',
+                            ),
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              protein = value;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: '단백질 입력(type: double)',
+                            ),
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              fat = value;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: '지방 입력(type: double)',
+                            ),
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              sodium = value;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: '나트륨 입력(type: double)',
+                            ),
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              sugar = value;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: '당 입력(type: double)',
+                            ),
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              menuName = value;
+                            },
+                            keyboardType: TextInputType.text,
+                            decoration: const InputDecoration(
+                              hintText: '메뉴 이름 입력(type: String)',
+                            ),
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              amount = value;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: '먹은 양 입력(type: double)',
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              final selectedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2023),
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 365)),
+                              );
+                              if (selectedDate != null) {
+                                final selectedTime = await showTimePicker(
+                                  context: context,
+                                  initialTime:
+                                      TimeOfDay.fromDateTime(selectedDate),
+                                );
+                                if (selectedTime != null) {
+                                  setState(() {
+                                    eatingTime = DateTime(
+                                      selectedDate.year,
+                                      selectedDate.month,
+                                      selectedDate.day,
+                                      selectedTime.hour,
+                                      selectedTime.minute,
+                                    );
+                                  });
+                                }
+                              }
+                            },
+                            child: Column(
+                              children: <Widget>[
+                                const Text(
+                                  '먹은 시간 입력: ',
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(DateFormat('yyyy년 MM월 dd일 HH시 mm분')
+                                    .format(eatingTime)),
+                              ],
+                            ),
+                          ),
+                          SegmentedButton<int>(
+                            //multiSelectionEnabled: false,
+                              segments: const <ButtonSegment<int>>[
+                                ButtonSegment<int> (
+                                    value: 0,
+                                  label: Text('아침'),
+                                ),
+
+                                ButtonSegment<int> (
+                                  value: 1,
+                                  label: Text('점심'),
+                                ),
+
+                                ButtonSegment<int> (
+                                  value: 2,
+                                  label: Text('저녁'),
+                                )
+                              ],
+                              selected: <int>{classification},
+                            onSelectionChanged: (selected) {
+                                setState(() {
+                                  classification = selected.first;
+                                });
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('취소'),
+                    ),
+
+                    ElevatedButton(
+                      onPressed: () {
+                        _configDatabase.insertDiet(DietCompanion(
+                          eatingTime: Value(eatingTime),
+                          menuName: Value(menuName),
+                          amount: Value(double.tryParse(amount) ?? 0.0),
+                          classfication:
+                              Value(classification),
+                          calories: Value(double.tryParse(calories) ?? 0.0),
+                          carbohydrate:
+                              Value(double.tryParse(carbohydrates) ?? 0.0),
+                          protein: Value(double.tryParse(protein) ?? 0.0),
+                          fat: Value(double.tryParse(fat) ?? 0.0),
+                          sodium: Value(double.tryParse(sodium) ?? 0.0),
+                          sugar: Value(double.tryParse(sugar) ?? 0.0),
+                        ));
+
+                        _setDiets();
+
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('확인'),
+                    ),
+                  ],
+                );
+              },
+            );
           },
           child: const Icon(Icons.add),
           backgroundColor: Colors.blueAccent,

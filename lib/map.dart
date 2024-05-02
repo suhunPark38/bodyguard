@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:bodyguard/model/storeModel.dart';
+import 'package:bodyguard/model/store_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:bodyguard/model/storeModel.dart';
+import 'package:bodyguard/model/store_model.dart';
 //import 'package:firebase_storage/firebase_storage.dart';
 import 'firebase_options.dart';
 
@@ -74,7 +74,7 @@ class NaverMapApp extends StatelessWidget {
                 //지도 생성시 초기 위치 조절
                 options: NaverMapViewOptions(
                     initialCameraPosition: NCameraPosition(
-                        target: NLatLng(37.506932467450326, 127.05578661133796),
+                        target: NLatLng(37.58238669765058, 127.0100286533862),
                         zoom: 14)),
                 onMapReady: (controller) async {
 
@@ -92,7 +92,7 @@ class NaverMapApp extends StatelessWidget {
                   // marker.openInfoWindow(onMarkerInfoWindow);
                 },
                 onMapTapped: (point, latLng) {
-                  print("내가 클릭한 곳의 좌표${latLng.latitude}、${latLng.longitude}");
+                  log("내가 클릭한 곳의 좌표${latLng.latitude}、${latLng.longitude}");
                 },
               ),
             ),
@@ -129,13 +129,13 @@ class NaverMapApp extends StatelessWidget {
                           itemCount: stores.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(stores[index].name),
+                              title: Text(stores[index].storeName),
                               subtitle: Text('Latitude: ${stores[index].latitude}, Longitude: ${stores[index].longitude}'),
                               onTap: (){
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ShortPathView(UserNLatLng: const NLatLng(37.506932467450326, 127.05578661133796), StoreNLatLng: NLatLng(stores[index].latitude, stores[index].longitude)), // 받은 Widget으로 화면 전환
+                                    builder: (context) => ShortPathView(UserNLatLng: const NLatLng(37.58238669765058, 127.0100286533862), StoreNLatLng: NLatLng(stores[index].latitude, stores[index].longitude)), // 받은 Widget으로 화면 전환
                                   ),
                                 );
                               },
@@ -158,7 +158,7 @@ class NaverMapApp extends StatelessWidget {
     List<NMarker> markers = [];
     for (int i = 0; i < stores.length; i++) {
       NMarker marker = NMarker(
-        id: stores[i].name,
+        id: stores[i].storeName,
         position: NLatLng(stores[i].latitude, stores[i].longitude),
       );
       marker.setOnTapListener((NMarker marker) {
