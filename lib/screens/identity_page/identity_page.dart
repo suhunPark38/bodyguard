@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../OrderHistoryPage/OrderHistoryPage.dart';
+import '../order_history_page/order_history_page.dart';
 import 'appInstructions_page.dart';
 import 'myInfo_detail_page.dart';
-import '../AddressChangePage/address_change_page.dart';
+import '../address_change_page/address_change_page.dart';
 import 'qna_page.dart';
 import 'settings_page.dart';
 import 'tos_page.dart';

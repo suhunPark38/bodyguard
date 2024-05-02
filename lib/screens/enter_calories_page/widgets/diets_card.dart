@@ -1,8 +1,8 @@
 import 'package:bodyguard/database/config_database.dart';
 import 'package:flutter/material.dart';
 
-import '../../../utils/DietUtil.dart';
-import '../../../utils/calculateUtil.dart';
+import '../../../utils/diet_util.dart';
+import '../../../utils/calculate_util.dart';
 
 class DietsCard extends StatelessWidget {
   final String title;

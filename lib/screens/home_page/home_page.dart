@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../model/data_color_pair.dart';
-import '../AddressChangePage/address_change_page.dart';
-import '../Body_page/Body_page.dart';
-import '../OrderHistoryPage/OrderHistoryPage.dart';
+import '../address_change_page/address_change_page.dart';
+import '../Body_page/body_page.dart';
+import '../order_history_page/order_history_page.dart';
 import '../enter_calories_page/enter_calories_page.dart';
 import '../activity_page/activity_page.dart';
 
