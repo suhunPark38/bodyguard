@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../shopping_page/widgets/payment_history_page.dart';
+
 class OrderHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -7,7 +9,9 @@ class OrderHistoryPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('주문 및 배송 내역'),
       ),
-      body: ListView.builder(
+      body: PaymentHistoryPage()
+
+      /*ListView.builder(
         itemCount: 10, // 여기에 실제 주문 및 배송 내역의 개수를 넣어주세요
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
@@ -19,7 +23,7 @@ class OrderHistoryPage extends StatelessWidget {
             },
           );
         },
-      ),
+      ),*/
     );
   }
 }

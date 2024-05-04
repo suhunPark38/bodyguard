@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../activity_page/activity_page.dart';
 import '../shopping_page/shopping_page.dart';
 import 'home_page.dart';
 import '../search_page/search_page.dart';
@@ -19,7 +20,7 @@ class MyHomePage extends StatelessWidget {
         body: TabBarView(
           children: [
             SearchPage(),
-            FavoritePage(),
+            ActivityPage(),
             HomePage(),
             ShoppingPage(),
             IdentityPage(),
@@ -39,9 +40,9 @@ class MyHomePage extends StatelessWidget {
                 ),
                 Tab(
                   icon: Icon(
-                    Icons.favorite,
+                    Icons.accessibility,
                   ),
-                  text: '찜',
+                  text: '활동',
                 ),
                 Tab(
                   icon: Icon(

@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.shopping_cart),
+                    icon: Icon(Icons.add_shopping_cart),
                     onPressed: () {
                       Navigator.push(
                         context,
