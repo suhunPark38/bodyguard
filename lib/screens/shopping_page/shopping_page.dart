@@ -6,6 +6,8 @@ import '../../map.dart';
 import '../../services/payment_service.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../widgets/custom_button.dart';
+
 class ShoppingPage extends StatefulWidget {
   const ShoppingPage({
     Key? key,
@@ -79,6 +81,16 @@ class _ShoppingPageState extends State<ShoppingPage> {
       return [];
     }
   }
+  void _handleReset(){
+    setState(() {
+      _selectedMenus?.clear();
+      _storeMenuMap.clear();
+      _menuQuantities.clear();
+      _deliveryType = null;
+      _totalPrice = 0;
+    });
+  }
+
 
   void _removeMenu(StoreMenu menu) {
     setState(() {
@@ -103,6 +115,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
         appBar: AppBar(
           title: const Text('쇼핑'),
           centerTitle: true,
+          actions: [
+            TextButton(
+              onPressed: _handleReset,
+              child: Text("초기화하기"),
+            ),
+          ],
           bottom: const TabBar(
             tabs: [
               Tab(text: '결제하기'),
@@ -135,7 +153,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 ),
                                 for (var menu in entry.value)
                                   Card(
-                                    color: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -149,39 +166,38 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  IconButton(
-                                                    icon: const Icon(Icons.info, size: 15),
-                                                    onPressed: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder:
-                                                            (BuildContext context) {
-                                                          return AlertDialog(
-                                                            title: Text(
-                                                                '${menu.menuName} - 영양성분'),
-                                                            content: Text(
-                                                                '칼로리: ${menu.calories},'
-                                                                    ' 탄수화물: ${menu.carbohydrate},'
-                                                                    ' 지방: ${menu.fat},'
-                                                                    ' 단백질: ${menu.protein},'
-                                                                    ' 나트륨: ${menu.sodium},'
-                                                                    ' 당: ${menu.sugar}'),
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                  ),
-                                                  Text(
-                                                    menu.menuName,
-                                                    style: const TextStyle(
-                                                        fontSize: 15),
-                                                    softWrap: true,
-                                                    textAlign: TextAlign.left,
-                                                  ),]),
-
-
+                                              Row(children: [
+                                                IconButton(
+                                                  icon: const Icon(Icons.info,
+                                                      size: 15),
+                                                  onPressed: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return AlertDialog(
+                                                          title: Text(
+                                                              '${menu.menuName} - 영양성분'),
+                                                          content: Text(
+                                                              '칼로리: ${menu.calories},'
+                                                              ' 탄수화물: ${menu.carbohydrate},'
+                                                              ' 지방: ${menu.fat},'
+                                                              ' 단백질: ${menu.protein},'
+                                                              ' 나트륨: ${menu.sodium},'
+                                                              ' 당: ${menu.sugar}'),
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                                Text(
+                                                  menu.menuName,
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                  softWrap: true,
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ]),
                                               Text(
                                                 '개당 ${menu.price}원',
                                                 style: TextStyle(
@@ -289,7 +305,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               SizedBox(
                                 width: 90,
                                 height: 20,
-                                child: ElevatedButton(
+                                child: CustomButton(
                                   onPressed: () async {
                                     Widget mapPage = await MapRun();
                                     Navigator.push(
@@ -299,7 +315,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       ),
                                     );
                                   },
-                                  child: const Text(
+                                  text: const Text(
                                     '가게 위치',
                                     style: TextStyle(fontSize: 10),
                                   ),
@@ -308,7 +324,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               SizedBox(
                                 width: 90,
                                 height: 20,
-                                child: ElevatedButton(
+                                child: CustomButton(
                                   onPressed: () async {
                                     final dynamic returnValue =
                                         await Navigator.push(
@@ -342,7 +358,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       }
                                     });
                                   },
-                                  child: const Text(
+                                  text: const Text(
                                     '메뉴 담기',
                                     style: TextStyle(fontSize: 10),
                                   ),
@@ -378,7 +394,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           SizedBox(
                             width: double.maxFinite,
                             height: 40,
-                            child: ElevatedButton(
+                            child: CustomButton(
                               onPressed: () {
                                 setState(() {
                                   if (_deliveryType == null) {
@@ -395,7 +411,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                   }
                                 });
                               },
-                              child: Text('$_totalPrice원 결제하기'),
+                              text: Text('$_totalPrice원 결제하기'),
                             ),
                           ),
                           const SizedBox(height: 5),

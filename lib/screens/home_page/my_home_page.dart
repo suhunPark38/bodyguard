@@ -3,7 +3,6 @@ import '../shopping_page/shopping_page.dart';
 import 'home_page.dart';
 import '../search_page/search_page.dart';
 import '../favorite_page/favorite_page.dart';
-import '../store_list_page/store_list_page.dart';
 import '../identity_page/identity_page.dart';
 
 class MyHomePage extends StatelessWidget {
