@@ -65,6 +65,18 @@ class ConfigDatabase extends _$ConfigDatabase {
 
     return await (select(diet)..where((tbl) => tbl.eatingTime.isBetweenValues(startDate, endDate))).get();
   }
+
+  // Diet 테이블 레코드 수정
+  Future updateDiet(DietCompanion entry, int dietId) async {
+    return update(diet)
+        ..where((tbl) => tbl.dietId.equals(dietId))
+        ..write(entry);
+  }
+
+  /// Diet 테이블에서 레코드 삭제
+  Future<void> deleteDiet (int dietId) async {
+    await (delete(diet)..where((d) => d.dietId.equals(dietId))).go();
+  }
 }
 
 LazyDatabase _openConnection(){

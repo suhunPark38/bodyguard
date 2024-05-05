@@ -5,7 +5,7 @@ class Diet extends Table{
   DateTimeColumn get eatingTime => dateTime()();
   TextColumn get menuName => text()();
   RealColumn get amount => real()();
-  IntColumn get classfication => integer()();
+  IntColumn get classification => integer()();
   RealColumn get calories => real()();
   RealColumn get carbohydrate => real()();
   RealColumn get protein => real()();
