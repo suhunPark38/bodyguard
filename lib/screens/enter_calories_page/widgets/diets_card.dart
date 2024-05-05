@@ -1,10 +1,8 @@
-import 'package:bodyguard/database/config_database.dart';
 import 'package:bodyguard/screens/enter_calories_page/widgets/diet_info_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/diet_provider.dart';
-import '../../../utils/diet_util.dart';
 import '../../../utils/calculate_util.dart';
 
 class DietsCard extends StatefulWidget {

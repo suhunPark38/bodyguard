@@ -257,7 +257,6 @@ void _showDietInputDialog(BuildContext context, Value2 selectedData){
       String menuName = '';
       int classification = 0;
       DateTime eatingTime = DateTime.now();
-      ConfigDatabase _configDatabase = ConfigDatabase();
       DietProvider dietProvider = context.watch<DietProvider>();
 
       return AlertDialog(
