@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 class StoreMenu {
+  final String id;
   final String storeName; // 추가된 부분: 가게 이름 필드
   final String menuName;
   final int price; // 변경된 부분: double 대신 int를 사용
@@ -12,6 +13,7 @@ class StoreMenu {
   final double sugar;
 
   StoreMenu({
+    required this.id,
     required this.storeName, // 추가된 부분: 가게 이름 필드
     required this.menuName,
     required this.price, // 변경된 타입
@@ -28,6 +30,7 @@ class StoreMenu {
     if (identical(this, other)) return true;
 
     return other is StoreMenu &&
+        other.id == id &&
         other.storeName == storeName && // 추가된 부분: 가게 이름 필드 비교
         other.menuName == menuName &&
         other.price == price &&
@@ -41,15 +44,16 @@ class StoreMenu {
 
   @override
   int get hashCode {
-    return storeName.hashCode ^ // 추가된 부분: 가게 이름 필드 해시
-    menuName.hashCode ^
-    price.hashCode ^
-    calories.hashCode ^
-    carbohydrate.hashCode ^
-    protein.hashCode ^
-    fat.hashCode ^
-    sodium.hashCode ^
-    sugar.hashCode;
+    return id.hashCode ^
+        storeName.hashCode ^ // 추가된 부분: 가게 이름 필드 해시
+        menuName.hashCode ^
+        price.hashCode ^
+        calories.hashCode ^
+        carbohydrate.hashCode ^
+        protein.hashCode ^
+        fat.hashCode ^
+        sodium.hashCode ^
+        sugar.hashCode;
   }
 
   factory StoreMenu.fromJson(String id, Map<String, dynamic>? json) {
@@ -63,7 +67,7 @@ class StoreMenu {
       return value is double
           ? value
           : double.tryParse(value.toString()) ??
-          (throw FormatException("$key 값을 double로 변환할 수 없습니다."));
+              (throw FormatException("$key 값을 double로 변환할 수 없습니다."));
     }
 
     int getIntValue(String key) {
@@ -72,15 +76,11 @@ class StoreMenu {
       return value is int
           ? value
           : int.tryParse(value.toString()) ??
-          (throw FormatException("$key 값을 int로 변환할 수 없습니다."));
+              (throw FormatException("$key 값을 int로 변환할 수 없습니다."));
     }
 
-    final storeName = json["storeName"]; // 변경된 부분: 가게 이름 파싱
-    if (storeName == null) {
-      throw FormatException("storeName 값이 null이거나 존재하지 않습니다.");
-    }
-
-    final menuName = id;
+    final storeName = json["storeName"];
+    final menuName = json["menuName"];
     final price = getIntValue("price"); // 여기에서 int 값으로 처리
     final calories = getDoubleValue("calories");
     final carbohydrate = getDoubleValue("carbohydrate");
@@ -92,7 +92,8 @@ class StoreMenu {
     log("받은 값: $storeName $menuName $price $calories $carbohydrate $protein $fat $sodium $sugar");
 
     return StoreMenu(
-      storeName: storeName, // 변경된 부분: 가게 이름 할당
+      id: id,
+      storeName: storeName,
       menuName: menuName,
       price: price,
       calories: calories,
