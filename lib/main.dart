@@ -1,4 +1,5 @@
 import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/providers/shopping_cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -20,40 +21,41 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => HealthDataProvider(),
-    child:
-    MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true, //false로 수정시 material2
-        fontFamily: "Pretendard",
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.white,
-          brightness: Brightness.light,
-          surface: Colors.white,
-        ),
-      ),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => HealthDataProvider()),
+          ChangeNotifierProvider(create: (context) => ShoppingCartProvider())
+        ],
+        child: MaterialApp(
+          theme: ThemeData(
+            useMaterial3: true, //false로 수정시 material2
+            fontFamily: "Pretendard",
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.white,
+              brightness: Brightness.light,
+              surface: Colors.white,
+            ),
+          ),
 
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        fontFamily: "Pretendard",
-        colorScheme: const ColorScheme.dark(
-          primary: Colors.white,
-          surface: Colors.black,
-        ),
-      ),
-      themeMode: ThemeMode.system, //사용자 기기의 설정에 따른 다크 모드
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('ko', 'KR'),
-      ],
-      home: const MyHomePage(),
-    )
-    );
-
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            fontFamily: "Pretendard",
+            colorScheme: const ColorScheme.dark(
+              primary: Colors.white,
+              surface: Colors.black,
+            ),
+          ),
+          themeMode: ThemeMode.system,
+          //사용자 기기의 설정에 따른 다크 모드
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('ko', 'KR'),
+          ],
+          home: const MyHomePage(),
+        ));
   }
 }
