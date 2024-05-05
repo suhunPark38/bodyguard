@@ -46,8 +46,11 @@ dependencies:
   carousel_slider: ^4.2.1
   uuid: ^3.0.4
 
+  #플러터 지역 설정
   flutter_localizations:
     sdk: flutter
+
+
 
 
 
@@ -56,6 +59,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   table_calendar: ^3.0.9
   intl: ^0.18.1
+
+  # 전역 상태 관리 provider 사용
+  flutter_provider: ^2.1.0
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

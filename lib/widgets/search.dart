@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:bodyguard/database/config_database.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class Value2 {
 
@@ -226,7 +228,7 @@ class _CustomSearchbar extends State<CustomSearchbar> {
                Row(
                  children: [
                    ElevatedButton(
-                     onPressed: () => _showDialog(context, snapshot.data![index]),
+                     onPressed: () => _showDietInputDialog(context, snapshot.data![index]),
                      child: const Text('선택'),
                    ),
                  ],
@@ -241,7 +243,7 @@ class _CustomSearchbar extends State<CustomSearchbar> {
 
 }
 
-void _showDialog(BuildContext context, Value2 selectedData){
+void _showDietInputDialog(BuildContext context, Value2 selectedData){
   showDialog(
     context: context,
     builder: (BuildContext builder) {
@@ -256,6 +258,7 @@ void _showDialog(BuildContext context, Value2 selectedData){
       int classification = 0;
       DateTime eatingTime = DateTime.now();
       ConfigDatabase _configDatabase = ConfigDatabase();
+      DietProvider dietProvider = context.watch<DietProvider>();
 
       return AlertDialog(
         title: const Text('값을 입력하세요'),
@@ -362,7 +365,7 @@ void _showDialog(BuildContext context, Value2 selectedData){
         actions: <Widget>[
           ElevatedButton(
             onPressed: () {
-              // 두 번 쓰는 이유는 다이어로그 && 검색 결과 창 같이 닫으려고. 나중에 다른 방법 찾아봄. searchValue에서 쓰면 dialog가 안 닫힘.
+              // 두 번 쓰는 이유는 다이어로그 && 검색 결과 창 같이 닫으려고.
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
@@ -370,11 +373,12 @@ void _showDialog(BuildContext context, Value2 selectedData){
           ),
           ElevatedButton(
             onPressed: () {
-              _configDatabase.insertDiet(DietCompanion(
+
+              dietProvider.notifyInsertDiet(DietCompanion(
                 eatingTime: Value(eatingTime),
                 menuName: Value(menuName),
                 amount: Value(amount),
-                classfication: Value(classification),
+                classification: Value(classification),
                 calories: Value((double.tryParse(calories) ?? 0.0) * amount),
                 carbohydrate: Value((double.tryParse(carbohydrates) ?? 0.0) * amount),
                 protein: Value((double.tryParse(protein) ?? 0.0)* amount),
@@ -383,7 +387,8 @@ void _showDialog(BuildContext context, Value2 selectedData){
                 sugar: Value((double.tryParse(sugar) ?? 0.0)* amount),
               ));
 
-              // 두 번 쓰는 이유는 다이어로그 && 검색 결과 창 같이 닫으려고. 나중에 다른 방법 찾아봄. searchValue에서 쓰면 dialog가 안 닫힘.
+
+              // 두 번 쓰는 이유는 다이어로그 && 검색 결과 창 같이 닫으려고.
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },

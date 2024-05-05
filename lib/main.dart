@@ -1,7 +1,9 @@
+import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'screens/home_page/my_home_page.dart';
 
@@ -10,7 +12,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );// Firebase 초기화
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+  initializeDateFormatting().then((_) => runApp(
+      const MyApp()
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,18 +22,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DietProvider()),
 
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
       ],
+      child: const MaterialApp(
 
-      supportedLocales: [
-        const Locale('ko', 'KR'),
-      ],
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
 
-      home: MyHomePage(),
+        supportedLocales: [
+           Locale('ko', 'KR'),
+        ],
+
+        home: MyHomePage(),
+      ),
     );
 
 

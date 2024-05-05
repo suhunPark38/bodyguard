@@ -1,18 +1,32 @@
 import 'package:bodyguard/database/config_database.dart';
+import 'package:bodyguard/screens/enter_calories_page/widgets/diet_info_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../providers/diet_provider.dart';
 import '../../../utils/diet_util.dart';
 import '../../../utils/calculate_util.dart';
 
-class DietsCard extends StatelessWidget {
+class DietsCard extends StatefulWidget {
   final String title;
-  final List<DietData> diets;
 
-  const DietsCard({Key? key, required this.title, required this.diets})
-      : super(key: key);
+  const DietsCard({Key? key, required this.title}) : super(key: key);
+
+  @override
+  _DietsCardState createState() => _DietsCardState();
+}
+
+class _DietsCardState extends State<DietsCard> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    DietProvider dietProvider = context.watch<DietProvider>();
+
     return Expanded(
       child: Card(
         color: Colors.white,
@@ -27,7 +41,7 @@ class DietsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  title,
+                  widget.title,
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -38,9 +52,9 @@ class DietsCard extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.25,
                   child: ListView.builder(
                     shrinkWrap: true, // ListView 높이 제한
-                    itemCount: diets.length,
+                    itemCount: dietProvider.diets.length,
                     itemBuilder: (context, index) {
-                      final diet = diets[index];
+                      final diet = dietProvider.diets[index];
                       return Column(
                         children: [
                           ListTile(
@@ -52,8 +66,10 @@ class DietsCard extends StatelessWidget {
                             tileColor: Colors.white60,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
-                            onTap: () => DietUtil()
-                                .showDietDetails(context, diet), // Replace with your logic
+                            onTap: () => showDialog(
+                              context: context,
+                              builder: (context) => DietInfoDialog(parentContext: context, diet: diet)
+                            ),
                           ),
                           const Divider(), // 각 메뉴 구분선 추가
                         ],
@@ -64,7 +80,7 @@ class DietsCard extends StatelessWidget {
                 Positioned(
                   bottom: 5,
                   child: Text(
-                    '총 칼로리: ${CalculateUtil().getSumOfLists(diets.map((diet) => diet.calories).toList())}kcal',
+                    '총 칼로리: ${CalculateUtil().getSumOfLists(dietProvider.diets.map((diet) => diet.calories).toList())}kcal',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
