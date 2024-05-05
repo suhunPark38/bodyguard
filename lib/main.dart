@@ -1,5 +1,5 @@
 import 'package:bodyguard/providers/health_data_provider.dart';
-import 'package:bodyguard/providers/shopping_cart_provider.dart';
+import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => HealthDataProvider()),
-          ChangeNotifierProvider(create: (context) => ShoppingCartProvider())
+          ChangeNotifierProvider(create: (context) => ShoppingProvider())
         ],
         child: MaterialApp(
           theme: ThemeData(

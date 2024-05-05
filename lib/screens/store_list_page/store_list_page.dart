@@ -1,8 +1,9 @@
 import 'package:bodyguard/model/store_menu.dart';
+import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bodyguard/model/store_model.dart';
+import 'package:provider/provider.dart';
 import '../../services/store_service.dart';
-import '../shopping_page/shopping_page.dart';
 
 class StoreListPage extends StatefulWidget {
   final List<StoreMenu>? selectedMenus;
@@ -124,9 +125,11 @@ class _StoreListPageState extends State<StoreListPage> {
                           onChanged: (newValue) {
                             setState(() {
                               if (newValue!) {
-                                _selectedMenus.add(menu);
+                                Provider.of<ShoppingProvider>(context, listen: false).addMenu(store.id,menu, 1);
+                                //_selectedMenus.add(menu);
                               } else {
-                                _selectedMenus.remove(menu);
+                                Provider.of<ShoppingProvider>(context, listen: false).removeMenu(menu);
+                                //_selectedMenus.remove(menu);
                               }
                             });
                           },

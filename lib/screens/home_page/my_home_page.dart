@@ -20,7 +20,7 @@ class MyHomePage extends StatelessWidget {
             const SearchPage(),
             FavoritePage(),
             HomePage(),
-            const ShoppingPage(),
+            ShoppingPage(),
             IdentityPage(),
           ],
         ),
