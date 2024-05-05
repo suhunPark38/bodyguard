@@ -17,52 +17,48 @@ class MyHomePage extends StatelessWidget {
         appBar: null,
         body: TabBarView(
           children: [
-            SearchPage(),
+            const SearchPage(),
             FavoritePage(),
             HomePage(),
-            ShoppingPage(),
+            const ShoppingPage(),
             IdentityPage(),
           ],
         ),
         extendBodyBehindAppBar: true,
-        bottomNavigationBar: Container(
-          child: Container(
-            child: const TabBar(
-              tabs: [
+        bottomNavigationBar: const TabBar(
+          tabs: [
 
-                Tab(
-                  icon: Icon(
-                    Icons.search,
-                  ),
-                  text: '검색',
-                ),
-                Tab(
-                  icon: Icon(
-                    Icons.favorite,
-                  ),
-                  text: '찜',
-                ),
-                Tab(
-                  icon: Icon(
-                    Icons.home,
-                  ),
-                  text: '홈',
-                ),
-                Tab(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                  ),
-                  text: '쇼핑',
-                ),
-                Tab(
-                  icon: Icon(
-                    Icons.perm_identity_rounded,
-                  ),
-                  text: 'my',
-                ),
-              ],
+            Tab(
+              icon: Icon(
+                Icons.search,
+              ),
+              text: '검색',
             ),
-          ),
+            Tab(
+              icon: Icon(
+                Icons.favorite,
+              ),
+              text: '찜',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.home,
+              ),
+              text: '홈',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.shopping_cart,
+              ),
+              text: '쇼핑',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.perm_identity_rounded,
+              ),
+              text: 'my',
+            ),
+          ],
         ),
       ),
     );

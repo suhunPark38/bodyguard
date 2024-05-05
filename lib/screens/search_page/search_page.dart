@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/search_keyword_service.dart';
-import '../../database/search_history_database_helper.dart';
+import '../../database/search_history_database.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,7 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   List<String> _recentSearches = [];
   List<String> _popularSearches = [];
-  final SearchHistoryDatabaseHelper _databaseHelper = SearchHistoryDatabaseHelper();
+  final SearchHistoryDatabase _database = SearchHistoryDatabase();
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _loadSearchHistory() async {
-    List<String> searches = await _databaseHelper.getSearchHistory();
+    List<String> searches = await _database.getSearchHistory();
     setState(() {
       _recentSearches = searches;
 
@@ -68,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
         _recentSearches.add(search);
 
       });
-      await _databaseHelper.insertSearch(search);
+      await _database.insertSearch(search);
     }
   }
 
@@ -76,14 +76,14 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _recentSearches.remove(search);
     });
-    await _databaseHelper.deleteSearch(search);
+    await _database.deleteSearch(search);
   }
 
   void _clearAllRecentSearches() async {
     setState(() {
       _recentSearches.clear();
     });
-    await _databaseHelper.clearAllSearches();
+    await _database.clearAllSearches();
   }
 
   void _showCategoryDialog(BuildContext context) {

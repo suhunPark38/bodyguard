@@ -14,6 +14,8 @@ class HomePage extends StatelessWidget {
   final List<String> _list = ["card1", "card2", "card3"];
   final DateTime now = DateTime.now();
 
+  HomePage({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,17 @@ class HomePage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const SearchPage(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ShoppingPage(),
                 ),
               );
             },
@@ -70,7 +83,7 @@ class HomePage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Padding(
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -202,9 +215,10 @@ class HomePage extends StatelessWidget {
                                             Icon(Icons.water_drop_sharp)
                                           ]),
                                       const SizedBox(height: 25),
-                                      const Text(
-                                        "1L",
-                                        style: TextStyle(
+                                      Text(
+                                        "${provider
+                                            .waterIntake}ml",
+                                        style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                         overflow: TextOverflow.fade,
@@ -220,7 +234,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      MyEnterCaloriesPage(),
+                                                      const MyEnterCaloriesPage(),
                                                 ),
                                               );
                                             },
@@ -253,9 +267,9 @@ class HomePage extends StatelessWidget {
                                             Icon(Icons.monitor_weight)
                                           ]),
                                       const SizedBox(height: 25),
-                                      const Text(
-                                        "100kg",
-                                        style: TextStyle(
+                                      Text(
+                                        "${provider.bodyWeight}kg",
+                                        style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                         overflow: TextOverflow.fade,
@@ -271,7 +285,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      BodyPage(),
+                                                      const BodyPage(),
                                                 ),
                                               );
                                             },
@@ -304,9 +318,10 @@ class HomePage extends StatelessWidget {
                                             Icon(Icons.accessibility_new)
                                           ]),
                                       const SizedBox(height: 25),
-                                      const Text(
-                                        "1520 걸음",
-                                        style: TextStyle(
+                                      Text(
+                                        "${provider
+                                            .stepCount} 걸음",
+                                        style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                         overflow: TextOverflow.fade,
@@ -322,7 +337,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      ActivityPage(),
+                                                      const ActivityPage(),
                                                 ),
                                               );
                                             },

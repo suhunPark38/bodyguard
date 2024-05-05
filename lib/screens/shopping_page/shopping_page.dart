@@ -23,7 +23,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   List<StoreMenu>? _selectedMenus;
   int? _totalPrice;
   final Map<String, List<StoreMenu>> _storeMenuMap = {};
-
+  int _currentTabIndex = 0;
   @override
   void initState() {
     super.initState();
@@ -121,8 +121,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
               child: Text("초기화하기"),
             ),
           ],
-          bottom: const TabBar(
-            tabs: [
+          bottom: TabBar(
+            onTap: (index) {
+              setState(() {
+                _currentTabIndex = index;
+              });
+            },
+            tabs: const [
               Tab(text: '결제하기'),
               Tab(text: '결제 내역'),
             ],
@@ -166,30 +171,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(children: [
-                                                IconButton(
-                                                  icon: const Icon(Icons.info,
-                                                      size: 15),
-                                                  onPressed: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return AlertDialog(
-                                                          title: Text(
-                                                              '${menu.menuName} - 영양성분'),
-                                                          content: Text(
-                                                              '칼로리: ${menu.calories},'
-                                                              ' 탄수화물: ${menu.carbohydrate},'
-                                                              ' 지방: ${menu.fat},'
-                                                              ' 단백질: ${menu.protein},'
-                                                              ' 나트륨: ${menu.sodium},'
-                                                              ' 당: ${menu.sugar}'),
-                                                        );
-                                                      },
-                                                    );
-                                                  },
-                                                ),
+                                              Row(
+                                                  children: [
+
                                                 Text(
                                                   menu.menuName,
                                                   style: const TextStyle(
@@ -197,17 +181,40 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                                   softWrap: true,
                                                   textAlign: TextAlign.left,
                                                 ),
+                                                    IconButton(
+                                                      icon: const Icon(Icons.info,
+                                                          size: 15),
+                                                      onPressed: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                          context) {
+                                                            return AlertDialog(
+                                                              title: Text(
+                                                                  '${menu.menuName} - 영양성분'),
+                                                              content: Text(
+                                                                  '칼로리: ${menu.calories},'
+                                                                      ' 탄수화물: ${menu.carbohydrate},'
+                                                                      ' 지방: ${menu.fat},'
+                                                                      ' 단백질: ${menu.protein},'
+                                                                      ' 나트륨: ${menu.sodium},'
+                                                                      ' 당: ${menu.sugar}'),
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                    ),
                                               ]),
                                               Text(
                                                 '개당 ${menu.price}원',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 12,
                                                   color: Colors.grey,
                                                 ),
                                               ),
                                               Text(
                                                 '${_menuQuantities[menu]! * menu.price}원',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 15,
                                                 ),
@@ -274,6 +281,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               ],
                             ),
                           const Spacer(),
+                          const Divider(
+                            thickness: 1,
+                            color: Colors.grey,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -366,11 +377,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               ),
                             ],
                           ),
-                          const Divider(
-                            thickness: 1,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -390,31 +396,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
-                          SizedBox(
-                            width: double.maxFinite,
-                            height: 40,
-                            child: CustomButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (_deliveryType == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content:
-                                                Text('배달 또는 포장을 선택해주세요.')));
-                                  } else if (_selectedMenus?.isEmpty ?? true) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text('음식이 텅 비었어요.')));
-                                  } else {
-                                    _completePayment();
-                                  }
-                                });
-                              },
-                              text: Text('$_totalPrice원 결제하기'),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
+
                         ],
                       ),
                     ),
@@ -461,6 +443,32 @@ class _ShoppingPageState extends State<ShoppingPage> {
             ],
           ),
         ),
+        persistentFooterButtons: [
+          if (_currentTabIndex == 0)
+          SizedBox(
+            width: double.maxFinite,
+            height: 40,
+            child: CustomButton(
+              onPressed: () {
+                setState(() {
+                  if (_deliveryType == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                            Text('배달 또는 포장을 선택해주세요.')));
+                  } else if (_selectedMenus?.isEmpty ?? true) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('음식이 텅 비었어요.')));
+                  } else {
+                    _completePayment();
+                  }
+                });
+              },
+              text: Text('$_totalPrice원 결제하기'),
+            ),
+          ),
+          const SizedBox(height: 5),],
       ),
     );
   }
