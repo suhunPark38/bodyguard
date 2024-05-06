@@ -16,6 +16,8 @@ class ShoppingProvider extends ChangeNotifier {
   final Map<String, List<StoreMenu>> _storeMenuMap = {};
   final Map<StoreMenu, int> _menuQuantities = {};
 
+  List<Payment> _cachedPayments = [];
+
   List<StoreMenu> get selectedMenus => _selectedMenus;
 
   String? get deliveryType => _deliveryType;
@@ -99,20 +101,33 @@ class ShoppingProvider extends ChangeNotifier {
 
 
 
-  Future<List<Payment>> fetchPayments() async {
-    try {
-      List<Payment> payments = await PaymentService().getPayments();
-      return payments;
-    } catch (e) {
-      print('결제 내역을 가져오는 중 오류가 발생했습니다: $e');
-      return [];
+  Future<List<Payment>> fetchPayments({bool forceRefresh = false}) async {
+    if (_cachedPayments.isEmpty || forceRefresh) {
+      try {
+        List<Payment> payments = await PaymentService().getPayments();
+        _cachedPayments = payments;
+        return payments;
+      } catch (e) {
+        print('결제 내역을 가져오는 중 오류가 발생했습니다: $e');
+        return [];
+      }
+    } else {
+      return _cachedPayments;
     }
   }
+  void refreshPayments() {
+    fetchPayments(forceRefresh: true);
+  }
+
 
   void addMenu(String storeId, StoreMenu menu, int quantity) {
     _selectedMenus.add(menu);
+    _menuQuantities[menu] = quantity; // 해당 메뉴의 수량 설정
+    _storeMenuMap
+        .putIfAbsent(menu.storeName, () => [])
+        .add(menu); // 스토어 메뉴 맵에 추가
     ShoppingDatabase.instance.insertMenu(storeId, menu.id, quantity);
-    notifyListeners();
+    calculateTotalPrice();
   }
 
   void removeMenu(StoreMenu menu) {

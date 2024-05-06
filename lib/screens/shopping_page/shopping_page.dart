@@ -3,10 +3,10 @@ import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../model/payment.dart';
-import '../../model/store_menu.dart';
 import '../../map.dart';
 
 import '../../widgets/custom_button.dart';
+import '../../widgets/nutrient_info_button.dart';
 
 class ShoppingPage extends StatelessWidget {
   const ShoppingPage({super.key});
@@ -85,30 +85,7 @@ class ShoppingPage extends StatelessWidget {
                                                       softWrap: true,
                                                       textAlign: TextAlign.left,
                                                     ),
-                                                    IconButton(
-                                                      icon: const Icon(
-                                                          Icons.info,
-                                                          size: 15),
-                                                      onPressed: () {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  '${menu.menuName} - 영양성분'),
-                                                              content: Text(
-                                                                  '칼로리: ${menu.calories},'
-                                                                  ' 탄수화물: ${menu.carbohydrate},'
-                                                                  ' 지방: ${menu.fat},'
-                                                                  ' 단백질: ${menu.protein},'
-                                                                  ' 나트륨: ${menu.sodium},'
-                                                                  ' 당: ${menu.sugar}'),
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                    ),
+                                                    NutrientInfoButton(size: 15, menu: menu),
                                                   ]),
                                                   Text(
                                                     '개당 ${menu.price}원',
@@ -240,38 +217,13 @@ class ShoppingPage extends StatelessWidget {
                                     height: 20,
                                     child: CustomButton(
                                       onPressed: () async {
-                                        final dynamic returnValue =
                                             await Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => StoreListPage(
-                                                selectedMenus:
-                                                    provider.selectedMenus),
+                                            builder: (context) => StoreListPage(),
                                           ),
                                         );
 
-                                        if (returnValue != null) {
-                                          provider
-                                              .setSelectedMenus(returnValue);
-                                          final List<StoreMenu> newMenus =
-                                              returnValue;
-
-                                          // 새로운 메뉴로 업데이트
-                                          provider.setSelectedMenus(newMenus);
-
-                                          // _storeMenuMap 업데이트
-                                          provider.storeMenuMap.clear();
-                                          for (var menu
-                                              in provider.selectedMenus) {
-                                            provider.menuQuantities[menu] = 1;
-                                            provider.storeMenuMap
-                                                .putIfAbsent(
-                                                    menu.storeName, () => [])
-                                                .add(menu);
-                                          }
-
-                                          provider.calculateTotalPrice();
-                                        }
                                       },
                                       text: const Text(
                                         '메뉴 담기',
@@ -361,7 +313,7 @@ class ShoppingPage extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('음식이 텅 비었어요.')));
                       } else {
-                        provider.completePayment();
+                        provider.refreshPayments();
                         provider.handleReset(); //결제를 완료 후 장바구니 데이터 클리어
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('결제를 성공했습니다.')));

@@ -1,3 +1,4 @@
+import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -118,7 +119,7 @@ class HomePage extends StatelessWidget {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                      ShoppingPage(),
+                                                      StoreListPage(),
                                                     ),
                                                   );
                                                 },

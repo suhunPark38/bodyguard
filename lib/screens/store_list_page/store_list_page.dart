@@ -4,80 +4,73 @@ import 'package:flutter/material.dart';
 import 'package:bodyguard/model/store_model.dart';
 import 'package:provider/provider.dart';
 import '../../services/store_service.dart';
+import '../../widgets/nutrient_info_button.dart';
 
-class StoreListPage extends StatefulWidget {
-  final List<StoreMenu>? selectedMenus;
+class StoreListPage extends StatelessWidget {
 
-  const StoreListPage({Key? key, required this.selectedMenus})
-      : super(key: key);
-
-  @override
-  _StoreListPageState createState() => _StoreListPageState();
-}
-
-class _StoreListPageState extends State<StoreListPage> {
-  List<StoreMenu> _selectedMenus = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedMenus = widget.selectedMenus ?? [];
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('가게 목록'),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context,_selectedMenus);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-      ),
-      body: StreamBuilder<List<Store>>(
-        stream: StoreService().getStores(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+    return Builder(builder: (BuildContext context)
+    {
+      return Consumer<ShoppingProvider>(
+          builder: (context, provider, child) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('가게 목록'),
+                centerTitle: true,
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
 
-          List<Store> stores = snapshot.data!;
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                ),
+              ),
+              body: StreamBuilder<List<Store>>(
+                stream: StoreService().getStores(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-          return ListView.builder(
-            itemCount: stores.length,
-            itemBuilder: (context, index) {
-              Store store = stores[index];
-              return ListTile(
-                title: Text(
-                    "가게 이름: ${store.storeName}, 가게 소개: ${store.subscript}"),
-                onTap: () {
-                  _showMenuDialog(context, store);
+                  List<Store> stores = snapshot.data!;
+
+                  return ListView.builder(
+                    itemCount: stores.length,
+                    itemBuilder: (context, index) {
+                      Store store = stores[index];
+                      return ListTile(
+                        title: Text(
+                            "가게 이름: ${store.storeName}, 가게 소개: ${store
+                                .subscript}"),
+                        onTap: () {
+                          _showMenuDialog(context, store);
+                        },
+                      );
+                    },
+                  );
                 },
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(context, _selectedMenus);
-        },
-        child: const Icon(Icons.shopping_cart),
-      ),
-    );
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Icon(Icons.shopping_cart),
+              ),
+            );
+          });
+    });
   }
 
   void _showMenuDialog(BuildContext context, Store store) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
+        return Consumer<ShoppingProvider>(
+          builder: (context, provider, child) {
             return AlertDialog(
               title: Text('${store.storeName} 메뉴'),
               content: SizedBox(
@@ -95,43 +88,21 @@ class _StoreListPageState extends State<StoreListPage> {
                       itemCount: menuList.length,
                       itemBuilder: (context, index) {
                         StoreMenu menu = menuList[index];
-                        bool isSelected = _selectedMenus.contains(menu);
+                        bool isSelected = provider.selectedMenus.contains(menu);
                         return CheckboxListTile(
-                          secondary:IconButton(
-                            icon: const Icon(Icons.info),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder:
-                                    (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                        '${menu.menuName} - 영양성분'),
-                                    content: Text(
-                                        '칼로리: ${menu.calories},'
-                                            ' 탄수화물: ${menu.carbohydrate},'
-                                            ' 지방: ${menu.fat},'
-                                            ' 단백질: ${menu.protein},'
-                                            ' 나트륨: ${menu.sodium},'
-                                            ' 당: ${menu.sugar}'),
-                                  );
-                                },
-                              );
-                            },
-                          ),
+                          secondary: NutrientInfoButton(size: 20, menu: menu,),
                           title: Text(menu.menuName),
                           subtitle: Text('가격: ${menu.price}'),
                           value: isSelected,
                           onChanged: (newValue) {
-                            setState(() {
                               if (newValue!) {
-                                Provider.of<ShoppingProvider>(context, listen: false).addMenu(store.id,menu, 1);
-                                //_selectedMenus.add(menu);
+                                Provider.of<ShoppingProvider>(
+                                    context, listen: false).addMenu(
+                                    store.id, menu, 1);
                               } else {
-                                Provider.of<ShoppingProvider>(context, listen: false).removeMenu(menu);
-                                //_selectedMenus.remove(menu);
+                                Provider.of<ShoppingProvider>(
+                                    context, listen: false).removeMenu(menu);
                               }
-                            });
                           },
                         );
                       },
