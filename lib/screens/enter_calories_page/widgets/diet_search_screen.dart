@@ -8,7 +8,6 @@ class DietSearchScreen extends StatefulWidget {
 }
 
 class _DietSearchScreenState extends State<DietSearchScreen> {
-  // ... (CustomSearchbar 위젯 코드 동일하게 유지)
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/widgets/calorie_info.dart';
 import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import '../../widgets/pie_chart.dart'; // PieChart 클래스를 포함한 파일
 
 
 class HomePage extends StatefulWidget {
+
   @override
   _HomePageState createState() => _HomePageState();
 }

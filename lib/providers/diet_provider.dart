@@ -26,7 +26,6 @@ class DietProvider with ChangeNotifier {
 
   DietProvider(){
     _updateDietsList(_eatingTime);
-    notifyListeners();
   }
 
 
@@ -46,25 +45,21 @@ class DietProvider with ChangeNotifier {
   void notifySelectDiets(DateTime eatingTime) async {
     _eatingTime = eatingTime;
     _updateDietsList(_eatingTime);
-    notifyListeners();
   }
 
   void notifyInsertDiet(DietCompanion dietCompanion) {
     configDatabase.insertDiet(dietCompanion);
     _updateDietsList(_eatingTime);
-    notifyListeners();
   }
 
   void notifyDeleteDiet(int dietId) {
     configDatabase.deleteDiet(dietId);
     _updateDietsList(_eatingTime);
-    notifyListeners();
   }
 
   void notifyUpdateDiet(DietCompanion dietCompanion) {
     configDatabase.updateDiet(dietCompanion, dietCompanion.dietId.value);
     _updateDietsList(_eatingTime);
-    notifyListeners();
   }
 
 
@@ -92,6 +87,8 @@ class DietProvider with ChangeNotifier {
       sugar: CalculateUtil()
           .getSumOfLists(_diets.map((diet) => diet.sugar).toList()),
     );
+
+    notifyListeners();
 
   }
 
