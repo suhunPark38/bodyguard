@@ -15,8 +15,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Firebase 초기화
   initializeDateFormatting().then((_) => runApp(const MyApp()));
-  FlutterLocalNotification.init();
-  FlutterLocalNotification.requestNotificationPermission();
+  FlutterLocalNotification.init(); // 로컬 알림 초기화
+  FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
 }
 
 class MyApp extends StatelessWidget {
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           themeMode: ThemeMode.system,
-          //사용자 기기의 설정에 따른 다크 모드
+          //사용자 기기의 설정에 따른 다크 모드 삭제예정
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,

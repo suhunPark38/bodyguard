@@ -323,6 +323,7 @@ class ShoppingPage extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('음식이 텅 비었어요.')));
                           } else {
+                            provider.completePayment();
                             provider.refreshPayments();
                             provider.handleReset(); //결제를 완료 후 장바구니 데이터 클리어
                             ScaffoldMessenger.of(context).showSnackBar(
