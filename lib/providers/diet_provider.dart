@@ -24,6 +24,11 @@ class DietProvider with ChangeNotifier {
   List<DietData> get dinner => _dinner;
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
 
+  DietProvider(){
+    _updateDietsList(_eatingTime);
+    notifyListeners();
+  }
+
 
  @override
  void dispose() {

@@ -1,6 +1,7 @@
 import 'package:bodyguard/database/config_database.dart';
 import 'package:bodyguard/screens/enter_calories_page/widgets/diet_search_screen.dart';
 import 'package:bodyguard/screens/enter_calories_page/widgets/diets_card.dart';
+import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -45,11 +46,8 @@ class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    DietProvider dietProvider = context.watch<DietProvider>();
 
-    return ChangeNotifierProvider(
-      create: (context) => dietProvider,
-      child: Scaffold(
+    return Consumer<DietProvider>(builder: (context, provider, child) => Scaffold(
         appBar: AppBar(
           title: const Text(
             '칼로리 입력',
@@ -150,80 +148,19 @@ class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       DietsCard(
-                        title: "아침",
+                        classification: 0,
                       ),
                       DietsCard(
-                        title: "점심",
+                        classification: 1,
                       ),
                       DietsCard(
-                        title: "저녁",
+                        classification: 2,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  height: 300,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: Card(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '먹은 칼로리',
-                                  style: TextStyle(
-                                      fontSize: 20, fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 30),
-                                Text(
-                                  '탄수화물 ${Provider.of<DietProvider>(context).totalNutritionalInfo.calories.toStringAsFixed(2)}g',
-                                  style: const TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  '단백질 ${Provider.of<DietProvider>(context).totalNutritionalInfo.protein.toStringAsFixed(2)}g',
-                                  style: const TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  '지방 ${Provider.of<DietProvider>(context).totalNutritionalInfo.fat.toStringAsFixed(2)}g',
-                                  style: const TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  '나트륨 ${Provider.of<DietProvider>(context).totalNutritionalInfo.sodium.toStringAsFixed(2)}mg',
-                                  style: const TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  '당 ${Provider.of<DietProvider>(context).totalNutritionalInfo.sugar.toStringAsFixed(2)}g',
-                                  style: const TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 20),
-                                Text(
-                                  '총 ${Provider.of<DietProvider>(context).totalNutritionalInfo.calories.toStringAsFixed(2)} kcal',
-                                  style: const TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                const NutritionInfo(),
               ],
             ),
           ),

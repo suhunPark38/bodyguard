@@ -38,6 +38,7 @@ class _DietEditDialogState extends State<DietEditDialog> {
     protein = widget.diet.protein;
     fat = widget.diet.fat;
     sugar = widget.diet.sugar;
+    amount = widget.diet.amount;
     sodium = widget.diet.sodium;
     eatingTime = widget.diet.eatingTime;
   }

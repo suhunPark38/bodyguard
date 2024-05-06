@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   double consumedSugar = 0;
   var inputText; // 예시용 당 섭취량
 
+
   @override
   Widget build(BuildContext context) {
     //double bodyfat=13;
