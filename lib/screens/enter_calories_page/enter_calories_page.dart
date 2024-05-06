@@ -221,59 +221,6 @@ class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                           ),
                         ),
                       ),
-                      /*Expanded(
-                      child: Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                '마신 물',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 30),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  if (0 >= 6)
-                                    const Icon(
-                                      Icons.local_drink,
-                                      size: 100, // 큰 아이콘 크기
-                                      color: Colors.blue,
-                                    ),
-                                  if (0 >= 6)
-                                    const SizedBox(width: 5), // 물 컵 아이콘 간격 조절
-                                  if (0 < 6)
-                                    ...List.generate(
-                                      (0),
-                                      (index) {
-                                        return const Icon(
-                                          Icons.local_drink,
-                                          size: 20, // 작은 아이콘 크기
-                                          color: Colors.blue,
-                                        );
-                                      },
-                                    ),
-                                ],
-                              ),
-                              const SizedBox(height: 30),
-                              Text(
-                                '총 ${(0 * 200) >= 1000 ? (0 * 200) / 1000 : 0 * 200} ${0 * 200 >= 1000 ? "L" : "ml"}',
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),*/
                     ],
                   ),
                 ),

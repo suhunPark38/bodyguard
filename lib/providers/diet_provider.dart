@@ -47,6 +47,12 @@ class DietProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void notifyUpdateDiet(int dietId, DietCompanion dietCompanion) {
+    configDatabase.updateDiet(dietCompanion, dietId);
+    _updateDietsList();
+    notifyListeners();
+  }
+
 
 
 

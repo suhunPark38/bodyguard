@@ -61,7 +61,7 @@ class ConfigDatabase extends _$ConfigDatabase {
   /// Diet 테이블에서 EatingTime으로 해당 날짜의 Diet 조회하는 메소드
   Future<List<DietData>> getDietByEatingTime(DateTime eatingTime) async {
     final DateTime startDate = DateTime(eatingTime.year, eatingTime.month, eatingTime.day);
-    final DateTime endDate = startDate.add(Duration(days: 1));
+    final DateTime endDate = startDate.add(Duration(hours: 23, minutes: 59)); // 조회 시간을 00시 00분 ~ 23시 59분까지로 설정
 
     return await (select(diet)..where((tbl) => tbl.eatingTime.isBetweenValues(startDate, endDate))).get();
   }

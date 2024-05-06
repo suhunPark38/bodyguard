@@ -1,3 +1,4 @@
+import 'package:bodyguard/screens/enter_calories_page/widgets/diet_edit_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -23,7 +24,7 @@ class DietInfoDialog extends StatelessWidget {
                 icon: const Icon(Icons.edit),
                 onPressed: () => showDialog(
                     context: parentContext,
-                    builder: (context) => DeleteDietDialog(context: context, dietData: diet)
+                    builder: (context) => DietEditDialog(diet: diet)
                 ),
 
               ),
