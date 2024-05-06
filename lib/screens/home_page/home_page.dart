@@ -1,4 +1,3 @@
-import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/widgets/calorie_info.dart';
 import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:flutter/material.dart';
