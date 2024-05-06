@@ -1,3 +1,4 @@
+import 'package:bodyguard/database/config_database.dart';
 import 'package:bodyguard/screens/enter_calories_page/widgets/diet_info_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +53,7 @@ class _DietsCardState extends State<DietsCard> {
                     shrinkWrap: true, // ListView 높이 제한
                     itemCount: dietProvider.diets.length,
                     itemBuilder: (context, index) {
-                      final diet = dietProvider.diets[index];
+                      DietData diet = dietProvider.diets[index];
                       return Column(
                         children: [
                           ListTile(

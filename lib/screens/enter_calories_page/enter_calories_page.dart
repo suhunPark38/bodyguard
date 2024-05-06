@@ -1,7 +1,7 @@
 import 'package:bodyguard/database/config_database.dart';
+import 'package:bodyguard/screens/enter_calories_page/widgets/diet_search_screen.dart';
 import 'package:bodyguard/screens/enter_calories_page/widgets/diets_card.dart';
 import 'package:flutter/material.dart';
-import 'package:bodyguard/widgets/search.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../home_page/my_home_page.dart';
@@ -41,14 +41,6 @@ class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   Future<void> _setDiets() async {
     DietProvider dietProvider = context.read<DietProvider>();
     dietProvider.updateDiets(_selectedDay);
-  }
-
-  void _showSearchBar() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // 스크롤 가능 여부 설정 (true로 설정)
-      builder: (context) => CustomSearchbar(),
-    );
   }
 
   @override
@@ -293,8 +285,8 @@ class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
           bottom: 20,
           right: 20,
           child: FloatingActionButton(
-            onPressed: () {
-              _showSearchBar();
+            onPressed: () => {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DietSearchScreen()))
             },
             backgroundColor: Colors.blueAccent,
             child: const Icon(Icons.add),
