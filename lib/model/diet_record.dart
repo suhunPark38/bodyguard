@@ -15,4 +15,9 @@ class DietRecord {
     required this.sodium,
     required this.sugar,
   });
+
+  double getTotalAmount(){
+    double totalAmount = carbohydrates + protein + fat;
+    return totalAmount;
+  }
 }

@@ -10,17 +10,12 @@ class DietProvider with ChangeNotifier {
 
   List<DietData> _diets = [];
   List<DietData> _breakfast = [];
-  List<DietData> _lunch = [];
-  List<DietData> _dinner = [];
-  DietRecord _totalNutritionalInfo = DietRecord(
-      calories: 0.0,
-      carbohydrates: 0.0,
-      protein: 0.0,
-      fat: 0.0,
-      sodium: 0.0,
-      sugar: 0.0
-  );
+  List<DietData> _lunch =[];
+  List<DietData> _dinner =[];
+  DietRecord _totalNutritionalInfo = DietRecord(calories: 0, carbohydrates: 0, protein: 0, fat: 0, sodium: 0, sugar: 0);
   DateTime _eatingTime = DateTime.now();
+
+  bool _disposed = false;
 
 
   List<DietData> get diets => _diets;
@@ -29,9 +24,22 @@ class DietProvider with ChangeNotifier {
   List<DietData> get dinner => _dinner;
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
 
+
+ @override
+ void dispose() {
+   _disposed = true;
+   super.dispose();
+ }
+
+  @override
+  void notifyListeners() {
+    if(!_disposed) {
+      super.notifyListeners();
+    }
+  }
+
   void notifySelectDiets(DateTime eatingTime) async {
     _eatingTime = eatingTime;
-    _diets = await configDatabase.getDietByEatingTime(_eatingTime);
     _updateDietsList(_eatingTime);
     notifyListeners();
   }

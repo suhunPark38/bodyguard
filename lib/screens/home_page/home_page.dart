@@ -1,3 +1,5 @@
+import 'package:bodyguard/widgets/calorie_info.dart';
+import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:flutter/material.dart';
 import '../../model/data_color_pair.dart';
 import '../address_change_page/address_change_page.dart';
@@ -14,8 +16,6 @@ import '../shopping_page/shopping_page.dart';
 
 
 import '../../widgets/pie_chart.dart'; // PieChart 클래스를 포함한 파일 import
-import '../../widgets/donut_chart.dart'; // DonutChart 클래스를 포함한 파일 import
-import '../../widgets/nutrition_donut.dart'; // NutritionDonut 클래스를 포함한 파일 import
 
 
 
@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double bodyfat=13;
+    //double bodyfat=13;
     double weight =70.0;
     double Fweight= 80;
     double Lweight =60.0;
@@ -348,84 +348,12 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
 
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-
-                          DonutChart(ratio: consumedCalories / recommendedCalories),
-                          SizedBox(height: 20),
-                          Row(mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '섭취한칼로리: ${consumedCalories.toString()} kcal\n'
-                                    '권장 칼로리 : ${recommendedCalories.toString()} kcal',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(width: 20),
-                              Icon(Icons.add_circle_outline, size: 40),
-                            ],
-                          ),
-
-                        ],
-                      ),
+                      CalorieInfoWidget(),
 
                       SizedBox(height: 20),
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 30,
-                        children: [
-                          NutritionDonut(
-                            label: '탄수화물',
-                            recommendedAmount: recommendedCarbs,
-                            consumedAmount: consumedCarbs,
-                          ),
-                          NutritionDonut(
-                            label: '단백질',
-                            recommendedAmount: recommendedProtein,
-                            consumedAmount: consumedProtein,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Wrap(
-                        spacing: 30,
-                        alignment: WrapAlignment.center,
-                        children: [
-                          NutritionDonut(
-                            label: '지방',
-                            recommendedAmount: recommendedFat,
-                            consumedAmount: consumedFat,
-                          ),
-                          NutritionDonut(
-                            label: '당',
-                            recommendedAmount: recommendedSugar,
-                            consumedAmount: consumedSugar,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      /*Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MyEnterCaloriesPage(),
-                                ),
-                              );
-                            },
-                            child: const Text('칼로리 입력 화면'),
-                          ),
-                          SizedBox(width: 10), // 아이콘과 버튼 사이의 간격 조절
-                           // 아이콘 추가
-                        ],
-                      ),*/
+
+                      NutritionInfo(),
+
                     ],
                   ),
                 ),
@@ -438,141 +366,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     ),
-      /*bottomNavigationBar: IconButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("기록하기"),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "권장 칼로리 입력",
-                        labelText: "권장 칼로리",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        recommendedCalories = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "섭취한 칼로리 입력",
-                        labelText: "섭취한 칼로리",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        consumedCalories = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "권장 탄수화물 입력",
-                        labelText: "권장 탄수화물",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        recommendedCarbs = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "섭취한 탄수화물 입력",
-                        labelText: "섭취한 탄수화물",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        consumedCarbs = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "권장 단백질 입력",
-                        labelText: "권장 단백질",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        recommendedProtein = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "섭취한 단백질 입력",
-                        labelText: "섭취한 단백질",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        consumedProtein = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "권장 지방 입력",
-                        labelText: "권장 지방",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        recommendedFat = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "섭취한 지방 입력",
-                        labelText: "섭취한 지방",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        consumedFat = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "권장 당 입력",
-                        labelText: "권장 당",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        recommendedSugar = double.parse(value);
-                      },
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "섭취한 당 입력",
-                        labelText: "섭취한 당",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        consumedSugar = double.parse(value);
-                      },
-                    ),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("취소"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // 여기서 입력받은 값으로 처리
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("확인"),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        icon: Icon(Icons.edit),
-      ),*/
-
-
     );
   }
 
