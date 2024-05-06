@@ -1,3 +1,4 @@
+import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import '../search_page/search_page.dart';
 import '../shopping_page/shopping_page.dart';
 
 class HomePage extends StatelessWidget {
+
 
   final List<String> _list = ["card1", "card2", "card3"];
   final DateTime now = DateTime.now();
@@ -48,7 +50,10 @@ class HomePage extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.notifications_none),
-            onPressed: () {},
+            onPressed: () {
+
+              FlutterLocalNotification.showNotification();
+            },
           ),
         ],
       ),

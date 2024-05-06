@@ -6,6 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'utils/notification.dart';
 import 'screens/home_page/my_home_page.dart';
 
 void main() async {
@@ -14,6 +15,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Firebase 초기화
   initializeDateFormatting().then((_) => runApp(const MyApp()));
+  FlutterLocalNotification.init();
+  FlutterLocalNotification.requestNotificationPermission();
 }
 
 class MyApp extends StatelessWidget {
