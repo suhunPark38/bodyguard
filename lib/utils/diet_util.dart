@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 
-import 'package:bodyguard/screens/enter_calories_page/widgets/delete_diet_dialog.dart';
+import 'package:bodyguard/screens/enter_calories_page/widgets/diet_delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -69,7 +69,7 @@ class DietUtil {
                       TextButton(
                         onPressed: () => showDialog(
                           context: context,
-                          builder: (context) => DeleteDietDialog(context: context, dietData: diet)
+                          builder: (context) => DietDeleteDialog(context: context, dietData: diet)
                         ),
                         child: const Icon(Icons.edit), // 휴지통 아이콘
                       ),
@@ -133,7 +133,7 @@ class DietUtil {
                   onPressed: () =>
                       showDialog(
                           context: context,
-                          builder: (context) => DeleteDietDialog(context: context, dietData: diet)
+                          builder: (context) => DietDeleteDialog(context: context, dietData: diet)
                       ),
                   child: const Icon(Icons.delete), // 휴지통 아이콘
                 ),

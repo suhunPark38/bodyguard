@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 import '../../../database/config_database.dart';
 import '../../../providers/diet_provider.dart';
 
-class DeleteDietDialog extends StatelessWidget {
+class DietDeleteDialog extends StatelessWidget {
   final BuildContext context;
   final DietData dietData;
 
-  const DeleteDietDialog({
+  const DietDeleteDialog({
     Key? key,
     required this.context,
     required this.dietData,

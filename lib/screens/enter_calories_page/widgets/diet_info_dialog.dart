@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../database/config_database.dart';
-import 'delete_diet_dialog.dart';
+import 'diet_delete_dialog.dart';
 
 class DietInfoDialog extends StatelessWidget {
   final BuildContext parentContext;
@@ -88,7 +88,7 @@ class DietInfoDialog extends StatelessWidget {
           icon: const Icon(Icons.delete),
           onPressed: () => showDialog(
               context: parentContext,
-              builder: (context) => DeleteDietDialog(context: context, dietData: diet)
+              builder: (context) => DietDeleteDialog(context: context, dietData: diet)
           ),
         ),
       ],
