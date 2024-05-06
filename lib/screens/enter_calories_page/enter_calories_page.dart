@@ -104,10 +104,6 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
         leading: IconButton(
           onPressed: ()  {
             Navigator.pop(context);
-            
-            //백버튼 후 프로바이더 함수 실행
-            Provider.of<HealthDataProvider>(context, listen: false).fetchTodayTotalCalories(DateTime.now());
-            Provider.of<HealthDataProvider>(context, listen: false).getMealTime(DateTime.now());
           },
           icon: const Icon(Icons.arrow_back),
         ),
@@ -553,6 +549,10 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                         _setDiets();
 
                         Navigator.of(context).pop();
+
+
+                        //값 입력 후 프로바이더 함수 실행
+                        Provider.of<HealthDataProvider>(context, listen: false).fetchTodayTotalCalories(DateTime.now());
                       },
                       child: const Text('확인'),
                     ),

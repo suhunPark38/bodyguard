@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ShoppingPage(),
+                  builder: (context) => const ShoppingPage(),
                 ),
               );
             },
@@ -188,7 +188,7 @@ class HomePage extends StatelessWidget {
                                               );
                                             },
                                             text: const Text(
-                                              "자세히 보기",
+                                              "확인하기",
                                               style: TextStyle(fontSize: 10),
                                             ),
                                           ))
@@ -240,7 +240,7 @@ class HomePage extends StatelessWidget {
                                               );
                                             },
                                             text: const Text(
-                                              "자세히 보기",
+                                              "확인하기",
                                               style: TextStyle(fontSize: 10),
                                             ),
                                           ))
@@ -291,7 +291,7 @@ class HomePage extends StatelessWidget {
                                               );
                                             },
                                             text: const Text(
-                                              "자세히 보기",
+                                              "수정하기",
                                               style: TextStyle(fontSize: 10),
                                             ),
                                           ))
@@ -343,7 +343,7 @@ class HomePage extends StatelessWidget {
                                               );
                                             },
                                             text: const Text(
-                                              "자세히 보기",
+                                              "확인하기",
                                               style: TextStyle(fontSize: 10),
                                             ),
                                           ))

@@ -5,6 +5,7 @@ import 'package:bodyguard/model/store_model.dart';
 import 'package:provider/provider.dart';
 import '../../services/store_service.dart';
 import '../../widgets/nutrient_info_button.dart';
+import '../shopping_page/shopping_page.dart';
 
 class StoreListPage extends StatelessWidget {
 
@@ -56,7 +57,13 @@ class StoreListPage extends StatelessWidget {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Provider.of<ShoppingProvider>(context, listen: false).setCurrentTabIndex(0);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ShoppingPage(),
+                    ),
+                  );
                 },
                 child: const Icon(Icons.shopping_cart),
               ),

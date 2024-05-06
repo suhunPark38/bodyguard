@@ -9,20 +9,22 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/nutrient_info_button.dart';
 
 class ShoppingPage extends StatelessWidget {
+
   const ShoppingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (BuildContext context) {
-      return Consumer<ShoppingProvider>(
-          builder: (context, provider, child) {
+      return Consumer<ShoppingProvider>(builder: (context, provider, child) {
         return DefaultTabController(
           length: 2,
+          initialIndex:provider.currentTabIndex,
           child: Scaffold(
             appBar: AppBar(
               title: const Text('쇼핑'),
               centerTitle: true,
               actions: [
+                if (provider.currentTabIndex == 0) //결제하기 탭일때
                 TextButton(
                   onPressed: provider.handleReset,
                   child: const Text("초기화하기"),
@@ -55,7 +57,7 @@ class ShoppingPage extends StatelessWidget {
                                   children: [
                                     Text(
                                       entry.key,
-                                      style: const TextStyle(fontSize: 20),
+                                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                     ),
                                     const Divider(
                                       thickness: 1,
@@ -85,7 +87,8 @@ class ShoppingPage extends StatelessWidget {
                                                       softWrap: true,
                                                       textAlign: TextAlign.left,
                                                     ),
-                                                    NutrientInfoButton(size: 15, menu: menu),
+                                                    NutrientInfoButton(
+                                                        size: 15, menu: menu),
                                                   ]),
                                                   Text(
                                                     '개당 ${menu.price}원',
@@ -141,10 +144,17 @@ class ShoppingPage extends StatelessWidget {
                                                             fontSize: 15),
                                                       ),
                                                       IconButton(
-                                                        icon: const Icon(Icons.add),
+                                                        icon: const Icon(
+                                                            Icons.add),
                                                         onPressed: () {
-                                                          provider.updateMenuQuantity(menu.id, (provider.menuQuantities[menu] ?? 1) + 1);
-                                                          provider.calculateTotalPrice();
+                                                          provider.updateMenuQuantity(
+                                                              menu.id,
+                                                              (provider.menuQuantities[
+                                                                          menu] ??
+                                                                      1) +
+                                                                  1);
+                                                          provider
+                                                              .calculateTotalPrice();
                                                         },
                                                       ),
                                                     ],
@@ -158,101 +168,6 @@ class ShoppingPage extends StatelessWidget {
                                   ],
                                 ),
                               const Spacer(),
-                              const Divider(
-                                thickness: 1,
-                                color: Colors.grey,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Row(
-                                        children: [
-                                          Radio(
-                                            value: 'delivery',
-                                            groupValue: provider.deliveryType,
-                                            onChanged: provider
-                                                .handleDeliveryTypeChange,
-                                          ),
-                                          const Text("배달"),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Radio(
-                                            value: 'takeaway',
-                                            groupValue: provider.deliveryType,
-                                            onChanged: provider
-                                                .handleDeliveryTypeChange,
-                                          ),
-                                          const Text("포장"),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 90,
-                                    height: 20,
-                                    child: CustomButton(
-                                      onPressed: () async {
-                                        Widget mapPage = await MapRun();
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => mapPage,
-                                          ),
-                                        );
-                                      },
-                                      text: const Text(
-                                        '가게 위치',
-                                        style: TextStyle(fontSize: 10),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 90,
-                                    height: 20,
-                                    child: CustomButton(
-                                      onPressed: () async {
-                                            await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => StoreListPage(),
-                                          ),
-                                        );
-
-                                      },
-                                      text: const Text(
-                                        '메뉴 담기',
-                                        style: TextStyle(fontSize: 10),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    "결제 금액",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "${provider.totalPrice}원",
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
                         ),
@@ -299,31 +214,130 @@ class ShoppingPage extends StatelessWidget {
                 ],
               ),
             ),
+
             persistentFooterButtons: [
-              if (provider.currentTabIndex == 0)
-                SizedBox(
-                  width: double.maxFinite,
-                  height: 40,
-                  child: CustomButton(
-                    onPressed: () {
-                      if (provider.deliveryType == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('배달 또는 포장을 선택해주세요.')));
-                      } else if (provider.selectedMenus.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('음식이 텅 비었어요.')));
-                      } else {
-                        provider.refreshPayments();
-                        provider.handleReset(); //결제를 완료 후 장바구니 데이터 클리어
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('결제를 성공했습니다.')));
-                      }
-                    },
-                    text: Text('${provider.totalPrice}원 결제하기'),
-                  ),
+              if (provider.currentTabIndex == 0) //결제하기 탭일때
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Row(
+                              children: [
+                                Radio(
+                                  value: 'delivery',
+                                  groupValue: provider.deliveryType,
+                                  onChanged: provider.handleDeliveryTypeChange,
+                                ),
+                                const Text("배달"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Radio(
+                                  value: 'takeaway',
+                                  groupValue: provider.deliveryType,
+                                  onChanged: provider.handleDeliveryTypeChange,
+                                ),
+                                const Text("포장"),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: 90,
+                          height: 20,
+                          child: CustomButton(
+                            onPressed: () async {
+                              Widget mapPage = await MapRun();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => mapPage,
+                                ),
+                              );
+                            },
+                            text: const Text(
+                              '가게 위치',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 90,
+                          height: 20,
+                          child: CustomButton(
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoreListPage(),
+                                ),
+                              );
+                            },
+                            text: const Text(
+                              '메뉴 담기',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "결제 금액",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "${provider.totalPrice}원",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: double.maxFinite,
+                      height: 40,
+                      child: CustomButton(
+                        onPressed: () {
+                          if (provider.deliveryType == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('배달 또는 포장을 선택해주세요.')));
+                          } else if (provider.selectedMenus.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('음식이 텅 비었어요.')));
+                          } else {
+                            provider.refreshPayments();
+                            provider.handleReset(); //결제를 완료 후 장바구니 데이터 클리어
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('결제를 성공했습니다.')));
+                          }
+                        },
+                        text: Text('${provider.totalPrice}원 결제하기'),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                  ],
                 ),
-              const SizedBox(height: 5),
+              ),
             ],
+
           ),
         );
       });

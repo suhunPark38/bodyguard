@@ -4,9 +4,9 @@ import '../database/config_database.dart';
 class HealthDataProvider extends ChangeNotifier {
   double _todayTotalCalories = 0;
   String _mealTimeDetails = "";
-  final double _waterIntake = 1000.0;
-  final double _bodyWeight = 100.0;
-  final int _stepCount = 8800;
+  final double _waterIntake = 500.0;
+  final double _bodyWeight = 70.0;
+  final int _stepCount = 4812;
 
   double get todayTotalCalories => _todayTotalCalories;
   String get mealTimeDetails => _mealTimeDetails;

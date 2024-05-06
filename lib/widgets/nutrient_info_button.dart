@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../model/store_menu.dart';
 
 class NutrientInfoButton extends StatelessWidget {
@@ -22,13 +21,57 @@ class NutrientInfoButton extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('${menu.menuName} - 영양성분'),
-              content: Text('칼로리: ${menu.calories},'
-                  ' 탄수화물: ${menu.carbohydrate},'
-                  ' 단백질: ${menu.protein},'
-                  ' 지방: ${menu.fat},'
-                  ' 나트륨: ${menu.sodium},'
-                  ' 당: ${menu.sugar}'),
+              title: Text('영양성분표(${menu.menuName})'),
+              content: SingleChildScrollView(
+                child: DataTable(
+                  columns: const [
+                    DataColumn(label: Text('영양소')),
+                    DataColumn(label: Text('함량')),
+                  ],
+                  rows: [
+                    DataRow(
+                      cells: [
+                        const DataCell(Text('칼로리')),
+                        DataCell(Text('${menu.calories}kcal')),
+                      ],
+                    ),
+                    DataRow(cells: [
+                      const DataCell(
+                        Column(mainAxisAlignment:MainAxisAlignment.center,
+                          children: [
+                            Text('탄수화물'),
+                            Text('당'),
+                          ],
+                        ),
+                      ),
+                      DataCell(
+                          Column(mainAxisAlignment:MainAxisAlignment.center,
+                              children: [
+                        Text('${menu.carbohydrate}g'),
+                        Text('${menu.sugar}g'),
+                      ])),
+                    ]),
+                    DataRow(
+                      cells: [
+                        const DataCell(Text('단백질')),
+                        DataCell(Text('${menu.protein}g')),
+                      ],
+                    ),
+                    DataRow(
+                      cells: [
+                        const DataCell(Text('지방')),
+                        DataCell(Text('${menu.fat}g')),
+                      ],
+                    ),
+                    DataRow(
+                      cells: [
+                        const DataCell(Text('나트륨')),
+                        DataCell(Text('${menu.sodium}mg')),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         );

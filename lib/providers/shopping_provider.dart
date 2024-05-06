@@ -42,6 +42,7 @@ class ShoppingProvider extends ChangeNotifier {
   void setCurrentTabIndex(int value) {
     _currentTabIndex = value;
     notifyListeners();
+    print("현재탭$_currentTabIndex");
   }
 
   void setSelectedMenus(List<StoreMenu> value) {
