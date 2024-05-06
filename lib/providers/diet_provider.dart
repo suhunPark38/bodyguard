@@ -18,7 +18,9 @@ class DietProvider with ChangeNotifier {
       protein: 0.0,
       fat: 0.0,
       sodium: 0.0,
-      sugar: 0.0);
+      sugar: 0.0
+  );
+  DateTime _eatingTime = DateTime.now();
 
 
   List<DietData> get diets => _diets;
@@ -27,29 +29,28 @@ class DietProvider with ChangeNotifier {
   List<DietData> get dinner => _dinner;
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
 
-  void updateDiets(DateTime eatingTime) async {
-    _diets = await configDatabase.getDietByEatingTime(eatingTime);
-    print( "result = ${_diets}");
-    _updateDietsList();
+  void notifySelectDiets(DateTime eatingTime) async {
+    _eatingTime = eatingTime;
+    _diets = await configDatabase.getDietByEatingTime(_eatingTime);
+    _updateDietsList(_eatingTime);
     notifyListeners();
   }
 
-  void notifyInsertDiet(DietCompanion dietCompanion) async {
+  void notifyInsertDiet(DietCompanion dietCompanion) {
     configDatabase.insertDiet(dietCompanion);
-    _diets = await configDatabase.getDietByEatingTime(dietCompanion.eatingTime.value);
-    _updateDietsList();
+    _updateDietsList(_eatingTime);
     notifyListeners();
   }
 
   void notifyDeleteDiet(int dietId) {
     configDatabase.deleteDiet(dietId);
-    _updateDietsList();
+    _updateDietsList(_eatingTime);
     notifyListeners();
   }
 
-  void notifyUpdateDiet(int dietId, DietCompanion dietCompanion) {
-    configDatabase.updateDiet(dietCompanion, dietId);
-    _updateDietsList();
+  void notifyUpdateDiet(DietCompanion dietCompanion) {
+    configDatabase.updateDiet(dietCompanion, dietCompanion.dietId.value);
+    _updateDietsList(_eatingTime);
     notifyListeners();
   }
 
@@ -57,7 +58,9 @@ class DietProvider with ChangeNotifier {
 
 
 
-  void _updateDietsList(){
+  void _updateDietsList(DateTime eatingTime) async {
+    _diets = await configDatabase.getDietByEatingTime(eatingTime);
+
     _breakfast = _diets.where((diet) => diet.classification == 0).toList();
     _lunch = _diets.where((diet) => diet.classification == 1).toList();
     _dinner = _diets.where((diet) => diet.classification == 2).toList();

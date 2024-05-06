@@ -103,7 +103,8 @@ class _DietEditDialogState extends State<DietEditDialog> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text(DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(eatingTime)),
+                    Text(
+                        DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(eatingTime)),
                   ],
                 ),
               ),
@@ -142,9 +143,9 @@ class _DietEditDialogState extends State<DietEditDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            final dietProvider = context.read<DietProvider>();
-            dietProvider.notifyUpdateDiet(dietId,
-                DietCompanion(
+            DietProvider dietProvider = context.read<DietProvider>();
+            dietProvider.notifyUpdateDiet(DietCompanion(
+              dietId: Value(dietId),
               eatingTime: Value(eatingTime),
               menuName: Value(menuName),
               amount: Value(amount),
@@ -155,8 +156,7 @@ class _DietEditDialogState extends State<DietEditDialog> {
               fat: Value(fat * amount),
               sodium: Value(sodium * amount),
               sugar: Value(sugar * amount),
-            )
-            );
+            ));
             Navigator.of(context).pop();
             Navigator.of(context).pop();
           },

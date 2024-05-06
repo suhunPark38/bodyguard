@@ -40,7 +40,7 @@ class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   // 화면 불러올 때, 식단 입력할 때, 날짜 바꿀 때 diets 정보 갱신하는 메소드
   Future<void> _setDiets() async {
     DietProvider dietProvider = context.read<DietProvider>();
-    dietProvider.updateDiets(_selectedDay);
+    dietProvider.notifySelectDiets(_selectedDay);
   }
 
   @override
