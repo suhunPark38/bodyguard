@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bodyguard/model/store_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:bodyguard/model/store_model.dart';
@@ -52,8 +53,16 @@ class _StoreListPageState extends State<StoreListPage> {
             itemBuilder: (context, index) {
               Store store = stores[index];
               return ListTile(
-                title: Text(
-                    "가게 이름: ${store.storeName}, 가게 소개: ${store.subscript}"),
+                leading: Image.network(stores[index].image, width: 100, height: 100, fit: BoxFit.fill),
+                title: AutoSizeText(
+                  "가게 이름: ${stores[index].storeName}",
+                  maxLines: 1,
+                ),
+                subtitle: AutoSizeText(
+                  "가게 설명: ${stores[index].subscript}",
+                  maxLines: 1,
+                ),
+                trailing: Text("${stores[index].cuisineType}"),
                 onTap: () {
                   _showMenuDialog(context, store);
                 },
@@ -96,30 +105,49 @@ class _StoreListPageState extends State<StoreListPage> {
                         StoreMenu menu = menuList[index];
                         bool isSelected = _selectedMenus.contains(menu);
                         return CheckboxListTile(
-                          secondary:IconButton(
-                            icon: const Icon(Icons.info),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder:
-                                    (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                        '${menu.menuName} - 영양성분'),
-                                    content: Text(
-                                        '칼로리: ${menu.calories},'
-                                            ' 탄수화물: ${menu.carbohydrate},'
-                                            ' 지방: ${menu.fat},'
-                                            ' 단백질: ${menu.protein},'
-                                            ' 나트륨: ${menu.sodium},'
-                                            ' 당: ${menu.sugar}'),
+                          contentPadding: EdgeInsets.all(5.0),
+
+                          secondary: Row(
+                            mainAxisSize: MainAxisSize.min, // Row 크기를 최소로 제한
+                            children: <Widget>[
+                              // 메뉴 이미지
+                              Image.network(
+                                menu.image, // 메뉴 이미지 URL
+                                width: 70, // 이미지 폭
+                                height: 70, // 이미지 높이
+                                fit: BoxFit.fitWidth, // 이미지 채우기 모드
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.info),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('${menu.menuName} - 영양성분'),
+                                        content: Text(
+                                            '칼로리: ${menu.calories},'
+                                                ' 탄수화물: ${menu.carbohydrate},'
+                                                ' 지방: ${menu.fat},'
+                                                ' 단백질: ${menu.protein},'
+                                                ' 나트륨: ${menu.sodium},'
+                                                ' 당: ${menu.sugar}'
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
-                              );
-                            },
+                              ),
+                            ],
                           ),
-                          title: Text(menu.menuName),
-                          subtitle: Text('가격: ${menu.price}'),
+                          title: AutoSizeText(
+                            "${menu.menuName}",
+                            maxLines: 1,
+                          ),
+                          subtitle: AutoSizeText(
+                            "가격: ${menu.price}",
+                            maxLines: 1,
+                          ),
                           value: isSelected,
                           onChanged: (newValue) {
                             setState(() {
