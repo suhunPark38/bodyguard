@@ -4,6 +4,7 @@ import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bodyguard/model/store_model.dart';
 import 'package:provider/provider.dart';
+import '../../map.dart';
 import '../../services/store_service.dart';
 import '../../widgets/nutrient_info_button.dart';
 import '../shopping_page/shopping_page.dart';
@@ -55,7 +56,12 @@ class StoreListPage extends StatelessWidget  {
                           "가게 설명: ${stores[index].subscript}",
                           maxLines: 1,
                         ),
-                        trailing: Text("${stores[index].cuisineType}"),
+                        trailing: Column(
+                          children: [
+                            Text("${stores[index].cuisineType}"),
+                            Text( "${calDist(dummy, stores[index].latitude, stores[index].longitude)}")
+                          ],
+                        ),
                         onTap: () {
                           _showMenuDialog(context, store);
                         },
@@ -88,6 +94,7 @@ class StoreListPage extends StatelessWidget  {
         return Consumer<ShoppingProvider>(
           builder: (context, provider, child) {
             return AlertDialog(
+              contentPadding: EdgeInsets.all(1.0),
               title: Text('${store.storeName} 메뉴'),
               content: SizedBox(
                 height: 500, // 적절한 높이 지정
@@ -101,13 +108,13 @@ class StoreListPage extends StatelessWidget  {
 
                     List<StoreMenu> menuList = snapshot.data!;
                     return ListView.builder(
+                      padding: EdgeInsets.all(1.0),
                       itemCount: menuList.length,
                       itemBuilder: (context, index) {
                         StoreMenu menu = menuList[index];
                         bool isSelected = provider.selectedMenus.contains(menu);
                         return CheckboxListTile(
-                          contentPadding: EdgeInsets.all(5.0),
-
+                          contentPadding: EdgeInsets.all(0.5),
                           secondary: Row(
                             mainAxisSize: MainAxisSize.min, // Row 크기를 최소로 제한
                             children: <Widget>[
@@ -129,6 +136,7 @@ class StoreListPage extends StatelessWidget  {
                           subtitle: AutoSizeText(
                             "가격: ${menu.price}",
                             maxLines: 1,
+                            textAlign: TextAlign.left,
                           ),
                           value: isSelected,
                           onChanged: (newValue) {
