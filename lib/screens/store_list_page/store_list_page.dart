@@ -8,20 +8,9 @@ import '../../services/store_service.dart';
 import '../../widgets/nutrient_info_button.dart';
 import '../shopping_page/shopping_page.dart';
 
-class StoreListPage extends StatelessWidget {
 
-  @override
-  _StoreListPageState createState() => _StoreListPageState();
-}
+class StoreListPage extends StatelessWidget  {
 
-class _StoreListPageState extends State<StoreListPage> {
-  List<StoreMenu> _selectedMenus = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedMenus = widget.selectedMenus ?? [];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +106,41 @@ class _StoreListPageState extends State<StoreListPage> {
                         StoreMenu menu = menuList[index];
                         bool isSelected = provider.selectedMenus.contains(menu);
                         return CheckboxListTile(
-                          secondary: NutrientInfoButton(size: 20, menu: menu,),
+                          contentPadding: EdgeInsets.all(5.0),
+
+                          secondary: Row(
+                            mainAxisSize: MainAxisSize.min, // Row 크기를 최소로 제한
+                            children: <Widget>[
+                              // 메뉴 이미지
+                              Image.network(
+                                menu.image, // 메뉴 이미지 URL
+                                width: 70, // 이미지 폭
+                                height: 70, // 이미지 높이
+                                fit: BoxFit.fitWidth, // 이미지 채우기 모드
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.info),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('${menu.menuName} - 영양성분'),
+                                        content: Text(
+                                            '칼로리: ${menu.calories},'
+                                                ' 탄수화물: ${menu.carbohydrate},'
+                                                ' 지방: ${menu.fat},'
+                                                ' 단백질: ${menu.protein},'
+                                                ' 나트륨: ${menu.sodium},'
+                                                ' 당: ${menu.sugar}'
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                           title: AutoSizeText(
                             "${menu.menuName}",
                             maxLines: 1,
@@ -128,16 +151,14 @@ class _StoreListPageState extends State<StoreListPage> {
                           ),
                           value: isSelected,
                           onChanged: (newValue) {
-                            setState(() {
-                              if (newValue!) {
-                                Provider.of<ShoppingProvider>(
-                                    context, listen: false).addMenu(
-                                    store.id, menu, 1);
-                              } else {
-                                Provider.of<ShoppingProvider>(
-                                    context, listen: false).removeMenu(menu);
-                              }
-                            });
+                            if (newValue!) {
+                              Provider.of<ShoppingProvider>(
+                                  context, listen: false).addMenu(
+                                  store.id, menu, 1);
+                            } else {
+                              Provider.of<ShoppingProvider>(
+                                  context, listen: false).removeMenu(menu);
+                            }
                           },
                         );
                       },
