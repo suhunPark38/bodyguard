@@ -43,9 +43,6 @@ class _CalorieInfoWidgetState extends State<CalorieInfoWidget> {
 
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black, width: 1)),
         child: Row(
           children: [
             Flexible(
