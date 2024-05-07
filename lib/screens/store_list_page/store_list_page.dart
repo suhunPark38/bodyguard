@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bodyguard/model/store_menu.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,18 @@ import '../shopping_page/shopping_page.dart';
 
 class StoreListPage extends StatelessWidget {
 
+  @override
+  _StoreListPageState createState() => _StoreListPageState();
+}
+
+class _StoreListPageState extends State<StoreListPage> {
+  List<StoreMenu> _selectedMenus = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedMenus = widget.selectedMenus ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +57,16 @@ class StoreListPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       Store store = stores[index];
                       return ListTile(
-                        title: Text(
-                            "가게 이름: ${store.storeName}, 가게 소개: ${store
-                                .subscript}"),
+                        leading: Image.network(stores[index].image, width: 100, height: 100, fit: BoxFit.fill),
+                        title: AutoSizeText(
+                          "가게 이름: ${stores[index].storeName}",
+                          maxLines: 1,
+                        ),
+                        subtitle: AutoSizeText(
+                          "가게 설명: ${stores[index].subscript}",
+                          maxLines: 1,
+                        ),
+                        trailing: Text("${stores[index].cuisineType}"),
                         onTap: () {
                           _showMenuDialog(context, store);
                         },
@@ -98,10 +118,17 @@ class StoreListPage extends StatelessWidget {
                         bool isSelected = provider.selectedMenus.contains(menu);
                         return CheckboxListTile(
                           secondary: NutrientInfoButton(size: 20, menu: menu,),
-                          title: Text(menu.menuName),
-                          subtitle: Text('가격: ${menu.price}'),
+                          title: AutoSizeText(
+                            "${menu.menuName}",
+                            maxLines: 1,
+                          ),
+                          subtitle: AutoSizeText(
+                            "가격: ${menu.price}",
+                            maxLines: 1,
+                          ),
                           value: isSelected,
                           onChanged: (newValue) {
+                            setState(() {
                               if (newValue!) {
                                 Provider.of<ShoppingProvider>(
                                     context, listen: false).addMenu(
@@ -110,6 +137,7 @@ class StoreListPage extends StatelessWidget {
                                 Provider.of<ShoppingProvider>(
                                     context, listen: false).removeMenu(menu);
                               }
+                            });
                           },
                         );
                       },
