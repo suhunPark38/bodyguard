@@ -10,7 +10,8 @@ import '../../../providers/diet_provider.dart';
 class DietInputDialog extends StatefulWidget {
   final FetchedDietData selectedData;
 
-  const DietInputDialog({Key? key, required this.selectedData}) : super(key: key);
+  const DietInputDialog({Key? key, required this.selectedData})
+      : super(key: key);
 
   @override
   _DietInputDialogState createState() => _DietInputDialogState();
@@ -101,7 +102,8 @@ class _DietInputDialogState extends State<DietInputDialog> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text(DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(eatingTime)),
+                    Text(
+                        DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(eatingTime)),
                   ],
                 ),
               ),
@@ -140,21 +142,42 @@ class _DietInputDialogState extends State<DietInputDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            final dietProvider = context.read<DietProvider>();
-            dietProvider.notifyInsertDiet(DietCompanion(
-              eatingTime: Value(eatingTime),
-              menuName: Value(menuName),
-              amount: Value(amount),
-              classification: Value(classification),
-              calories: Value((double.tryParse(calories) ?? 0.0) * amount),
-              carbohydrate: Value((double.tryParse(carbohydrates) ?? 0.0) * amount),
-              protein: Value((double.tryParse(protein) ?? 0.0) * amount),
-              fat: Value((double.tryParse(fat) ?? 0.0) * amount),
-              sodium: Value((double.tryParse(sodium) ?? 0.0) * amount),
-              sugar: Value((double.tryParse(sugar) ?? 0.0) * amount),
-            ));
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
+            if (amount == 0) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('경고'),
+                    content: const Text('먹은 양을 0 보다 크게 입력하세요'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('확인'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              final dietProvider = context.read<DietProvider>();
+              dietProvider.notifyInsertDiet(DietCompanion(
+                eatingTime: Value(eatingTime),
+                menuName: Value(menuName),
+                amount: Value(amount),
+                classification: Value(classification),
+                calories: Value((double.tryParse(calories) ?? 0.0) * amount),
+                carbohydrate:
+                    Value((double.tryParse(carbohydrates) ?? 0.0) * amount),
+                protein: Value((double.tryParse(protein) ?? 0.0) * amount),
+                fat: Value((double.tryParse(fat) ?? 0.0) * amount),
+                sodium: Value((double.tryParse(sodium) ?? 0.0) * amount),
+                sugar: Value((double.tryParse(sugar) ?? 0.0) * amount),
+              ));
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            }
           },
           child: const Text('확인'),
         ),

@@ -143,22 +143,45 @@ class _DietEditDialogState extends State<DietEditDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            DietProvider dietProvider = context.read<DietProvider>();
-            dietProvider.notifyUpdateDiet(DietCompanion(
-              dietId: Value(dietId),
-              eatingTime: Value(eatingTime),
-              menuName: Value(menuName),
-              amount: Value(amount),
-              classification: Value(classification),
-              calories: Value(calories * amount),
-              carbohydrate: Value(carbohydrates * amount),
-              protein: Value(protein * amount),
-              fat: Value(fat * amount),
-              sodium: Value(sodium * amount),
-              sugar: Value(sugar * amount),
-            ));
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
+            if (amount == 0) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('경고'),
+                    content: const Text('먹은 양을 0 보다 크게 입력하세요'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('확인'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              DietProvider dietProvider = context.read<DietProvider>();
+              dietProvider.notifyUpdateDiet(DietCompanion(
+                dietId: Value(dietId),
+                eatingTime: Value(eatingTime),
+                menuName: Value(menuName),
+                amount: Value(amount),
+                classification: Value(classification),
+                calories: Value(calories * amount),
+                carbohydrate: Value(carbohydrates * amount),
+                protein: Value(protein * amount),
+                fat: Value(fat * amount),
+                sodium: Value(sodium * amount),
+                sugar: Value(sugar * amount),
+              ));
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            }
+
+
+
           },
           child: const Text('확인'),
         ),
