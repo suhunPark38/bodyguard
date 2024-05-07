@@ -26,7 +26,13 @@ class DietInfoDialog extends StatelessWidget {
                     context: parentContext,
                     builder: (context) => DietEditDialog(diet: diet)
                 ),
-
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () => showDialog(
+                    context: parentContext,
+                    builder: (context) => DietDeleteDialog(context: context, dietData: diet)
+                ),
               ),
             ],
           )
@@ -84,13 +90,7 @@ class DietInfoDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           child: const Text('닫기'),
         ),
-        IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: () => showDialog(
-              context: parentContext,
-              builder: (context) => DietDeleteDialog(context: context, dietData: diet)
-          ),
-        ),
+
       ],
     );
   }
