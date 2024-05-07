@@ -118,27 +118,8 @@ class StoreListPage extends StatelessWidget  {
                                 height: 70, // 이미지 높이
                                 fit: BoxFit.fitWidth, // 이미지 채우기 모드
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.info),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text('${menu.menuName} - 영양성분'),
-                                        content: Text(
-                                            '칼로리: ${menu.calories},'
-                                                ' 탄수화물: ${menu.carbohydrate},'
-                                                ' 지방: ${menu.fat},'
-                                                ' 단백질: ${menu.protein},'
-                                                ' 나트륨: ${menu.sodium},'
-                                                ' 당: ${menu.sugar}'
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
+                              NutrientInfoButton(
+                                  size: 20, menu: menu),
                             ],
                           ),
                           title: AutoSizeText(
