@@ -49,7 +49,6 @@ class _DietEditDialogState extends State<DietEditDialog> {
       title: const Text('값을 수정하세요'),
       content: SingleChildScrollView(
         child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.7,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[

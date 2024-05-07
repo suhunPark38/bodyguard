@@ -47,7 +47,6 @@ class _DietInputDialogState extends State<DietInputDialog> {
       title: const Text('값을 입력하세요'),
       content: SingleChildScrollView(
         child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.7,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
