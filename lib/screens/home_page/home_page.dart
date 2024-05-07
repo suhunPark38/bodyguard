@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/health_data_provider.dart';
+import '../../providers/shopping_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../activity_page/activity_page.dart';
 import '../body_page/body_page.dart';
@@ -40,6 +41,7 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {
+              Provider.of<ShoppingProvider>(context, listen: false).setCurrentTabIndex(0);
               Navigator.push(
                 context,
                 MaterialPageRoute(
