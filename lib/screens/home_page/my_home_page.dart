@@ -1,6 +1,6 @@
 import 'package:bodyguard/screens/health_page/health_page.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/body_guard_icons.dart';
+import '../../utils/custom_icon.dart';
 import '../shopping_page/shopping_page.dart';
 import 'home_page.dart';
 import '../search_page/search_page.dart';
@@ -41,7 +41,7 @@ class MyHomePage extends StatelessWidget {
               text: '검색',
             ),
             Tab(
-              icon: Icon(BodyGuard.emo_sunglasses),
+              icon: Icon(CustomIcon.emo_sunglasses),
               child: Text('보디가드', style: TextStyle(fontSize: 13)),
             ),
             Tab(

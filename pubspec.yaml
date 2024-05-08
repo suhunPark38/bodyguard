@@ -126,9 +126,9 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.ttf
           weight: 900
-    - family: BodyGuard
+    - family: Custom_Icon
       fonts:
-        - asset: assets/icons/BodyGuard.ttf
+        - asset: assets/icons/Custom-Icon.ttf
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

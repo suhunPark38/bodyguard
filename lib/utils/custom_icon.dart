@@ -31,10 +31,10 @@
 ///
 import 'package:flutter/widgets.dart';
 
-class BodyGuard {
-  BodyGuard._();
+class CustomIcon {
+  CustomIcon._();
 
-  static const _kFontFam = 'BodyGuard';
+  static const _kFontFam = 'Custom_Icon';
   static const String? _kFontPkg = null;
 
   static const IconData android = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
