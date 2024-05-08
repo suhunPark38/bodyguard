@@ -16,7 +16,7 @@ class ShoppingProvider extends ChangeNotifier {
   final Map<String, List<StoreMenu>> _storeMenuMap = {};
   final Map<StoreMenu, int> _menuQuantities = {};
 
-  List<Payment> _cachedPayments = [];
+  List<Payment> _payments = [];
 
   List<StoreMenu> get selectedMenus => _selectedMenus;
 
@@ -30,6 +30,8 @@ class ShoppingProvider extends ChangeNotifier {
 
   Map<StoreMenu, int> get menuQuantities => _menuQuantities;
 
+  List<Payment> get payments => _payments;
+
   ShoppingProvider() {
     _initializeData();
   }
@@ -37,6 +39,7 @@ class ShoppingProvider extends ChangeNotifier {
   // 데이터 초기화를 위한 비동기 함수
   Future<void> _initializeData() async {
     await loadSelectedMenus();
+    await fetchPayments();
   }
 
   void setCurrentTabIndex(int value) {
@@ -101,19 +104,16 @@ class ShoppingProvider extends ChangeNotifier {
 
 
 
-  Future<List<Payment>> fetchPayments({bool forceRefresh = false}) async {
-    if (_cachedPayments.isEmpty || forceRefresh) {
+  Future<void> fetchPayments({bool forceRefresh = false}) async {
+    if (_payments.isEmpty || forceRefresh) {
       try {
         List<Payment> payments = await PaymentService().getPayments();
-        _cachedPayments = payments;
-        return payments;
+        _payments = payments;
       } catch (e) {
         print('결제 내역을 가져오는 중 오류가 발생했습니다: $e');
-        return [];
       }
-    } else {
-      return _cachedPayments;
     }
+    notifyListeners();
   }
   void refreshPayments() {
     fetchPayments(forceRefresh: true);
