@@ -10,7 +10,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:bodyguard/utils/calculate_util.dart';
 
 import 'package:bodyguard/database/config_database.dart';
-import '../../providers/health_data_provider.dart';
+import '../../providers/today_health_data_provider.dart';
 import '../home_page/my_home_page.dart';
 
 /// 사용자로부터 입력받은 식단 데이터
@@ -552,7 +552,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
 
 
                         //값 입력 후 프로바이더 함수 실행
-                        Provider.of<HealthDataProvider>(context, listen: false).fetchTodayTotalCalories(DateTime.now());
+                        Provider.of<TodayHealthDataProvider>(context, listen: false).fetchTodayTotalCalories(DateTime.now());
                       },
                       child: const Text('확인'),
                     ),

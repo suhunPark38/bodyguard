@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import '../database/config_database.dart';
 
-class HealthDataProvider extends ChangeNotifier {
+class TodayHealthDataProvider extends ChangeNotifier {
   double _todayTotalCalories = 0;
   String _mealTimeDetails = "";
-  final double _waterIntake = 500.0;
+  final double _todayTotalWaterIntake = 500.0;
   final double _bodyWeight = 70.0;
-  final int _stepCount = 4812;
+  final int _todayTotalStepCount = 4812;
 
   double get todayTotalCalories => _todayTotalCalories;
   String get mealTimeDetails => _mealTimeDetails;
-  double get waterIntake => _waterIntake;
+  double get todayTotalWaterIntake => _todayTotalWaterIntake;
   double get bodyWeight => _bodyWeight;
-  int get stepCount => _stepCount;
+  int get todayTotalStepCount => _todayTotalStepCount;
 
   HealthDataProvider() {
     _initializeData();
@@ -38,9 +38,9 @@ class HealthDataProvider extends ChangeNotifier {
 
     if (hour >= 7 && hour < 12) {
       _mealTimeDetails =  '아침을 주문할까요?';
-    } else if (hour >= 12 && hour < 18) {
+    } else if (hour >= 12 && hour < 17) {
       _mealTimeDetails =  '점심을 주문할까요?';
-    } else if (hour >= 18 && hour < 22) {
+    } else if (hour >= 17 && hour < 22) {
       _mealTimeDetails =  '저녁을 주문할까요?';
     } else {
       _mealTimeDetails =  '메뉴를 주문할까요?';
