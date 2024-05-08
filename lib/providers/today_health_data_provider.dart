@@ -14,7 +14,7 @@ class TodayHealthDataProvider extends ChangeNotifier {
   double get bodyWeight => _bodyWeight;
   int get todayTotalStepCount => _todayTotalStepCount;
 
-  HealthDataProvider() {
+  TodayHealthDataProvider() {
     _initializeData();
   }
 
