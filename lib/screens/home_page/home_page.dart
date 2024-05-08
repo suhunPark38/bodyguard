@@ -323,7 +323,7 @@ class HomePage extends StatelessWidget {
                                                   color: Colors.blueGrey,
                                                   fontSize: 15),
                                             ),
-                                            Icon(Icons.accessibility_new)
+                                            Icon(Icons.directions_walk)
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
