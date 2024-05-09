@@ -9,10 +9,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-
-
 part 'config_database.g.dart';
-
 
 /// localdb 관리 클래스
 @DriftDatabase(
@@ -69,7 +66,7 @@ class ConfigDatabase extends _$ConfigDatabase {
   /// Diet 테이블에서 EatingTime으로 해당 날짜의 Diet 조회하는 메소드
   Future<List<DietData>> getDietByEatingTime(DateTime eatingTime) async {
     final DateTime startDate = DateTime(eatingTime.year, eatingTime.month, eatingTime.day);
-    final DateTime endDate = startDate.add(Duration(hours: 23, minutes: 59)); // 조회 시간을 00시 00분 ~ 23시 59분까지로 설정
+    final DateTime endDate = startDate.add(const Duration(hours: 23, minutes: 59)); // 조회 시간을 00시 00분 ~ 23시 59분까지로 설정
 
     return await (select(diet)
       ..where((tbl) => tbl.eatingTime.isBetweenValues(startDate, endDate)))
@@ -87,16 +84,10 @@ class ConfigDatabase extends _$ConfigDatabase {
   Future<void> deleteDiet (int dietId) async {
     await (delete(diet)..where((d) => d.dietId.equals(dietId))).go();
   }
-}
 
   /// 특정 날짜의 총 칼로리 계산
   Future<double> getTotalCaloriesForDate(DateTime date) async {
-    final DateTime startDate = DateTime(date.year, date.month, date.day);
-    final DateTime endDate = startDate.add(Duration(days: 1));
-
-    final List<DietData> diets = await (select(diet)
-      ..where((tbl) => tbl.eatingTime.isBetweenValues(startDate, endDate)))
-        .get();
+    final List<DietData> diets = await getDietByEatingTime(date);
 
     double totalCalories = 0;
     for (final dietData in diets) {
@@ -105,14 +96,20 @@ class ConfigDatabase extends _$ConfigDatabase {
     return totalCalories;
   }
 
-  static LazyDatabase _openConnection() {
+}
+
+
+
+
+
+   LazyDatabase _openConnection() {
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(p.join(dbFolder.path, 'local_db.sqlite'));
       return NativeDatabase(file);
     });
   }
-}
+
 
 
 
