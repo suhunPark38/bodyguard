@@ -134,7 +134,7 @@ class _SearchPageState extends State<SearchPage> {
             prefixIcon: const Icon(Icons.search),
             hintText: "검색어를 입력하세요",
             suffixIcon: IconButton(
-              icon: Icon(Icons.clear),
+              icon: const Icon(Icons.clear),
               onPressed: () {
                 _searchController.clear();
               },
@@ -203,7 +203,7 @@ class _SearchPageState extends State<SearchPage> {
               );
             }).toList(),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -222,7 +222,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           _popularSearches.isNotEmpty ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -295,7 +295,7 @@ class _SearchPageState extends State<SearchPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('인기 검색어 (상위 20개)'),
+          title: const Text('인기 검색어 (상위 20개)'),
           content: SingleChildScrollView(
             child: Column(
               children: _popularSearches.map((search) {

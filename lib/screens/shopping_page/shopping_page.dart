@@ -1,6 +1,7 @@
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../model/payment.dart';
 import '../../map.dart';
@@ -126,11 +127,16 @@ class ShoppingPage extends StatelessWidget {
                                                         icon: const Icon(
                                                             Icons.remove),
                                                         onPressed: () {
-                                                          if (provider.menuQuantities[menu]! > 1) {
+                                                          if (provider.menuQuantities[
+                                                                  menu]! >
+                                                              1) {
                                                             provider.updateMenuQuantity(
                                                                 menu.id,
-                                                                provider.menuQuantities[menu]! - 1);
-                                                            provider.calculateTotalPrice();
+                                                                provider.menuQuantities[
+                                                                        menu]! -
+                                                                    1);
+                                                            provider
+                                                                .calculateTotalPrice();
                                                           }
                                                         },
                                                       ),
@@ -145,8 +151,12 @@ class ShoppingPage extends StatelessWidget {
                                                         onPressed: () {
                                                           provider.updateMenuQuantity(
                                                               menu.id,
-                                                              (provider.menuQuantities[menu] ?? 1) + 1);
-                                                          provider.calculateTotalPrice();
+                                                              (provider.menuQuantities[
+                                                                          menu] ??
+                                                                      1) +
+                                                                  1);
+                                                          provider
+                                                              .calculateTotalPrice();
                                                         },
                                                       ),
                                                     ],
@@ -166,24 +176,102 @@ class ShoppingPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  ListView.builder(
-                    itemCount: provider.payments.length,
-                    itemBuilder: (context, index) {
-                      final payment = provider.payments[index];
-                      return Card(
-                        child: ListTile(
-                          title: Text('주문 번호: ${payment.orderId}'),
-                          subtitle: Text(
-                            '결제 상태: ${payment.status.toString().split('.').last}'
-                                '\n결제 일시: ${payment.timestamp}'
-                                '\n결제 금액: ${payment.totalPrice}'
-                                '\n배달 방식: ${payment.deliveryType}',
-                          ),
+                  Column(
+                    children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            OutlinedButton(
+                                onPressed: () {
+                                  final first = DateTime(2024);
+                                  final now = DateTime.now();
+                                  provider.setStartDate(first);
+                                  provider.setEndDate(now);
+                                },
+                                child: const Text("전체")),
+                            OutlinedButton(
+                                onPressed: () {
+                                  final now = DateTime.now();
+                                  final oneWeekAgo =
+                                      now.subtract(const Duration(days: 7));
+                                  provider.setStartDate(oneWeekAgo);
+                                  provider.setEndDate(now);
+                                },
+                                child: const Text("일주일 전")),
+                            OutlinedButton(
+                                onPressed: () {
+                                  final now = DateTime.now();
+                                  final oneMonthAgo = DateTime(
+                                      now.year, now.month - 1, now.day);
+                                  provider.setStartDate(oneMonthAgo);
+                                  provider.setEndDate(now);
+                                },
+                                child: const Text("한달 전")),
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                                '시작일 ${provider.selectedStartDate.year  }년'
+                                ' ${provider.selectedStartDate.month}월'
+                                ' ${provider.selectedStartDate.day }일',style:const TextStyle(fontSize: 12)),
+                            IconButton(
+                              icon: const Icon(Icons.calendar_today),
+                              onPressed: () async {
+                                final selectedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2024),
+                                  lastDate: DateTime.now(),
+                                );
+                                if (selectedDate != null) {
+                                  provider.setStartDate(selectedDate);
+                                }
+                              },
+                            ),
+                            Text('종료일 ${provider.selectedEndDate.year}년'
+                                ' ${provider.selectedEndDate.month}월'
+                                ' ${provider.selectedEndDate.day}일',style:const TextStyle(fontSize: 12)),
+                            IconButton(
+                              icon: const Icon(Icons.calendar_today),
+                              onPressed: () async {
+                                final selectedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2024),
+                                  lastDate: DateTime.now(),
+                                );
+                                if (selectedDate != null) {
+                                  provider.setEndDate(selectedDate);
+                                }
+                              },
+                            ),
+                          ]),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: provider.sortedAndFilteredPayments.length,
+                          itemBuilder: (context, index) {
+                            final payment =
+                                provider.sortedAndFilteredPayments[index];
+                            final formattedTimestamp =
+                                '${payment.timestamp.year}년 ${payment.timestamp.month}월 ${payment.timestamp.day}일 ${payment.timestamp.hour}시 ${payment.timestamp.minute}분';
+                            return Card(
+                              child: ListTile(
+                                title: Text(
+                                    '${payment.menus[0].menuName}외의 ${payment.menus.length - 1}종류의 음식'),
+                                subtitle: Text(
+                                  '결제 상태: ${payment.status.toString().split('.').last}'
+                                  '\n결제 일시: $formattedTimestamp'
+                                  '\n결제 금액: ${provider.totalPrice}원'
+                                  '\n배달 방식: ${payment.deliveryType}',
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
-
                 ],
               ),
             ),
