@@ -265,6 +265,10 @@ class ShoppingPage extends StatelessWidget {
                                   '\n결제 금액: ${provider.totalPrice}원'
                                   '\n배달 방식: ${payment.deliveryType}',
                                 ),
+                                  trailing: CustomButton(
+                              onPressed: () {
+                              }, text: Text("칼로리 기록",style:const TextStyle(fontSize: 12)),
+                            ),
                               ),
                             );
                           },
