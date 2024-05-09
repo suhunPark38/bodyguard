@@ -262,7 +262,7 @@ class ShoppingPage extends StatelessWidget {
                                 subtitle: Text(
                                   '결제 상태: ${payment.status.toString().split('.').last}'
                                   '\n결제 일시: $formattedTimestamp'
-                                  '\n결제 금액: ${provider.totalPrice}원'
+                                  '\n결제 금액: ${payment.totalPrice}원'
                                   '\n배달 방식: ${payment.deliveryType}',
                                 ),
                                   trailing: CustomButton(
