@@ -52,5 +52,21 @@ class StoreService {
       return menus;
     });
   }
+
+  Future<StoreMenu?> getMenuById(String storeId, String menuId) async {
+    try {
+      DocumentSnapshot menuSnapshot = await _storeCollection.doc(storeId).collection('menu').doc(menuId).get();
+      if (menuSnapshot.exists) {
+        StoreMenu menu = StoreMenu.fromJson(menuSnapshot.id, menuSnapshot.data()! as Map<String, dynamic>);
+        return menu;
+      } else {
+        return null; // 해당 ID의 메뉴가 존재하지 않을 경우 null 반환
+      }
+    } catch (e) {
+      print("Error getting menu by ID: $e");
+      return null; // 에러 발생 시 null 반환
+    }
+  }
+
 }
 
