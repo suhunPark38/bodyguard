@@ -5,9 +5,6 @@ import '../model/diet_record.dart';
 import '../utils/calculate_util.dart';
 
 class DietProvider with ChangeNotifier {
-
-  final ConfigDatabase configDatabase = ConfigDatabase();
-
   List<DietData> _diets = [];
   List<DietData> _breakfast = [];
   List<DietData> _lunch =[];
@@ -16,6 +13,8 @@ class DietProvider with ChangeNotifier {
   DateTime _eatingTime = DateTime.now();
 
   bool _disposed = false;
+
+  final database =  ConfigDatabase.instance;
 
 
   List<DietData> get diets => _diets;
@@ -48,17 +47,17 @@ class DietProvider with ChangeNotifier {
   }
 
   void notifyInsertDiet(DietCompanion dietCompanion) {
-    configDatabase.insertDiet(dietCompanion);
+    database.insertDiet(dietCompanion);
     _updateDietsList(_eatingTime);
   }
 
   void notifyDeleteDiet(int dietId) {
-    configDatabase.deleteDiet(dietId);
+    database.deleteDiet(dietId);
     _updateDietsList(_eatingTime);
   }
 
   void notifyUpdateDiet(DietCompanion dietCompanion) {
-    configDatabase.updateDiet(dietCompanion, dietCompanion.dietId.value);
+    database.updateDiet(dietCompanion, dietCompanion.dietId.value);
     _updateDietsList(_eatingTime);
   }
 
@@ -67,7 +66,7 @@ class DietProvider with ChangeNotifier {
 
 
   void _updateDietsList(DateTime eatingTime) async {
-    _diets = await configDatabase.getDietByEatingTime(eatingTime);
+    _diets = await database.getDietByEatingTime(eatingTime);
 
     _breakfast = _diets.where((diet) => diet.classification == 0).toList();
     _lunch = _diets.where((diet) => diet.classification == 1).toList();

@@ -61,10 +61,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   table_calendar: ^3.0.9
   intl: ^0.18.1
-  provider: ^6.1.2
   flutter_local_notifications: ^17.1.2
   pedometer: ^4.0.1
-  provider: ^6.1.2
 
   # 전역 상태 관리 provider 사용
   provider: ^6.1.2

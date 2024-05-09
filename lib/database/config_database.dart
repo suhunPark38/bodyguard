@@ -9,10 +9,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-
-
 part 'config_database.g.dart';
-
 
 /// localdb 관리 클래스
 @DriftDatabase(
@@ -87,7 +84,6 @@ class ConfigDatabase extends _$ConfigDatabase {
   Future<void> deleteDiet (int dietId) async {
     await (delete(diet)..where((d) => d.dietId.equals(dietId))).go();
   }
-}
 
   /// 특정 날짜의 총 칼로리 계산
   Future<double> getTotalCaloriesForDate(DateTime date) async {
@@ -105,14 +101,20 @@ class ConfigDatabase extends _$ConfigDatabase {
     return totalCalories;
   }
 
-  static LazyDatabase _openConnection() {
+}
+
+
+
+
+
+   LazyDatabase _openConnection() {
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(p.join(dbFolder.path, 'local_db.sqlite'));
       return NativeDatabase(file);
     });
   }
-}
+
 
 
 

@@ -23,7 +23,6 @@ class MyEnterCaloriesPage extends StatefulWidget {
 }
 
 class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
-  final ConfigDatabase configDatabase = ConfigDatabase();
 
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
