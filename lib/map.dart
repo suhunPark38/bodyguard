@@ -1,24 +1,28 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:math' as Math;
+
 
 import 'package:bodyguard/model/store_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:bodyguard/model/store_model.dart';
-//import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'firebase_options.dart';
 
 
 import 'package:http/http.dart' as http;
 
 
-//final storage = FirebaseStorage.instance;
+final storage = FirebaseStorage.instance;
 final naverclientid = "yrgpw62fjk";
 final naversecret = "S3EybkJIeurZPmXNmBfhi2j5HwwqrDckAz5Sq2NY";
+
+const dummy = NLatLng(37.58238669765058, 127.0100286533862);
 
 
 Future<Widget> MapRun() async {
@@ -37,7 +41,6 @@ Future<Widget> MapRun() async {
 Future<void> _initialize() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //실수로 새로운 필드 생성함 문제는 없음
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -60,10 +63,8 @@ class NaverMapApp extends StatelessWidget {
   }).toList(),
         super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -74,7 +75,7 @@ class NaverMapApp extends StatelessWidget {
                 //지도 생성시 초기 위치 조절
                 options: NaverMapViewOptions(
                     initialCameraPosition: NCameraPosition(
-                        target: NLatLng(37.58238669765058, 127.0100286533862),
+                        target: dummy,
                         zoom: 14)),
                 onMapReady: (controller) async {
 
@@ -104,7 +105,7 @@ class NaverMapApp extends StatelessWidget {
               builder: (BuildContext context, ScrollController scrollController) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Colors.blueGrey,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20)),
@@ -129,13 +130,20 @@ class NaverMapApp extends StatelessWidget {
                           itemCount: stores.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(stores[index].storeName),
-                              subtitle: Text('Latitude: ${stores[index].latitude}, Longitude: ${stores[index].longitude}'),
+                              leading: Image.network(stores[index].image, width: 100, height: 100, fit: BoxFit.fill),
+                              title: Text("${stores[index].storeName}"),
+                              subtitle: Text("${stores[index].subscript}"),
+                              trailing: Column(
+                                children: [
+                                  Text("${stores[index].cuisineType}"),
+                                  Text( "${calDist(dummy, stores[index].latitude, stores[index].longitude)}")
+                                ],
+                              ),
                               onTap: (){
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ShortPathView(UserNLatLng: const NLatLng(37.58238669765058, 127.0100286533862), StoreNLatLng: NLatLng(stores[index].latitude, stores[index].longitude)), // 받은 Widget으로 화면 전환
+                                    builder: (context) => ShortPathView(UserNLatLng: dummy, StoreNLatLng: NLatLng(stores[index].latitude, stores[index].longitude)), // 받은 Widget으로 화면 전환
                                   ),
                                 );
                               },
@@ -211,25 +219,16 @@ Future<List?> searchPath({required NLatLng start, required NLatLng goal}) async{
     log('경로에 대한 좌표 오류');
     throw Exception('Failed to load data');
   }
-  log("start=${start.latitude},${start.longitude}&goal=${goal.latitude},${goal.longitude}");
+  //log("start=${start.latitude},${start.longitude}&goal=${goal.latitude},${goal.longitude}");
   var url = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${start.longitude},${start.latitude}&goal=${goal.longitude},${goal.latitude}&option=trafast";
-  log(url);
+  //log(url);
   Uri uri = Uri.parse(url);
   var response = await http.get(uri, headers: <String, String>{
     "X-NCP-APIGW-API-KEY-ID": naverclientid,
     "X-NCP-APIGW-API-KEY": naversecret,
   });
   if (response.statusCode == 200) {
-    // Map<String?, dynamic> map = await json.decode(response.body);
-    //
-    // //log출력을 위한 것
-    // final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-    // //log(decoded.toString());
-    // Map<String?, dynamic> body = map['route'];
-    // Map<String?, dynamic> item = body['trafast'];
-    // print(body);
     var decodedData = jsonDecode(utf8.decode(response.bodyBytes));
-
     // 'route' -> 'trafast' 배열 첫 번째 요소의 'path' 키에 접근
     if (decodedData['route'] != null && decodedData['route']['trafast'] != null && decodedData['route']['trafast'].isNotEmpty) {
       List<dynamic> path = decodedData['route']['trafast'][0]['path'];
@@ -302,3 +301,35 @@ List<NLatLng> conversion2NLatLng(List<dynamic> list){
   return path;
 }
 
+
+NLatLng address2NLatLng(String address){
+
+
+  return NLatLng(0, 0);
+}
+
+
+String NLatLng2Address(NLatLng nll){
+
+
+  return "";
+}
+
+String calDist(NLatLng user, double lat, double lon){
+  const EARTH_R = 6371000.0;
+  const rad = Math.pi / 180;
+  var radLat1 = rad * user.latitude;
+  var radLat2 = rad * lat;
+  var radDist = rad * (user.longitude - lon);
+
+  var distance = Math.sin(radLat1) * Math.sin(radLat2);
+  distance = distance + Math.cos(radLat1) * Math.cos(radLat2) * Math.cos(radDist);
+  var ret = EARTH_R * Math.acos(distance);
+
+
+  if(ret.round() >=1000){
+    return "${(ret / 1000).toStringAsFixed(2)}km";
+  }else{
+    return "${ret.toStringAsFixed(2)}m";
+  }
+}

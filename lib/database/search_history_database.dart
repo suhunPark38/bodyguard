@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class SearchHistoryDatabaseHelper {
+class SearchHistoryDatabase {
   static Database? _database;
 
   Future<Database> get database async {
