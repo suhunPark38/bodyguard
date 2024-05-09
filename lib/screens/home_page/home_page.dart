@@ -1,3 +1,5 @@
+import 'package:bodyguard/widgets/calorie_info.dart';
+import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';

@@ -1,3 +1,4 @@
+import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/today_health_data_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => TodayHealthDataProvider()),
           ChangeNotifierProvider(create: (context) => ShoppingProvider()),
+    ChangeNotifierProvider(create: (_) => DietProvider()),
           ChangeNotifierProvider(create: (_) => ActivityProvider()),
 
         ],

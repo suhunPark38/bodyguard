@@ -34,11 +34,11 @@ class $DietTable extends Diet with TableInfo<$DietTable, DietData> {
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'amount', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _classficationMeta =
-      const VerificationMeta('classfication');
+  static const VerificationMeta _classificationMeta =
+      const VerificationMeta('classification');
   @override
-  late final GeneratedColumn<int> classfication = GeneratedColumn<int>(
-      'classfication', aliasedName, false,
+  late final GeneratedColumn<int> classification = GeneratedColumn<int>(
+      'classification', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _caloriesMeta =
       const VerificationMeta('calories');
@@ -79,7 +79,7 @@ class $DietTable extends Diet with TableInfo<$DietTable, DietData> {
         eatingTime,
         menuName,
         amount,
-        classfication,
+        classification,
         calories,
         carbohydrate,
         protein,
@@ -121,13 +121,13 @@ class $DietTable extends Diet with TableInfo<$DietTable, DietData> {
     } else if (isInserting) {
       context.missing(_amountMeta);
     }
-    if (data.containsKey('classfication')) {
+    if (data.containsKey('classification')) {
       context.handle(
-          _classficationMeta,
-          classfication.isAcceptableOrUnknown(
-              data['classfication']!, _classficationMeta));
+          _classificationMeta,
+          classification.isAcceptableOrUnknown(
+              data['classification']!, _classificationMeta));
     } else if (isInserting) {
-      context.missing(_classficationMeta);
+      context.missing(_classificationMeta);
     }
     if (data.containsKey('calories')) {
       context.handle(_caloriesMeta,
@@ -184,8 +184,8 @@ class $DietTable extends Diet with TableInfo<$DietTable, DietData> {
           .read(DriftSqlType.string, data['${effectivePrefix}menu_name'])!,
       amount: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
-      classfication: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}classfication'])!,
+      classification: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}classification'])!,
       calories: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}calories'])!,
       carbohydrate: attachedDatabase.typeMapping
@@ -212,7 +212,7 @@ class DietData extends DataClass implements Insertable<DietData> {
   final DateTime eatingTime;
   final String menuName;
   final double amount;
-  final int classfication;
+  final int classification;
   final double calories;
   final double carbohydrate;
   final double protein;
@@ -224,7 +224,7 @@ class DietData extends DataClass implements Insertable<DietData> {
       required this.eatingTime,
       required this.menuName,
       required this.amount,
-      required this.classfication,
+      required this.classification,
       required this.calories,
       required this.carbohydrate,
       required this.protein,
@@ -238,7 +238,7 @@ class DietData extends DataClass implements Insertable<DietData> {
     map['eating_time'] = Variable<DateTime>(eatingTime);
     map['menu_name'] = Variable<String>(menuName);
     map['amount'] = Variable<double>(amount);
-    map['classfication'] = Variable<int>(classfication);
+    map['classification'] = Variable<int>(classification);
     map['calories'] = Variable<double>(calories);
     map['carbohydrate'] = Variable<double>(carbohydrate);
     map['protein'] = Variable<double>(protein);
@@ -254,7 +254,7 @@ class DietData extends DataClass implements Insertable<DietData> {
       eatingTime: Value(eatingTime),
       menuName: Value(menuName),
       amount: Value(amount),
-      classfication: Value(classfication),
+      classification: Value(classification),
       calories: Value(calories),
       carbohydrate: Value(carbohydrate),
       protein: Value(protein),
@@ -272,7 +272,7 @@ class DietData extends DataClass implements Insertable<DietData> {
       eatingTime: serializer.fromJson<DateTime>(json['eatingTime']),
       menuName: serializer.fromJson<String>(json['menuName']),
       amount: serializer.fromJson<double>(json['amount']),
-      classfication: serializer.fromJson<int>(json['classfication']),
+      classification: serializer.fromJson<int>(json['classification']),
       calories: serializer.fromJson<double>(json['calories']),
       carbohydrate: serializer.fromJson<double>(json['carbohydrate']),
       protein: serializer.fromJson<double>(json['protein']),
@@ -289,7 +289,7 @@ class DietData extends DataClass implements Insertable<DietData> {
       'eatingTime': serializer.toJson<DateTime>(eatingTime),
       'menuName': serializer.toJson<String>(menuName),
       'amount': serializer.toJson<double>(amount),
-      'classfication': serializer.toJson<int>(classfication),
+      'classification': serializer.toJson<int>(classification),
       'calories': serializer.toJson<double>(calories),
       'carbohydrate': serializer.toJson<double>(carbohydrate),
       'protein': serializer.toJson<double>(protein),
@@ -304,7 +304,7 @@ class DietData extends DataClass implements Insertable<DietData> {
           DateTime? eatingTime,
           String? menuName,
           double? amount,
-          int? classfication,
+          int? classification,
           double? calories,
           double? carbohydrate,
           double? protein,
@@ -316,7 +316,7 @@ class DietData extends DataClass implements Insertable<DietData> {
         eatingTime: eatingTime ?? this.eatingTime,
         menuName: menuName ?? this.menuName,
         amount: amount ?? this.amount,
-        classfication: classfication ?? this.classfication,
+        classification: classification ?? this.classification,
         calories: calories ?? this.calories,
         carbohydrate: carbohydrate ?? this.carbohydrate,
         protein: protein ?? this.protein,
@@ -331,7 +331,7 @@ class DietData extends DataClass implements Insertable<DietData> {
           ..write('eatingTime: $eatingTime, ')
           ..write('menuName: $menuName, ')
           ..write('amount: $amount, ')
-          ..write('classfication: $classfication, ')
+          ..write('classification: $classification, ')
           ..write('calories: $calories, ')
           ..write('carbohydrate: $carbohydrate, ')
           ..write('protein: $protein, ')
@@ -344,7 +344,7 @@ class DietData extends DataClass implements Insertable<DietData> {
 
   @override
   int get hashCode => Object.hash(dietId, eatingTime, menuName, amount,
-      classfication, calories, carbohydrate, protein, fat, sodium, sugar);
+      classification, calories, carbohydrate, protein, fat, sodium, sugar);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -353,7 +353,7 @@ class DietData extends DataClass implements Insertable<DietData> {
           other.eatingTime == this.eatingTime &&
           other.menuName == this.menuName &&
           other.amount == this.amount &&
-          other.classfication == this.classfication &&
+          other.classification == this.classification &&
           other.calories == this.calories &&
           other.carbohydrate == this.carbohydrate &&
           other.protein == this.protein &&
@@ -367,7 +367,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
   final Value<DateTime> eatingTime;
   final Value<String> menuName;
   final Value<double> amount;
-  final Value<int> classfication;
+  final Value<int> classification;
   final Value<double> calories;
   final Value<double> carbohydrate;
   final Value<double> protein;
@@ -379,7 +379,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
     this.eatingTime = const Value.absent(),
     this.menuName = const Value.absent(),
     this.amount = const Value.absent(),
-    this.classfication = const Value.absent(),
+    this.classification = const Value.absent(),
     this.calories = const Value.absent(),
     this.carbohydrate = const Value.absent(),
     this.protein = const Value.absent(),
@@ -392,7 +392,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
     required DateTime eatingTime,
     required String menuName,
     required double amount,
-    required int classfication,
+    required int classification,
     required double calories,
     required double carbohydrate,
     required double protein,
@@ -402,7 +402,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
   })  : eatingTime = Value(eatingTime),
         menuName = Value(menuName),
         amount = Value(amount),
-        classfication = Value(classfication),
+        classification = Value(classification),
         calories = Value(calories),
         carbohydrate = Value(carbohydrate),
         protein = Value(protein),
@@ -414,7 +414,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
     Expression<DateTime>? eatingTime,
     Expression<String>? menuName,
     Expression<double>? amount,
-    Expression<int>? classfication,
+    Expression<int>? classification,
     Expression<double>? calories,
     Expression<double>? carbohydrate,
     Expression<double>? protein,
@@ -427,7 +427,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
       if (eatingTime != null) 'eating_time': eatingTime,
       if (menuName != null) 'menu_name': menuName,
       if (amount != null) 'amount': amount,
-      if (classfication != null) 'classfication': classfication,
+      if (classification != null) 'classification': classification,
       if (calories != null) 'calories': calories,
       if (carbohydrate != null) 'carbohydrate': carbohydrate,
       if (protein != null) 'protein': protein,
@@ -442,7 +442,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
       Value<DateTime>? eatingTime,
       Value<String>? menuName,
       Value<double>? amount,
-      Value<int>? classfication,
+      Value<int>? classification,
       Value<double>? calories,
       Value<double>? carbohydrate,
       Value<double>? protein,
@@ -454,7 +454,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
       eatingTime: eatingTime ?? this.eatingTime,
       menuName: menuName ?? this.menuName,
       amount: amount ?? this.amount,
-      classfication: classfication ?? this.classfication,
+      classification: classification ?? this.classification,
       calories: calories ?? this.calories,
       carbohydrate: carbohydrate ?? this.carbohydrate,
       protein: protein ?? this.protein,
@@ -479,8 +479,8 @@ class DietCompanion extends UpdateCompanion<DietData> {
     if (amount.present) {
       map['amount'] = Variable<double>(amount.value);
     }
-    if (classfication.present) {
-      map['classfication'] = Variable<int>(classfication.value);
+    if (classification.present) {
+      map['classification'] = Variable<int>(classification.value);
     }
     if (calories.present) {
       map['calories'] = Variable<double>(calories.value);
@@ -510,7 +510,7 @@ class DietCompanion extends UpdateCompanion<DietData> {
           ..write('eatingTime: $eatingTime, ')
           ..write('menuName: $menuName, ')
           ..write('amount: $amount, ')
-          ..write('classfication: $classfication, ')
+          ..write('classification: $classification, ')
           ..write('calories: $calories, ')
           ..write('carbohydrate: $carbohydrate, ')
           ..write('protein: $protein, ')
