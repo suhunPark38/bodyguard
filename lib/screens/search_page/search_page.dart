@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/search_keyword_service.dart';
-import '../../database/search_history_database_helper.dart';
+import '../../database/search_history_database.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,7 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   List<String> _recentSearches = [];
   List<String> _popularSearches = [];
-  final SearchHistoryDatabaseHelper _databaseHelper = SearchHistoryDatabaseHelper();
+  final SearchHistoryDatabase _database = SearchHistoryDatabase();
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _loadSearchHistory() async {
-    List<String> searches = await _databaseHelper.getSearchHistory();
+    List<String> searches = await _database.getSearchHistory();
     setState(() {
       _recentSearches = searches;
 
@@ -68,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
         _recentSearches.add(search);
 
       });
-      await _databaseHelper.insertSearch(search);
+      await _database.insertSearch(search);
     }
   }
 
@@ -76,14 +76,14 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _recentSearches.remove(search);
     });
-    await _databaseHelper.deleteSearch(search);
+    await _database.deleteSearch(search);
   }
 
   void _clearAllRecentSearches() async {
     setState(() {
       _recentSearches.clear();
     });
-    await _databaseHelper.clearAllSearches();
+    await _database.clearAllSearches();
   }
 
   void _showCategoryDialog(BuildContext context) {
@@ -91,27 +91,27 @@ class _SearchPageState extends State<SearchPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('카테고리 선택'),
+          title: const Text('카테고리 선택'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // 카테고리 목록 추가
               ListTile(
-                title: Text('카테고리 1'),
+                title: const Text('카테고리 1'),
                 onTap: () {
                   // 카테고리 1 선택 시 동작
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('카테고리 2'),
+                title: const Text('카테고리 2'),
                 onTap: () {
                   // 카테고리 2 선택 시 동작
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('카테고리 3'),
+                title: const Text('카테고리 3'),
                 onTap: () {
                   // 카테고리 3 선택 시 동작
                   Navigator.pop(context);
@@ -131,10 +131,10 @@ class _SearchPageState extends State<SearchPage> {
         title: TextField(
           controller: _searchController,
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
+            prefixIcon: const Icon(Icons.search),
             hintText: "검색어를 입력하세요",
             suffixIcon: IconButton(
-              icon: Icon(Icons.clear),
+              icon: const Icon(Icons.clear),
               onPressed: () {
                 _searchController.clear();
               },
@@ -152,12 +152,13 @@ class _SearchPageState extends State<SearchPage> {
         ),
         centerTitle: true,
       ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
+      body: RefreshIndicator( onRefresh: ()async {_loadPopularSearches();},
+      child:ListView(
+        padding: const EdgeInsets.all(16.0),
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(
+            const Text(
               "최근 검색어",
               style: TextStyle(
                 fontSize: 20,
@@ -167,13 +168,13 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () {
                 _clearAllRecentSearches();
               },
-              child: Text(
+              child: const Text(
                 "모두 지우기",
                 style: TextStyle(),
               ),
             ),
           ]),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _recentSearches.map((search) {
@@ -193,7 +194,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.clear),
+                    icon: const Icon(Icons.clear),
                     onPressed: () {
                       _removeRecentSearch(search);
                     },
@@ -202,7 +203,7 @@ class _SearchPageState extends State<SearchPage> {
               );
             }).toList(),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -221,7 +222,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           _popularSearches.isNotEmpty ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -277,11 +278,11 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () {
                 _showCategoryDialog(context);
               },
-              icon: Icon(Icons.menu, size: 40,),
+              icon: const Icon(Icons.menu, size: 40,),
             ),
           ]),
         ],
-      ),
+      ),)
     );
   }
 
@@ -294,7 +295,7 @@ class _SearchPageState extends State<SearchPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('인기 검색어 (상위 20개)'),
+          title: const Text('인기 검색어 (상위 20개)'),
           content: SingleChildScrollView(
             child: Column(
               children: _popularSearches.map((search) {
@@ -313,7 +314,7 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () {
                 Navigator.pop(context); // 다이얼로그를 닫음
               },
-              child: Text('닫기'),
+              child: const Text('닫기'),
             ),
           ],
         );

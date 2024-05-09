@@ -44,7 +44,7 @@ class PaymentService {
           totalPrice: data['totalPrice'],
           menus: (data['menus'] as List<dynamic>).map((menuData) {
             // Convert each menu data to StoreMenu object
-            return StoreMenu.fromJson(menuData['menuName'], menuData);
+            return StoreMenu.fromJson(menuData['id'], menuData);
           }).toList(),
           deliveryType: data['deliveryType']
         );

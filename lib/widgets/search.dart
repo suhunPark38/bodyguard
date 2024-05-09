@@ -255,7 +255,7 @@ void _showDialog(BuildContext context, Value2 selectedData){
       String menuName = '';
       int classification = 0;
       DateTime eatingTime = DateTime.now();
-      ConfigDatabase _configDatabase = ConfigDatabase();
+      ConfigDatabase _configDatabase =  ConfigDatabase.instance;
 
       return AlertDialog(
         title: const Text('값을 입력하세요'),

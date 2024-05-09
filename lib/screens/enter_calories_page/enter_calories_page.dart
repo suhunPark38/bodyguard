@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:bodyguard/widgets/search.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:bodyguard/utils/calculate_util.dart';
 
 import 'package:bodyguard/database/config_database.dart';
+import '../../providers/today_health_data_provider.dart';
 import '../home_page/my_home_page.dart';
 
 /// 사용자로부터 입력받은 식단 데이터
@@ -41,7 +43,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
   late DateTime _selectedDay;
-  ConfigDatabase _configDatabase = ConfigDatabase();
+  ConfigDatabase _configDatabase = ConfigDatabase.instance;
 
   late List<DietData> _diets = <DietData>[];
 
@@ -100,7 +102,7 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
         ),
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {
+          onPressed: ()  {
             Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back),
@@ -547,6 +549,10 @@ class _MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
                         _setDiets();
 
                         Navigator.of(context).pop();
+
+
+                        //값 입력 후 프로바이더 함수 실행
+                        Provider.of<TodayHealthDataProvider>(context, listen: false).fetchTodayTotalCalories(DateTime.now());
                       },
                       child: const Text('확인'),
                     ),

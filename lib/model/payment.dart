@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bodyguard/model/store_menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -35,7 +37,9 @@ class Payment {
         return StoreMenu.fromJson(menuData['menuName'], menuData);
       }).toList(),
       deliveryType: json['deliveryType'],
+
     );
+
   }
 
   Map<String, dynamic> toJson() {
