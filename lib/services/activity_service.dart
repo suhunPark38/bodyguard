@@ -42,7 +42,7 @@ class ActivityService {
 
   Future<void> incrementSteps(int steps) async {
     try {
-      await _firestore.collection('step_count').doc('user_steps').set(
+      await _firestore.collection('activity_data').doc('user_activity').set(
         {'steps': steps},
         SetOptions(merge: true), // merge 옵션을 사용하여 기존 데이터와 병합
       );
@@ -54,7 +54,7 @@ class ActivityService {
     try {
       // Firebase에서 사용자의 걸음 수를 가져오는 코드
       DocumentSnapshot snapshot =
-      await _firestore.collection('step_count').doc('user_steps').get();
+      await _firestore.collection('activity_data').doc('user_activity').get();
       int currentSteps = snapshot['steps'] ?? 0;
       return currentSteps;
     } catch (error) {
@@ -62,52 +62,6 @@ class ActivityService {
       return 0; // 에러 발생 시 기본값으로 0을 반환
     }
   }
-
-
-
-
-  void updateRunningValues(double runningTime) async {
-    try {
-      // 달리기 데이터를 업데이트합니다.
-      await _firestore.collection('activity_data').doc('user_activity').set(
-        {
-          'weight': weight,
-          'runningTime': runningTime,
-          'caloriesBurned': weight * runningTime / 60 * 3.5,
-        },
-        SetOptions(merge: true),
-      );
-    } catch (error) {
-      print(error);
-    }
-
-    _firestore.collection('runningData').add({
-      'runningTime': runningTime,
-      'timestamp': DateTime.now(),
-    });
-  }
-
-  void updateBikingValues(double bikingTime) async {
-    try {
-      // 자전거 데이터를 업데이트합니다.
-      await _firestore.collection('activity_data').doc('user_activity').set(
-        {
-
-          'bikingTime': bikingTime,
-          'BcaloriesBurned':  bikingTime * bikingSpeed / 60 * 4.0,
-        },
-        SetOptions(merge: true),
-      );
-    } catch (error) {
-      print(error);
-    }
-
-    _firestore.collection('bikingData').add({
-      'bikingTime': bikingTime,
-      'timestamp': DateTime.now(),
-    });
-  }
-
   void addSteps() async {
     try {
       // 현재 사용자의 단계 수를 가져옵니다.
@@ -130,25 +84,50 @@ class ActivityService {
 
 
 
- /*
 
-
-
-void updateValues(double running, double biking) async {
+  void updateRunningValues(double runningTime) async {
     try {
-      // 활동 데이터를 업데이트합니다.
+      // 달리기 데이터를 업데이트합니다.
       await _firestore.collection('activity_data').doc('user_activity').set(
         {
           'weight': weight,
-          'runningTime': running,
-          'caloriesBurned': weight * running / 60 * 3.5,
-          'bikingTime': biking,
-          'BcaloriesBurned': weight * biking * bikingSpeed / 60 * 4.0,
+          'runningTime': runningTime,
+          'caloriesBurned': weight * runningTime / 60 * 3.5,
         },
-        SetOptions(merge: true), // merge 옵션을 사용하여 기존 데이터와 병합
+        SetOptions(merge: true),
       );
     } catch (error) {
       print(error);
     }
-  }*/
+
+
+  }
+
+  void updateBikingValues(double bikingTime) async {
+    try {
+      // 자전거 데이터를 업데이트합니다.
+      await _firestore.collection('activity_data').doc('user_activity').set(
+        {
+
+          'bikingTime': bikingTime,
+          'BcaloriesBurned':  bikingTime * bikingSpeed / 60 * 4.0,
+        },
+        SetOptions(merge: true),
+      );
+    } catch (error) {
+      print(error);
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+
 }

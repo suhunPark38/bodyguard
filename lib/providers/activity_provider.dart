@@ -4,13 +4,69 @@ import '../services/activity_service.dart';
 
 import '../database/activity_database_helper.dart';
 
-class ActivityProvider extends ChangeNotifier {
+
+
+class ActivityProvider with ChangeNotifier {
   final ActivityService _activityService = ActivityService();
   late ActivityData _activityData;
-  bool _isLoading = false; // 로딩 상태를 나타내는 변수 추가
 
   ActivityData get activityData => _activityData;
-  bool get isLoading => _isLoading; // 로딩 상태를 확인하는 getter 추가
+
+  ActivityProvider() {
+    fetchActivityData();
+    _activityData = ActivityData(
+      weight: 70,
+      runningTime: 0,
+      caloriesBurned: 0,
+      bikingTime: 0,
+      BcaloriesBurned: 0,
+      steps: 0,
+    );
+    fetchActivityData();
+  }
+
+
+
+
+  Future<void> fetchActivityData() async {
+    _activityData = (await _activityService.getActivityData()) as ActivityData;
+    notifyListeners();
+  }
+
+  Future<void> updateActivityData(ActivityData data) async {
+    await _activityService.updateActivityData(data);
+    _activityData = data;
+    notifyListeners();
+  }
+
+  Future<void> incrementSteps(int steps) async {
+    _activityData = _activityData.updateSteps(steps);
+    await _activityService.incrementSteps(steps);
+    notifyListeners();
+  }
+
+  Future<void> addSteps() async {
+    try {
+      int currentSteps = await _activityService.getCurrentSteps();
+      currentSteps++;
+      await _activityService.incrementSteps(currentSteps);
+      _activityData = _activityData.updateSteps(currentSteps);
+      notifyListeners();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+// Add other methods if needed for updating specific activity values
+
+}
+
+
+/*class ActivityProvider extends ChangeNotifier {
+  final ActivityService _activityService = ActivityService();
+  late ActivityData _activityData;
+
+  ActivityData get activityData => _activityData;
 
   ActivityProvider() {
     _activityData = ActivityData(
@@ -26,40 +82,30 @@ class ActivityProvider extends ChangeNotifier {
   }
 
   void fetchActivityData() {
-    _isLoading = true; // 데이터 가져오기 시작 시 로딩 상태를 true로 설정
     notifyListeners(); // 상태 업데이트를 알림
     _activityService.getActivityData().listen((data) {
       _activityData = data;
-      _isLoading = false; // 데이터 가져오기 완료 시 로딩 상태를 false로 설정
+
       notifyListeners(); // 상태 업데이트를 알림
     });
   }
 
-  Future<void> addSteps(int count) async {
-    /*_activityData = _activityData.copyWith(steps: _activityData.steps + count);*/
-    _activityData = _activityData.updateSteps(_activityData.steps + count);
+  */
 
-    await DatabaseHelper.insertSteps(_activityData.steps); // SQLite 데이터베이스에 저장
+/*Future<void> addStep(int steps) async {
+    _activityData = _activityData.copyWith(steps: _activityData.steps + steps);
 
+    await incrementSteps(steps);
 
+    notifyListeners();
+  }*//*
+  Future<void> addStep(int steps) async {
+    _activityData = _activityData.updateSteps(_activityData.steps + 1);
+    await incrementSteps(steps);
     notifyListeners();
   }
 
-  /*Future<void> getStoredSteps() async {
-    final storedSteps = await DatabaseHelper.getSteps();
-    if (storedSteps != null) {
-      _activityData = _activityData.copyWith(steps: storedSteps);
-      notifyListeners();
-    }
-  }*/
-
-
-  /*void addSteps(int stepsToAdd) {
-    _activityData = _activityData.copyWith(steps: _activityData.steps + stepsToAdd);
-    notifyListeners();
-  }*/
-
-  void incrementSteps(int steps) async {
+  Future<void> incrementSteps(int steps) async {
     try {
       await _activityService.incrementSteps(steps);
     } catch (error) {
@@ -67,7 +113,36 @@ class ActivityProvider extends ChangeNotifier {
     }
   }
 
-  /*void fetchSteps() async {
+
+
+
+
+}*/
+
+/*Future<void> addSteps(int count) async {
+    */ /*_activityData = _activityData.copyWith(steps: _activityData.steps + count);*/ /*
+    _activityData = _activityData.updateSteps(_activityData.steps + count);
+
+    await DatabaseHelper.insertSteps(_activityData.steps); // SQLite 데이터베이스에 저장
+
+
+    notifyListeners();
+  }*/
+
+/*Future<void> getStoredSteps() async {
+    final storedSteps = await DatabaseHelper.getSteps();
+    if (storedSteps != null) {
+      _activityData = _activityData.copyWith(steps: storedSteps);
+      notifyListeners();
+    }
+  }*/
+
+/*void addSteps(int stepsToAdd) {
+    _activityData = _activityData.copyWith(steps: _activityData.steps + stepsToAdd);
+    notifyListeners();
+  }*/
+
+/*void fetchSteps() async {
     try {
       int steps = await _activityService.getCurrentSteps();
       _activityData = _activityData.copyWith(steps: steps);
@@ -76,8 +151,6 @@ class ActivityProvider extends ChangeNotifier {
       print(error);
     }
   }*/
-}
-
 
 /*
 void addSteps(int stepsToAdd) {
@@ -86,11 +159,6 @@ void addSteps(int stepsToAdd) {
   }
 
 */
-
-
-
-
-
 
 /*class ActivityProvider extends ChangeNotifier {
   final ActivityService _activityService = ActivityService();

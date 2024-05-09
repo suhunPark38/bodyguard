@@ -39,7 +39,7 @@ class ActivityData {
     );
   }
 
- /* ActivityData copyWith({
+  ActivityData copyWith({
     double? weight,
     double? runningTime,
     double? caloriesBurned,
@@ -55,7 +55,7 @@ class ActivityData {
       BcaloriesBurned: BcaloriesBurned ?? this.BcaloriesBurned,
       steps: steps ?? this.steps,
     );
-  }*/
+  }
 
   ActivityData updateSteps(int newSteps) {
     return ActivityData(

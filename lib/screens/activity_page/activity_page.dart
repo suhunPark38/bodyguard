@@ -158,7 +158,9 @@ class _ActivityPageState extends State<ActivityPage> {
                 ElevatedButton(
                   onPressed: () {
                     // 여기에 서비스 메서드를 호출합니다.
-                    Provider.of<ActivityProvider>(context, listen: false).addSteps(1);
+                    Provider.of<ActivityProvider>(context, listen: false).addSteps();
+
+
                     /*_activityService.addSteps();*/
                   },
                   child: Text('걸음 수 추가'),
