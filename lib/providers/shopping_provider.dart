@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bodyguard/model/store_menu.dart';
 import 'package:bodyguard/database/shopping_database.dart';
 import 'package:uuid/uuid.dart';
+import '../model/menu_item.dart';
 import '../model/payment.dart';
 import '../services/payment_service.dart';
 import '../services/store_service.dart';
@@ -181,22 +182,83 @@ class ShoppingProvider extends ChangeNotifier {
     calculateTotalPrice();
   }
 
-  //결제 내역 추가 함수
-  Future<void> completePayment() async {
-    final payment = Payment(
-      orderId: const Uuid().v4(),
-      currency: 'KRW',
-      status: PaymentStatus.completed,
-      timestamp: DateTime.now(),
-      totalPrice: _totalPrice,
-      menus: _selectedMenus,
-      deliveryType: _deliveryType!,
-    );
+  void completePayment(BuildContext context) {
+    // 선택된 메뉴들을 가게 이름으로 그룹화합니다.
+    Map<String, List<StoreMenu>> storeMenuGroups = {};
+    for (var menu in _selectedMenus) {
+      final storeName = menu.storeName;
+      storeMenuGroups.putIfAbsent(storeName, () => []).add(menu);
+    }
 
-    try {
-      await PaymentService().addPayment(payment);
-    } catch (e) {}
+    // 각 가게별로 결제를 진행합니다.
+    for (var storeName in storeMenuGroups.keys) {
+      final List<StoreMenu> storeMenus = storeMenuGroups[storeName]!;
+      final int storeTotalPrice = calculateTotalPriceForStore(storeMenus);
+
+      final List<MenuItem> menuItems = [];
+      for (var menu in storeMenus) {
+        final int quantity = _menuQuantities[menu] ?? 0;
+        menuItems.add(MenuItem(menu: menu, quantity: quantity));
+      }
+
+      final payment = Payment(
+        orderId: const Uuid().v4(),
+        currency: 'KRW',
+        status: PaymentStatus.completed,
+        timestamp: DateTime.now(),
+        totalPrice: storeTotalPrice,
+        menuItems: menuItems,
+        deliveryType: _deliveryType!,
+      );
+
+      try {
+        // 각 가게별로 결제를 진행합니다.
+        PaymentService().addPayment(payment); // 비동기 호출이므로 await 사용
+        // 결제가 성공하면 해당 가게의 메뉴들을 삭제합니다.
+        removeMenusByStore(storeName);
+        // 결제가 성공했을 때 스낵바 표시
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$storeName 결제가 성공적으로 완료되었습니다.'),
+            duration: const Duration(seconds: 2), // 스낵바 표시 시간 설정
+          ),
+        );
+      } catch (e) {
+        print('가게별 결제 중 오류가 발생했습니다: $e');
+        // 결제가 실패했을 때 스낵바 표시
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('결제 중 오류가 발생했습니다: $e'),
+            duration: Duration(seconds: 2), // 스낵바 표시 시간 설정
+          ),
+        );
+      }
+
+    }
   }
+
+  int calculateTotalPriceForStore(List<StoreMenu> storeMenus) {
+    int totalPrice = 0;
+    for (var menu in storeMenus) {
+      totalPrice += (menu.price * _menuQuantities[menu]!);
+    }
+    return totalPrice;
+  }
+  void removeMenusByStore(String storeName) {
+    List<StoreMenu> storeMenusToRemove = [];
+    for (var menu in _selectedMenus) {
+      if (menu.storeName == storeName) {
+        storeMenusToRemove.add(menu);
+      }
+    }
+    for (var menu in storeMenusToRemove) {
+      _selectedMenus.remove(menu);
+      _menuQuantities.remove(menu);
+    }
+    _storeMenuMap.remove(storeName);
+  }
+
+
 
   //결제 내역 불러오기 함수
   Future<void> fetchPayments({bool forceRefresh = false}) async {

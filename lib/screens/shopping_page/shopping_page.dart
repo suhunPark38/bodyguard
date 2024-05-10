@@ -255,10 +255,16 @@ class ShoppingPage extends StatelessWidget {
                                 provider.sortedAndFilteredPayments[index];
                             final formattedTimestamp =
                                 '${payment.timestamp.year}년 ${payment.timestamp.month}월 ${payment.timestamp.day}일 ${payment.timestamp.hour}시 ${payment.timestamp.minute}분';
+                            int totalFoodCount = 0;
+                            for (var item in payment.menuItems) {
+                              totalFoodCount += item.quantity;
+                            }
+                            final firstMenu = payment.menuItems.first.menu.menuName;
                             return Card(
+
                               child: ListTile(
                                 title: Text(
-                                    '${payment.menus[0].menuName}외의 ${payment.menus.length - 1}종류의 음식'),
+                                    '$firstMenu와 ${totalFoodCount-1}개의 음식'),
                                 subtitle: Text(
                                   '결제 상태: ${payment.status.toString().split('.').last}'
                                   '\n결제 일시: $formattedTimestamp'
@@ -267,7 +273,7 @@ class ShoppingPage extends StatelessWidget {
                                 ),
                                   trailing: CustomButton(
                               onPressed: () {
-                              }, text: Text("칼로리 기록",style:const TextStyle(fontSize: 12)),
+                              }, text: const Text("칼로리 기록",style:TextStyle(fontSize: 12)),
                             ),
                               ),
                             );
@@ -389,11 +395,9 @@ class ShoppingPage extends StatelessWidget {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('음식이 텅 비었어요.')));
                             } else {
-                              provider.completePayment();
+                              provider.completePayment(context);
                               provider.refreshPayments();
                               provider.handleReset(); //결제를 완료 후 장바구니 데이터 클리어
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('결제를 성공했습니다.')));
                             }
                           },
                           text: Text('${provider.totalPrice}원 결제하기'),

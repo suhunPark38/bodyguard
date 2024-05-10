@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../model/menu_item.dart';
 import '../model/payment.dart';
-import '../model/store_menu.dart';
-
 
 class PaymentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -16,7 +15,7 @@ class PaymentService {
         'status': payment.status.toString().split('.').last,
         'timestamp': payment.timestamp,
         'totalPrice': payment.totalPrice,
-        'menus': payment.menus.map((menu) => menu.toJson()).toList(),
+        'menuItems': payment.menuItems.map((item) => item.toJson()).toList(), // 수정된 부분
         'deliveryType': payment.deliveryType,
       });
 
@@ -39,14 +38,15 @@ class PaymentService {
           orderId: data['orderId'],
           currency: data['currency'],
           status: PaymentStatus.values.firstWhere(
-                  (status) => status.toString() == 'PaymentStatus.${data['status']}'),
+                (status) =>
+            status.toString() == 'PaymentStatus.${data['status']}',
+          ),
           timestamp: (data['timestamp'] as Timestamp).toDate(),
           totalPrice: data['totalPrice'],
-          menus: (data['menus'] as List<dynamic>).map((menuData) {
-            // Convert each menu data to StoreMenu object
-            return StoreMenu.fromJson(menuData['id'], menuData);
-          }).toList(),
-          deliveryType: data['deliveryType']
+          menuItems: (data['menuItems'] as List<dynamic>).map((itemData) {
+            return MenuItem.fromJson(itemData);
+          }).toList(), // 수정된 부분
+          deliveryType: data['deliveryType'],
         );
       }).toList();
 
@@ -56,5 +56,4 @@ class PaymentService {
       throw e;
     }
   }
-
 }
