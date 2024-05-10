@@ -69,7 +69,7 @@ class _DietInputDialogState extends State<DietInputDialog2> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('값을 입력하세요'),
+      title:  Text(menuName),
       content: SingleChildScrollView(
         child: SizedBox(
           child: Column(

@@ -299,7 +299,17 @@ class ShoppingPage extends StatelessWidget {
                                     );
                                   },
                                 ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          PaymentDetailPage(payment: payment),
+                                    ),
+                                  );
+                                },
                               ),
+
                             );
                           },
                         ),

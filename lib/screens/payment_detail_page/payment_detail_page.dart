@@ -137,12 +137,14 @@ class PaymentDetailPage extends StatelessWidget {
               Expanded(
                 child: CustomButton(
                   onPressed: () {
-                     showDialog(
+                    if (Provider.of<ShoppingProvider>(context, listen: false).checkedMenus.isNotEmpty) {
+                      showDialog(
                       context: context,
                       builder: (BuildContext builder) {
                         return DietInputDialog2(payment: payment,);
                       },
                     );
+                    }
 
                   },
                   text: const Text('칼로리 기록하기'),
