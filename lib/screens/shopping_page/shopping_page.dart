@@ -78,10 +78,10 @@ class ShoppingPage extends StatelessWidget {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               ClipRRect(
-                                                borderRadius: BorderRadius.circular(20),
+                                                borderRadius: BorderRadius.circular(25),
                                                 child: SizedBox(
-                                                  width: 60,
-                                                  height: 60,
+                                                  width: 40,
+                                                  height: 40,
                                                   child: Image.network(
                                                     menu.image,
                                                     fit: BoxFit.fill,

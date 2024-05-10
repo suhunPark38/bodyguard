@@ -13,7 +13,7 @@ import '../body_page/body_page.dart';
 import '../enter_calories_page/enter_calories_page.dart';
 import '../search_page/search_page.dart';
 import '../shopping_page/shopping_page.dart';
-import 'my_home_page.dart';
+import '../my_home_page/my_home_page.dart';
 
 class HomePage extends StatelessWidget {
 

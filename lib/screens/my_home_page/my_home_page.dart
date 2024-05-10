@@ -2,7 +2,7 @@ import 'package:bodyguard/screens/health_page/health_page.dart';
 import 'package:flutter/material.dart';
 import '../../utils/custom_icon.dart';
 import '../shopping_page/shopping_page.dart';
-import 'home_page.dart';
+import '../home_page/home_page.dart';
 import '../search_page/search_page.dart';
 import '../identity_page/identity_page.dart';
 

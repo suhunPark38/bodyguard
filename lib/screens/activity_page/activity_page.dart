@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../activity_page/widgets/activity_widgets.dart';
 
 import '../../widgets/circle_chart.dart';
-import '../home_page/my_home_page.dart';
+import '../my_home_page/my_home_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/activity_service.dart';

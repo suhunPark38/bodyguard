@@ -7,7 +7,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import 'package:bodyguard/database/config_database.dart';
 import '../../providers/today_health_data_provider.dart';
-import '../home_page/my_home_page.dart';
+import '../my_home_page/my_home_page.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:provider/provider.dart';
 

@@ -7,7 +7,7 @@ import '../../services/store_service.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/nutrient_info_button.dart';
-import '../home_page/my_home_page.dart';
+import '../my_home_page/my_home_page.dart';
 
 class StoreMenuPage extends StatelessWidget {
   final Store store;

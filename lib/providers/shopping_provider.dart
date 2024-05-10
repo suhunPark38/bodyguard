@@ -10,7 +10,7 @@ import '../utils/format_util.dart';
 
 class ShoppingProvider extends ChangeNotifier {
 
-  final List<StoreMenu> _checkedMenus = []; //스토어 메뉴 페이지에서 체크되고 제출되지 않은 메뉴
+  final List<StoreMenu> _checkedMenus = []; //체크되고 제출되지 않은 메뉴
 
 
   List<StoreMenu> _selectedMenus = []; //선택된 메뉴들

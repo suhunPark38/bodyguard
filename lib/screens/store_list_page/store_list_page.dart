@@ -2,7 +2,7 @@ import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/screens/store_list_page/widgets/store_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../home_page/my_home_page.dart';
+import '../my_home_page/my_home_page.dart';
 import '../shopping_page/shopping_page.dart';
 import '../../services/store_service.dart';
 

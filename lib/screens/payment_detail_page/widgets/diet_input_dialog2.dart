@@ -7,9 +7,10 @@ import 'package:provider/provider.dart';
 import '../../../database/config_database.dart';
 import '../../../model/payment.dart';
 import '../../../providers/diet_provider.dart';
+import '../../../providers/shopping_provider.dart';
+import '../../enter_calories_page/enter_calories_page.dart';
 
 class DietInputDialog2 extends StatefulWidget {
-
   final Payment payment;
 
   const DietInputDialog2({Key? key, required this.payment}) : super(key: key);
@@ -34,15 +35,35 @@ class _DietInputDialogState extends State<DietInputDialog2> {
   void initState() {
     super.initState();
 
-    menuName = widget.payment.menuItems.first.menu.menuName;
-    calories = widget.payment.menuItems.first.menu.calories;
-    carbohydrates = widget.payment.menuItems.first.menu.carbohydrate;
-    protein = widget.payment.menuItems.first.menu.protein;
-    fat = widget.payment.menuItems.first.menu.fat;
-    sodium = widget.payment.menuItems.first.menu.sodium;
-    sugar=widget.payment.menuItems.first.menu.sugar;
+    menuName = Provider.of<ShoppingProvider>(context, listen: false)
+        .checkedMenus
+        .first
+        .menuName;
+    calories = Provider.of<ShoppingProvider>(context, listen: false)
+        .checkedMenus
+        .first
+        .calories;
+    carbohydrates = Provider.of<ShoppingProvider>(context, listen: false)
+        .checkedMenus
+        .first
+        .carbohydrate;
+    protein = Provider.of<ShoppingProvider>(context, listen: false)
+        .checkedMenus
+        .first
+        .protein;
+    fat = Provider.of<ShoppingProvider>(context, listen: false)
+        .checkedMenus
+        .first
+        .fat;
+    sodium = Provider.of<ShoppingProvider>(context, listen: false)
+        .checkedMenus
+        .first
+        .sodium;
+    sugar = Provider.of<ShoppingProvider>(context, listen: false)
+        .checkedMenus
+        .first
+        .sugar;
     eatingTime = widget.payment.timestamp;
-
   }
 
   @override
@@ -171,13 +192,21 @@ class _DietInputDialogState extends State<DietInputDialog2> {
                 amount: Value(amount),
                 classification: Value(classification),
                 calories: Value(calories),
-                carbohydrate:
-                    Value(carbohydrates),
+                carbohydrate: Value(carbohydrates),
                 protein: Value(protein),
                 fat: Value(fat),
                 sodium: Value(sodium),
                 sugar: Value(sugar),
+
+
               ));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                  const MyEnterCaloriesPage(),
+                ),
+              );
             }
           },
           child: const Text('확인'),
