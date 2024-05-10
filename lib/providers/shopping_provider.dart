@@ -6,6 +6,7 @@ import '../model/menu_item.dart';
 import '../model/payment.dart';
 import '../services/payment_service.dart';
 import '../services/store_service.dart';
+import '../utils/format_util.dart';
 
 class ShoppingProvider extends ChangeNotifier {
 
@@ -202,7 +203,7 @@ class ShoppingProvider extends ChangeNotifier {
       }
 
       final payment = Payment(
-        orderId: const Uuid().v4(),
+        orderId: generateOrderId(),
         currency: 'KRW',
         status: PaymentStatus.completed,
         timestamp: DateTime.now(),

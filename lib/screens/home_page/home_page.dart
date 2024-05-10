@@ -13,6 +13,7 @@ import '../body_page/body_page.dart';
 import '../enter_calories_page/enter_calories_page.dart';
 import '../search_page/search_page.dart';
 import '../shopping_page/shopping_page.dart';
+import 'my_home_page.dart';
 
 class HomePage extends StatelessWidget {
 
@@ -32,11 +33,10 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchPage(),
-                ),
+                MaterialPageRoute(builder: (context) => const MyHomePage(initialIndex: 1,)),
+                    (route) => false,
               );
             },
           ),
@@ -44,12 +44,11 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {
               Provider.of<ShoppingProvider>(context, listen: false).setCurrentTabIndex(0);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ShoppingPage(),
-                ),
-              );
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage(initialIndex: 3,)),
+                      (route) => false,
+                );
             },
           ),
           IconButton(

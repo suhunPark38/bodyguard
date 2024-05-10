@@ -1,13 +1,13 @@
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../model/payment.dart';
 import '../../map.dart';
 
+import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/nutrient_info_button.dart';
+import '../payment_detail_page/payment_detail_page.dart';
 
 class ShoppingPage extends StatelessWidget {
   const ShoppingPage({super.key});
@@ -72,11 +72,23 @@ class ShoppingPage extends StatelessWidget {
                                               BorderRadius.circular(20),
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.all(10),
+                                          padding: const EdgeInsets.all(8),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(20),
+                                                child: SizedBox(
+                                                  width: 60,
+                                                  height: 60,
+                                                  child: Image.network(
+                                                    menu.image,
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                              )
+,
                                               Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -86,21 +98,21 @@ class ShoppingPage extends StatelessWidget {
                                                       menu.menuName,
                                                       style: const TextStyle(
                                                           fontSize: 15),
-                                                      softWrap: true,
+                                                      overflow: TextOverflow.fade,
                                                       textAlign: TextAlign.left,
                                                     ),
                                                     NutrientInfoButton(
                                                         size: 15, menu: menu),
                                                   ]),
                                                   Text(
-                                                    '개당 ${menu.price}원',
+                                                    '개당 ${formatNumber(menu.price)}원',
                                                     style: const TextStyle(
                                                       fontSize: 12,
                                                       color: Colors.grey,
                                                     ),
                                                   ),
                                                   Text(
-                                                    '${provider.menuQuantities[menu]! * menu.price}원',
+                                                    '${formatNumber(provider.menuQuantities[menu]! * menu.price)}원',
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -212,9 +224,10 @@ class ShoppingPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                                '시작일 ${provider.selectedStartDate.year  }년'
+                                '시작일 ${provider.selectedStartDate.year}년'
                                 ' ${provider.selectedStartDate.month}월'
-                                ' ${provider.selectedStartDate.day }일',style:const TextStyle(fontSize: 12)),
+                                ' ${provider.selectedStartDate.day}일',
+                                style: const TextStyle(fontSize: 12)),
                             IconButton(
                               icon: const Icon(Icons.calendar_today),
                               onPressed: () async {
@@ -229,9 +242,11 @@ class ShoppingPage extends StatelessWidget {
                                 }
                               },
                             ),
-                            Text('종료일 ${provider.selectedEndDate.year}년'
+                            Text(
+                                '종료일 ${provider.selectedEndDate.year}년'
                                 ' ${provider.selectedEndDate.month}월'
-                                ' ${provider.selectedEndDate.day}일',style:const TextStyle(fontSize: 12)),
+                                ' ${provider.selectedEndDate.day}일',
+                                style: const TextStyle(fontSize: 12)),
                             IconButton(
                               icon: const Icon(Icons.calendar_today),
                               onPressed: () async {
@@ -254,27 +269,36 @@ class ShoppingPage extends StatelessWidget {
                             final payment =
                                 provider.sortedAndFilteredPayments[index];
                             final formattedTimestamp =
-                                '${payment.timestamp.year}년 ${payment.timestamp.month}월 ${payment.timestamp.day}일 ${payment.timestamp.hour}시 ${payment.timestamp.minute}분';
+                                formatTimestamp(payment.timestamp);
                             int totalFoodCount = 0;
                             for (var item in payment.menuItems) {
                               totalFoodCount += item.quantity;
                             }
-                            final firstMenu = payment.menuItems.first.menu.menuName;
+                            final firstMenu =
+                                payment.menuItems.first.menu.menuName;
                             return Card(
-
                               child: ListTile(
                                 title: Text(
-                                    '$firstMenu와 ${totalFoodCount-1}개의 음식'),
+                                    '$firstMenu와 ${totalFoodCount - 1}개의 음식'),
                                 subtitle: Text(
-                                  '결제 상태: ${payment.status.toString().split('.').last}'
-                                  '\n결제 일시: $formattedTimestamp'
-                                  '\n결제 금액: ${payment.totalPrice}원'
-                                  '\n배달 방식: ${payment.deliveryType}',
+                                  '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
+                                  '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
+                                  '\n결제 상태: ${getStatusString(payment.status)}'
+                                  '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
+                                  '\n결제 일시: $formattedTimestamp',
                                 ),
-                                  trailing: CustomButton(
-                              onPressed: () {
-                              }, text: const Text("칼로리 기록",style:TextStyle(fontSize: 12)),
-                            ),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.more_vert),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PaymentDetailPage(payment: payment),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             );
                           },
@@ -371,7 +395,7 @@ class ShoppingPage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "${provider.totalPrice}원",
+                            "${formatNumber(provider.totalPrice)}원",
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -400,7 +424,8 @@ class ShoppingPage extends StatelessWidget {
                               provider.handleReset(); //결제를 완료 후 장바구니 데이터 클리어
                             }
                           },
-                          text: Text('${provider.totalPrice}원 결제하기'),
+                          text: Text(
+                              '${formatNumber(provider.totalPrice)}원 결제하기'),
                         ),
                       ),
                       const SizedBox(height: 5),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../model/menu_item.dart';
 import '../model/payment.dart';
+import '../utils/format_util.dart';
 
 class PaymentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -15,7 +16,8 @@ class PaymentService {
         'status': payment.status.toString().split('.').last,
         'timestamp': payment.timestamp,
         'totalPrice': payment.totalPrice,
-        'menuItems': payment.menuItems.map((item) => item.toJson()).toList(), // 수정된 부분
+        'menuItems': payment.menuItems.map((item) => item.toJson()).toList(),
+        // 수정된 부분
         'deliveryType': payment.deliveryType,
       });
 
@@ -30,7 +32,7 @@ class PaymentService {
   Future<List<Payment>> getPayments() async {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
-      await _firestore.collection('payments').get();
+          await _firestore.collection('payments').get();
 
       final List<Payment> payments = snapshot.docs.map((doc) {
         final data = doc.data();
@@ -38,14 +40,14 @@ class PaymentService {
           orderId: data['orderId'],
           currency: data['currency'],
           status: PaymentStatus.values.firstWhere(
-                (status) =>
-            status.toString() == 'PaymentStatus.${data['status']}',
+            (status) => status.toString() == 'PaymentStatus.${data['status']}',
           ),
           timestamp: (data['timestamp'] as Timestamp).toDate(),
           totalPrice: data['totalPrice'],
           menuItems: (data['menuItems'] as List<dynamic>).map((itemData) {
             return MenuItem.fromJson(itemData);
-          }).toList(), // 수정된 부분
+          }).toList(),
+          // 수정된 부분
           deliveryType: data['deliveryType'],
         );
       }).toList();
