@@ -7,8 +7,12 @@ import '../services/payment_service.dart';
 import '../services/store_service.dart';
 
 class ShoppingProvider extends ChangeNotifier {
+
+  final List<StoreMenu> _checkedMenus = []; //스토어 메뉴 페이지에서 체크되고 제출되지 않은 메뉴
+
+
   List<StoreMenu> _selectedMenus = []; //선택된 메뉴들
-  String? _deliveryType; // 배달 종류 배달 혹은 포장
+  String? _deliveryType= 'delivery'; // 배달 종류 배달 혹은 포장
   int _totalPrice = 0; // 총가격
   int _currentTabIndex = 0; // 쇼핑 페이지 현재 탭
 
@@ -18,6 +22,8 @@ class ShoppingProvider extends ChangeNotifier {
   List<Payment> _payments = []; //결제 내역
   DateTime _selectedStartDate = DateTime(2024);
   DateTime _selectedEndDate = DateTime.now();
+
+  List<StoreMenu> get checkedMenus => _checkedMenus;
 
   List<StoreMenu> get selectedMenus => _selectedMenus;
 
@@ -78,7 +84,6 @@ class ShoppingProvider extends ChangeNotifier {
     _selectedMenus.clear();
     _storeMenuMap.clear();
     _menuQuantities.clear();
-    _deliveryType = null;
     _totalPrice = 0;
     ShoppingDatabase.clearData();
     notifyListeners();
@@ -106,16 +111,23 @@ class ShoppingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //장바구니에 메뉴 추가 함수
+// 장바구니에 메뉴 추가 함수
   void addMenu(String storeId, StoreMenu menu, int quantity) {
-    _selectedMenus.add(menu);
-    _menuQuantities[menu] = quantity; // 해당 메뉴의 수량 설정
-    _storeMenuMap
-        .putIfAbsent(menu.storeName, () => [])
-        .add(menu); // 스토어 메뉴 맵에 추가
+    if (_selectedMenus.contains(menu)) {
+      // 이미 선택된 메뉴라면 수량만 증가시킴
+      _menuQuantities[menu] = (_menuQuantities[menu]!+quantity);
+    } else {
+      // 선택된 메뉴가 아니라면 새로 추가
+      _selectedMenus.add(menu);
+      _menuQuantities[menu] = quantity; // 해당 메뉴의 수량 설정
+      _storeMenuMap
+          .putIfAbsent(menu.storeName, () => [])
+          .add(menu); // 스토어 메뉴 맵에 추가
+    }
     ShoppingDatabase.instance.insertMenu(storeId, menu.id, quantity);
     calculateTotalPrice();
   }
+
 
   //장바구니에 메뉴 삭제 함수
   void removeMenu(StoreMenu menu) {
@@ -130,6 +142,17 @@ class ShoppingProvider extends ChangeNotifier {
     ShoppingDatabase.instance.removeMenu(menu.id);
     calculateTotalPrice();
   }
+
+  void checkMenu(StoreMenu menu){
+    _checkedMenus.add(menu);
+    notifyListeners();
+  }
+
+  void uncheckMenu(StoreMenu menu){
+    _checkedMenus.remove(menu);
+    notifyListeners();
+  }
+
 
   //데이터베이스에서 메뉴를 불러오는 함수(장바구니 기능)
   Future<void> loadSelectedMenus() async {

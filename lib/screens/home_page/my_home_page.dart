@@ -7,13 +7,15 @@ import '../search_page/search_page.dart';
 import '../identity_page/identity_page.dart';
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  final int initialIndex;
+
+  const MyHomePage({Key? key, required this.initialIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 5, // 탭의 수
-      initialIndex: 0, // 홈페이지가 먼저 띄워지도록 함
+      initialIndex: initialIndex, // 홈페이지가 먼저 띄워지도록 함
       child: Scaffold(
         appBar: null,
         body: TabBarView(

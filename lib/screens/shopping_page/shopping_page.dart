@@ -27,7 +27,7 @@ class ShoppingPage extends StatelessWidget {
                 if (provider.currentTabIndex == 0) //결제하기 탭일때
                   TextButton(
                     onPressed: provider.handleReset,
-                    child: const Text("초기화하기"),
+                    child: const Text("모두 지우기"),
                   ),
               ],
               bottom: TabBar(

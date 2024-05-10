@@ -43,7 +43,7 @@ class _ActivityPageState extends State<ActivityPage> {
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
+                MaterialPageRoute(builder: (context) => const MyHomePage( initialIndex: 0,)),
                     (route) => false,
               );
             },

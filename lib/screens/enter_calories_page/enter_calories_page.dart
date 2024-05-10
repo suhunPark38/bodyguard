@@ -65,7 +65,7 @@ class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage()),
+                  MaterialPageRoute(builder: (context) => const MyHomePage(initialIndex: 0,)),
                       (route) => false,
                 );
               },
