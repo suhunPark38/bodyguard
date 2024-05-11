@@ -204,7 +204,7 @@ class _DietInputDialogState extends State<DietInputDialog2> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                  const MyEnterCaloriesPage(),
+                  const EnterCaloriesPage(),
                 ),
               );
             }

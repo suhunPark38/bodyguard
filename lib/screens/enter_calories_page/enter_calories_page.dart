@@ -14,15 +14,15 @@ import 'package:provider/provider.dart';
 
 
 
-class MyEnterCaloriesPage extends StatefulWidget {
+class EnterCaloriesPage extends StatefulWidget {
 
-  const MyEnterCaloriesPage({Key? key}) : super(key: key);
+  const EnterCaloriesPage({Key? key}) : super(key: key);
 
   @override
-  MyEnterCaloriesPageState createState() => MyEnterCaloriesPageState();
+  EnterCaloriesPageState createState() => EnterCaloriesPageState();
 }
 
-class MyEnterCaloriesPageState extends State<MyEnterCaloriesPage> {
+class EnterCaloriesPageState extends State<EnterCaloriesPage> {
 
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;

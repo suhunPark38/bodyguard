@@ -191,7 +191,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                  const MyEnterCaloriesPage(),
+                                                  const EnterCaloriesPage(),
                                                 ),
                                               );
                                             },
@@ -243,7 +243,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const MyEnterCaloriesPage(),
+                                                      const EnterCaloriesPage(),
                                                 ),
                                               );
                                             },
