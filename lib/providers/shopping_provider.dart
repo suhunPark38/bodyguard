@@ -4,17 +4,16 @@ import 'package:bodyguard/database/shopping_database.dart';
 import 'package:uuid/uuid.dart';
 import '../model/menu_item.dart';
 import '../model/payment.dart';
+import '../screens/shopping_page/widgets/filter_button.dart';
 import '../services/payment_service.dart';
 import '../services/store_service.dart';
 import '../utils/format_util.dart';
 
 class ShoppingProvider extends ChangeNotifier {
-
   final List<StoreMenu> _checkedMenus = []; //체크되고 제출되지 않은 메뉴
 
-
   List<StoreMenu> _selectedMenus = []; //선택된 메뉴들
-  String? _deliveryType= 'delivery'; // 배달 종류 배달 혹은 포장
+  String? _deliveryType = 'delivery'; // 배달 종류 배달 혹은 포장
   int _totalPrice = 0; // 총가격
   int _currentTabIndex = 0; // 쇼핑 페이지 현재 탭
 
@@ -24,6 +23,9 @@ class ShoppingProvider extends ChangeNotifier {
   List<Payment> _payments = []; //결제 내역
   DateTime _selectedStartDate = DateTime(2024);
   DateTime _selectedEndDate = DateTime.now();
+
+  FilterType _selectedFilter = FilterType.all;
+  bool _isRowVisible = false;
 
   List<StoreMenu> get checkedMenus => _checkedMenus;
 
@@ -42,12 +44,16 @@ class ShoppingProvider extends ChangeNotifier {
   List<Payment> get payments => _payments;
 
   DateTime get selectedStartDate => _selectedStartDate;
+
   DateTime get selectedEndDate => _selectedEndDate;
+
+  FilterType get selectedFilter => _selectedFilter;
+
+  bool get isRowVisible=> _isRowVisible;
 
   ShoppingProvider() {
     _initializeData();
   }
-
 
   // 데이터 초기화를 위한 비동기 함수
   Future<void> _initializeData() async {
@@ -72,6 +78,16 @@ class ShoppingProvider extends ChangeNotifier {
 
   void setEndDate(DateTime endDate) {
     _selectedEndDate = endDate;
+    notifyListeners();
+  }
+
+  void setSelectedFilter(FilterType filter) {
+    _selectedFilter = filter;
+    notifyListeners();
+  }
+
+  void toggleVisibility(){
+    _isRowVisible = !_isRowVisible;
     notifyListeners();
   }
 
@@ -117,7 +133,7 @@ class ShoppingProvider extends ChangeNotifier {
   void addMenu(String storeId, StoreMenu menu, int quantity) {
     if (_selectedMenus.contains(menu)) {
       // 이미 선택된 메뉴라면 수량만 증가시킴
-      _menuQuantities[menu] = (_menuQuantities[menu]!+quantity);
+      _menuQuantities[menu] = (_menuQuantities[menu]! + quantity);
     } else {
       // 선택된 메뉴가 아니라면 새로 추가
       _selectedMenus.add(menu);
@@ -129,7 +145,6 @@ class ShoppingProvider extends ChangeNotifier {
     ShoppingDatabase.instance.insertMenu(storeId, menu.id, quantity);
     calculateTotalPrice();
   }
-
 
   //장바구니에 메뉴 삭제 함수
   void removeMenu(StoreMenu menu) {
@@ -145,16 +160,17 @@ class ShoppingProvider extends ChangeNotifier {
     calculateTotalPrice();
   }
 
-  void checkMenu(StoreMenu menu){
+  //메뉴 체크를 위한 함수
+  void checkMenu(StoreMenu menu) {
     _checkedMenus.add(menu);
     notifyListeners();
   }
 
-  void uncheckMenu(StoreMenu menu){
+  //메뉴 언체크를 위한 함수
+  void uncheckMenu(StoreMenu menu) {
     _checkedMenus.remove(menu);
     notifyListeners();
   }
-
 
   //데이터베이스에서 메뉴를 불러오는 함수(장바구니 기능)
   Future<void> loadSelectedMenus() async {
@@ -234,7 +250,6 @@ class ShoppingProvider extends ChangeNotifier {
           ),
         );
       }
-
     }
   }
 
@@ -245,6 +260,7 @@ class ShoppingProvider extends ChangeNotifier {
     }
     return totalPrice;
   }
+
   void removeMenusByStore(String storeName) {
     List<StoreMenu> storeMenusToRemove = [];
     for (var menu in _selectedMenus) {
@@ -258,8 +274,6 @@ class ShoppingProvider extends ChangeNotifier {
     }
     _storeMenuMap.remove(storeName);
   }
-
-
 
   //결제 내역 불러오기 함수
   Future<void> fetchPayments({bool forceRefresh = false}) async {
@@ -279,25 +293,23 @@ class ShoppingProvider extends ChangeNotifier {
     fetchPayments(forceRefresh: true);
   }
 
-
   // 선택한 기간에 해당하는 결제 내역을 필터링하는 함수
   List<Payment> filterPaymentsByDate(DateTime startDate, DateTime endDate) {
     final filteredPayments = _payments.where((payment) {
       // 선택한 날짜의 시간 부분을 00:00:00으로 설정하여 필터링
-      final paymentDate = DateTime(payment.timestamp.year, payment.timestamp.month, payment.timestamp.day);
-      return paymentDate.isAfter(startDate.subtract(const Duration(days: 1))) && paymentDate.isBefore(endDate.add(Duration(days: 1)));
+      final paymentDate = DateTime(payment.timestamp.year,
+          payment.timestamp.month, payment.timestamp.day);
+      return paymentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
+          paymentDate.isBefore(endDate.add(Duration(days: 1)));
     }).toList();
     return filteredPayments;
   }
 
-
-
   // 정렬 및 필터링된 결제 내역을 반환하는 함수
   List<Payment> get sortedAndFilteredPayments {
-    List<Payment> payments = filterPaymentsByDate(_selectedStartDate, _selectedEndDate);
+    List<Payment> payments =
+        filterPaymentsByDate(_selectedStartDate, _selectedEndDate);
     payments.sort((a, b) => b.timestamp.compareTo(a.timestamp)); // 시간 역순으로 정렬
     return payments;
-
   }
-
 }
