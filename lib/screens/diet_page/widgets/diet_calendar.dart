@@ -34,13 +34,12 @@ class DietCalendar extends StatelessWidget {
             provider.notifySelectDiets(selectedDay);
           },
           headerStyle: const HeaderStyle(
-            titleCentered: true,
             titleTextStyle:
-                TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             formatButtonVisible: true,
           ),
           calendarStyle:  CalendarStyle(
-            selectedDecoration: BoxDecoration(
+            selectedDecoration: const BoxDecoration(
               color: Colors.teal,
               shape: BoxShape.circle
             ),

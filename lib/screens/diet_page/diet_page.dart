@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/format_util.dart';
+import '../../widgets/custom_button.dart';
 import '../../widgets/nutrition_info.dart';
 
 class DietPage extends StatelessWidget {
@@ -15,13 +17,13 @@ class DietPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DietProvider>(
       builder: (context, provider, child) {
-        final DateTime now = DateTime.utc(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
+        final DateTime now = DateTime.utc(
+            DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
         return Scaffold(
           appBar: AppBar(
             title: const Text(
-              '식단 기록',
+              '식단 다이어리',
             ),
             leading: IconButton(
               onPressed: () {
@@ -29,28 +31,49 @@ class DietPage extends StatelessWidget {
               },
               icon: const Icon(Icons.arrow_back),
             ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  provider.setSelectedDay(now);
-                  provider.notifySelectDiets(provider.selectedDay);
-                  provider.setFocusedDay(now);
-                },
-               child: const Text("오늘 날짜로"),
-              ),
-            ],
+            actions: const <Widget>[],
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(16),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const DietCalendar(),
                   const SizedBox(height: 20),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(children: [
+                          const SizedBox(width: 8),
+                          Text(
+                            '${provider.selectedDay.day}',
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(width: 8),
+                          Text('${getWeekday(provider.selectedDay)}요일'),
+                        ]),
+                        SizedBox(
+                            width: 90,
+                            height: 20,
+                            child: CustomButton(
+                              onPressed: () {
+                                provider.setSelectedDay(now);
+                                provider
+                                    .notifySelectDiets(provider.selectedDay);
+                                provider.setFocusedDay(now);
+                              },
+                              text: const Text(
+                                "오늘 날짜로",
+                                style: TextStyle(fontSize: 9),
+                              ),
+                            )),
+                      ]),
+                  const SizedBox(height: 10),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.25,
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         DietsCard(
@@ -69,7 +92,21 @@ class DietPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                 // const NutritionInfo(),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          const SizedBox(width: 8),
+                          Text(
+                            '총 ${provider.totalNutritionalInfo.calories.toStringAsFixed(1)}kcal',
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          )
+                        ]),
+                      ]),
+                  const SizedBox(height: 20),
+                  const NutritionInfo(),
+                  const SizedBox(height: 100),
                 ],
               ),
             ),
