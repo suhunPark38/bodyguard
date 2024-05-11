@@ -1,11 +1,10 @@
 import 'dart:async';
-
-import 'package:bodyguard/screens/enter_calories_page/widgets/diet_input_dialog.dart';
 import 'package:bodyguard/utils/diet_util.dart';
 import 'package:flutter/material.dart';
 
 
 import '../../../model/fetched_diet_data.dart';
+import 'diet_input_dialog.dart';
 
 class CustomSearchbar extends StatefulWidget {
   State<CustomSearchbar> createState() => _CustomSearchbar();

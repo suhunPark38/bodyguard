@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../database/config_database.dart';
 import '../model/diet_record.dart';
@@ -16,12 +17,36 @@ class DietProvider with ChangeNotifier {
 
   final database =  ConfigDatabase.instance;
 
+ DateTime _focusedDay =  DateTime.now(); //현재 표시할 월
+ DateTime _selectedDay = DateTime.utc(DateTime.now().year, DateTime.now().month, DateTime.now().day); //선택된 날짜
+ CalendarFormat _calendarFormat = CalendarFormat.week;
+
+
+
+
 
   List<DietData> get diets => _diets;
   List<DietData> get breakfast => _breakfast;
   List<DietData> get lunch => _lunch;
   List<DietData> get dinner => _dinner;
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
+
+  DateTime get focusedDay => _focusedDay;
+  DateTime get selectedDay => _selectedDay;
+  CalendarFormat get calendarFormat => _calendarFormat;
+
+
+  void setFocusedDay(DateTime day) {
+    _focusedDay = day;
+    notifyListeners();
+  }
+
+  void setSelectedDay(DateTime day) {
+    _selectedDay = day;
+    notifyListeners();
+  }
+
+
 
   DietProvider(){
     _updateDietsList(_eatingTime);
@@ -33,6 +58,11 @@ class DietProvider with ChangeNotifier {
    _disposed = true;
    super.dispose();
  }
+
+  void updateCalendarFormat(CalendarFormat format) {
+    _calendarFormat = format;
+    notifyListeners();
+  }
 
   @override
   void notifyListeners() {

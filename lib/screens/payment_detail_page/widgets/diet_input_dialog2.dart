@@ -1,4 +1,4 @@
-import 'package:bodyguard/model/fetched_diet_data.dart';
+
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +8,8 @@ import '../../../database/config_database.dart';
 import '../../../model/payment.dart';
 import '../../../providers/diet_provider.dart';
 import '../../../providers/shopping_provider.dart';
-import '../../enter_calories_page/enter_calories_page.dart';
+import '../../diet_page/diet_page.dart';
+
 
 class DietInputDialog2 extends StatefulWidget {
   final Payment payment;
@@ -204,7 +205,7 @@ class _DietInputDialogState extends State<DietInputDialog2> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                  const EnterCaloriesPage(),
+                  const DietPage(),
                 ),
               );
             }

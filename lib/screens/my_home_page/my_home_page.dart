@@ -15,7 +15,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 5, // 탭의 수
-      initialIndex: initialIndex, // 홈페이지가 먼저 띄워지도록 함
+      initialIndex: initialIndex, // 시작 탭을 받을 수 있도록
       child: Scaffold(
         appBar: null,
         body: TabBarView(
