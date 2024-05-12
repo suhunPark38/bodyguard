@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/payment.dart';
+import '../../model/store_menu.dart';
 import '../../providers/shopping_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
+import '../diet_page/diet_page.dart';
 
 class PaymentDetailPage extends StatelessWidget {
   final Payment payment;
@@ -138,22 +140,56 @@ class PaymentDetailPage extends StatelessWidget {
                 child: CustomButton(
                   onPressed: () {
                     if (Provider.of<ShoppingProvider>(context, listen: false).checkedMenus.isNotEmpty) {
-                      showDialog(
-                      context: context,
-                      builder: (BuildContext builder) {
-                        return DietInputDialog2(payment: payment,);
-                      },
-                    );
+                      final checkedMenus = Provider.of<ShoppingProvider>(context, listen: false).checkedMenus;
+                      _showDialogsSequentially(context, checkedMenus, payment);
                     }
-
                   },
                   text: const Text('칼로리 기록하기'),
                 ),
               ),
+
             ],
           ),
         ),
       ),
     );
+  }
+}
+void _showDialogsSequentially(BuildContext context, List<StoreMenu> checkedMenus, Payment payment) {
+  // 다이얼로그를 순차적으로 연 후에 마지막 다이얼로그가 닫힌 후에 스낵바를 표시
+  _showDialog(context, checkedMenus, 0, payment).then((_) {
+    // 마지막 다이얼로그가 닫힌 후에 실행될 코드
+    // 여기서 스낵바를 표시
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('메뉴가 입력되었습니다.'),
+        action: SnackBarAction(
+          label: '확인',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                const DietPage(),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  });
+}
+
+Future<void> _showDialog(BuildContext context, List<StoreMenu> checkedMenus, int index, Payment payment) async {
+  if (index < checkedMenus.length) {
+    // 다이얼로그를 보여줌
+    await showDialog(
+      context: context,
+      builder: (BuildContext builder) {
+        return DietInputDialog2(payment: payment, i: index);
+      },
+    );
+    // 현재 다이얼로그가 닫힌 후에 다음 다이얼로그를 연다
+    await _showDialog(context, checkedMenus, index + 1, payment);
   }
 }

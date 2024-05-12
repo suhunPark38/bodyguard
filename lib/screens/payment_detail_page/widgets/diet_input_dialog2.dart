@@ -1,4 +1,3 @@
-
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,13 +7,13 @@ import '../../../database/config_database.dart';
 import '../../../model/payment.dart';
 import '../../../providers/diet_provider.dart';
 import '../../../providers/shopping_provider.dart';
-import '../../diet_page/diet_page.dart';
-
 
 class DietInputDialog2 extends StatefulWidget {
   final Payment payment;
+  final int i;
 
-  const DietInputDialog2({Key? key, required this.payment}) : super(key: key);
+  const DietInputDialog2({Key? key, required this.payment, required this.i})
+      : super(key: key);
 
   @override
   _DietInputDialogState createState() => _DietInputDialogState();
@@ -37,32 +36,25 @@ class _DietInputDialogState extends State<DietInputDialog2> {
     super.initState();
 
     menuName = Provider.of<ShoppingProvider>(context, listen: false)
-        .checkedMenus
-        .first
+        .checkedMenus[widget.i]
         .menuName;
     calories = Provider.of<ShoppingProvider>(context, listen: false)
-        .checkedMenus
-        .first
+        .checkedMenus[widget.i]
         .calories;
     carbohydrates = Provider.of<ShoppingProvider>(context, listen: false)
-        .checkedMenus
-        .first
+        .checkedMenus[widget.i]
         .carbohydrate;
     protein = Provider.of<ShoppingProvider>(context, listen: false)
-        .checkedMenus
-        .first
+        .checkedMenus[widget.i]
         .protein;
     fat = Provider.of<ShoppingProvider>(context, listen: false)
-        .checkedMenus
-        .first
+        .checkedMenus[widget.i]
         .fat;
     sodium = Provider.of<ShoppingProvider>(context, listen: false)
-        .checkedMenus
-        .first
+        .checkedMenus[widget.i]
         .sodium;
     sugar = Provider.of<ShoppingProvider>(context, listen: false)
-        .checkedMenus
-        .first
+        .checkedMenus[widget.i]
         .sugar;
     eatingTime = widget.payment.timestamp;
   }
@@ -70,7 +62,7 @@ class _DietInputDialogState extends State<DietInputDialog2> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title:  Text(menuName),
+      title: Text(menuName),
       content: SingleChildScrollView(
         child: SizedBox(
           child: Column(
@@ -198,16 +190,8 @@ class _DietInputDialogState extends State<DietInputDialog2> {
                 fat: Value(fat),
                 sodium: Value(sodium),
                 sugar: Value(sugar),
-
-
               ));
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                  const DietPage(),
-                ),
-              );
+              Navigator.of(context).pop();
             }
           },
           child: const Text('확인'),
