@@ -11,22 +11,18 @@ import '../../providers/shopping_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../activity_page/activity_page.dart';
 import '../body_page/body_page.dart';
-import '../enter_calories_page/enter_calories_page.dart';
-import '../search_page/search_page.dart';
-import '../shopping_page/shopping_page.dart';
+import '../diet_page/diet_page.dart';
+import '../my_home_page/my_home_page.dart';
 
 import '../../services/store_service.dart';
 
 
 
 class HomePage extends StatelessWidget {
-
-
-
+  final List<String> _list = ["card1", "card2", "card3"];
   final DateTime now = DateTime.now();
 
   HomePage({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,23 +33,28 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SearchPage(),
-                ),
+                    builder: (context) => const MyHomePage(
+                          initialIndex: 1,
+                        )),
+                (route) => false,
               );
             },
           ),
           IconButton(
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {
-              Provider.of<ShoppingProvider>(context, listen: false).setCurrentTabIndex(0);
-              Navigator.push(
+              Provider.of<ShoppingProvider>(context, listen: false)
+                  .setCurrentTabIndex(0);
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ShoppingPage(),
-                ),
+                    builder: (context) => const MyHomePage(
+                          initialIndex: 3,
+                        )),
+                (route) => false,
               );
             },
           ),
@@ -66,13 +67,14 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body:
-        Consumer<TodayHealthDataProvider>(
-          builder: (context, provider, child) {
-            return RefreshIndicator(onRefresh: () async {
+      body: Consumer<TodayHealthDataProvider>(
+        builder: (context, provider, child) {
+          return RefreshIndicator(
+            onRefresh: () async {
               await provider.fetchTodayTotalCalories(now);
               provider.getMealTime(now);
-            }, child: Padding(
+            },
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
@@ -104,7 +106,7 @@ class HomePage extends StatelessWidget {
                                   children: [
                                     const Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             "식사",
@@ -121,8 +123,8 @@ class HomePage extends StatelessWidget {
                                             fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 10),
                                     Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           SizedBox(
                                               width: 110,
@@ -133,14 +135,14 @@ class HomePage extends StatelessWidget {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                      StoreListPage(),
+                                                          StoreListPage(),
                                                     ),
                                                   );
                                                 },
                                                 text: const Text(
                                                   "주문하기",
-                                                  style: TextStyle(
-                                                      fontSize: 10),
+                                                  style:
+                                                      TextStyle(fontSize: 10),
                                                 ),
                                               ))
                                         ])
@@ -149,7 +151,8 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 10),
                     GridView(
                       shrinkWrap: true,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
@@ -162,12 +165,11 @@ class HomePage extends StatelessWidget {
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "칼로리",
@@ -179,8 +181,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "총 ${provider
-                                            .todayTotalCalories}kcal",
+                                        "총 ${provider.todayTotalCalories.toStringAsFixed(1)}kcal",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -197,7 +198,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                  const MyEnterCaloriesPage(),
+                                                      const DietPage(),
                                                 ),
                                               );
                                             },
@@ -214,12 +215,11 @@ class HomePage extends StatelessWidget {
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "물",
@@ -231,8 +231,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${provider
-                                            .todayTotalWaterIntake}ml",
+                                        "${provider.todayTotalWaterIntake}ml",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -249,7 +248,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const MyEnterCaloriesPage(),
+                                                      const DietPage(),
                                                 ),
                                               );
                                             },
@@ -266,12 +265,11 @@ class HomePage extends StatelessWidget {
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "체중",
@@ -317,12 +315,11 @@ class HomePage extends StatelessWidget {
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "걷기",
@@ -334,8 +331,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${provider
-                                            .todayTotalStepCount} 걸음",
+                                        "${provider.todayTotalStepCount} 걸음",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -413,10 +409,10 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            );
-          },
-        ),
-
+          );
+        },
+      ),
     );
-  }}
+  }
+}
 

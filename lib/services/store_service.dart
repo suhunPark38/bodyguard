@@ -60,7 +60,7 @@ class StoreService {
         StoreMenu menu = StoreMenu.fromJson(menuSnapshot.id, menuSnapshot.data()! as Map<String, dynamic>);
         return menu;
       } else {
-        return null; // 해당 ID의 메뉴가 존재하지 않을 경우 null 반환
+        return null; // 해당 ID의 메뉴가 존재하지 않을 경우 null 반환a
       }
     } catch (e) {
       print("Error getting menu by ID: $e");
@@ -68,5 +68,26 @@ class StoreService {
     }
   }
 
+
+  Future<List<String>> getAllCuisineTypes() async {
+    try {
+      QuerySnapshot querySnapshot = await _storeCollection.get();
+      Set<String> cuisineTypesSet = Set(); // 중복을 허용하지 않는 Set 활용
+      for (var doc in querySnapshot.docs) {
+        cuisineTypesSet.add(doc['cuisineType'] as String); // 가게 종류를 Set에 추가
+      }
+      return cuisineTypesSet.toList(); // Set을 List로 변환하여 반환
+    } catch (e) {
+      print("Error getting all cuisine types: $e");
+      return []; // 에러 발생 시 빈 리스트 반환
+    }
+  }
+
+  Stream<List<Store>> getStoresByCuisineType(String cuisineType)  {
+    return _storeCollection.where('cuisineType', isEqualTo: cuisineType)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>?))
+        .toList());
+  }
 }
 
