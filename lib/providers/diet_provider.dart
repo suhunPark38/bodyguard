@@ -8,33 +8,46 @@ import '../utils/calculate_util.dart';
 class DietProvider with ChangeNotifier {
   List<DietData> _diets = [];
   List<DietData> _breakfast = [];
-  List<DietData> _lunch =[];
-  List<DietData> _dinner =[];
-  DietRecord _totalNutritionalInfo = DietRecord(calories: 0, carbohydrates: 0, protein: 0, fat: 0, sodium: 0, sugar: 0);
+  List<DietData> _lunch = [];
+  List<DietData> _dinner = [];
+  DietRecord _totalNutritionalInfo = DietRecord(
+      calories: 0, carbohydrates: 0, protein: 0, fat: 0, sodium: 0, sugar: 0);
   DateTime _eatingTime = DateTime.now();
 
   bool _disposed = false;
 
-  final database =  ConfigDatabase.instance;
+  final database = ConfigDatabase.instance;
 
- DateTime _focusedDay =  DateTime.now(); //현재 표시할 월
- DateTime _selectedDay = DateTime.utc(DateTime.now().year, DateTime.now().month, DateTime.now().day); //선택된 날짜
- CalendarFormat _calendarFormat = CalendarFormat.week;
+  DateTime _focusedDay = DateTime.now(); //현재 표시할 월
+  DateTime _selectedDay = DateTime.utc(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  CalendarFormat _calendarFormat = CalendarFormat.week;
 
-
-
-
+  List<DietData> _breakfastForPeriod = [];
+  List<DietData> _lunchForPeriod = [];
+  List<DietData> _dinnerForPeriod = [];
 
   List<DietData> get diets => _diets;
+
   List<DietData> get breakfast => _breakfast;
+
   List<DietData> get lunch => _lunch;
+
   List<DietData> get dinner => _dinner;
+
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
 
   DateTime get focusedDay => _focusedDay;
+
   DateTime get selectedDay => _selectedDay;
+
   CalendarFormat get calendarFormat => _calendarFormat;
 
+  List<DietData> get breakfastForPeriod => _breakfastForPeriod;
+
+  List<DietData> get lunchForPeriod => _lunchForPeriod;
+
+  List<DietData> get dinnerForPeriod => _dinnerForPeriod;
 
   void setFocusedDay(DateTime day) {
     _focusedDay = day;
@@ -46,18 +59,16 @@ class DietProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-
-  DietProvider(){
+  DietProvider() {
     _updateDietsList(_eatingTime);
+    _updateDietsListForPeriod(_eatingTime);
   }
 
-
- @override
- void dispose() {
-   _disposed = true;
-   super.dispose();
- }
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
 
   void updateCalendarFormat(CalendarFormat format) {
     _calendarFormat = format;
@@ -66,7 +77,7 @@ class DietProvider with ChangeNotifier {
 
   @override
   void notifyListeners() {
-    if(!_disposed) {
+    if (!_disposed) {
       super.notifyListeners();
     }
   }
@@ -74,34 +85,46 @@ class DietProvider with ChangeNotifier {
   void notifySelectDiets(DateTime eatingTime) async {
     _eatingTime = eatingTime;
     _updateDietsList(_eatingTime);
+    _updateDietsListForPeriod(_eatingTime);
   }
 
   void notifyInsertDiet(DietCompanion dietCompanion) {
     database.insertDiet(dietCompanion);
     _updateDietsList(_eatingTime);
+    _updateDietsListForPeriod(_eatingTime);
   }
 
   void notifyDeleteDiet(int dietId) {
     database.deleteDiet(dietId);
     _updateDietsList(_eatingTime);
+    _updateDietsListForPeriod(_eatingTime);
   }
 
   void notifyUpdateDiet(DietCompanion dietCompanion) {
     database.updateDiet(dietCompanion, dietCompanion.dietId.value);
     _updateDietsList(_eatingTime);
+    _updateDietsListForPeriod(_eatingTime);
   }
 
+  void _updateDietsListForPeriod(DateTime selectedDate) async { //기한 지정함으로서 앱의 부담을 줄이기 위함
+    DateTime start;
+    DateTime end;
 
+    start = DateTime(selectedDate.year, selectedDate.month, 1); // 해당 달의 시작일로 설정
+    end = DateTime(
+        selectedDate.year, selectedDate.month + 1, 0); // 해당 달의 마지막 날로 설정
 
-
+    _breakfastForPeriod = await database.getBreakfastForPeriod(start, end);
+    _lunchForPeriod = await database.getLunchForPeriod(start, end);
+    _dinnerForPeriod = await database.getDinnerForPeriod(start, end);
+    notifyListeners();
+  }
 
   void _updateDietsList(DateTime eatingTime) async {
     _diets = await database.getDietByEatingTime(eatingTime);
-
     _breakfast = _diets.where((diet) => diet.classification == 0).toList();
     _lunch = _diets.where((diet) => diet.classification == 1).toList();
     _dinner = _diets.where((diet) => diet.classification == 2).toList();
-
     _totalNutritionalInfo = DietRecord(
       calories: CalculateUtil()
           .getSumOfLists(_diets.map((diet) => diet.calories).toList()),
@@ -118,9 +141,5 @@ class DietProvider with ChangeNotifier {
     );
 
     notifyListeners();
-
   }
-
 }
-
-

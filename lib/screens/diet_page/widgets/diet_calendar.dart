@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../database/config_database.dart';
 import '../../../providers/diet_provider.dart';
 
 class DietCalendar extends StatelessWidget {
@@ -32,7 +33,9 @@ class DietCalendar extends StatelessWidget {
             provider.setSelectedDay(selectedDay);
             provider.setFocusedDay(focusedDay);
             provider.notifySelectDiets(selectedDay);
+
           },
+
           headerStyle: const HeaderStyle(
             titleTextStyle:
                 TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
@@ -48,11 +51,6 @@ class DietCalendar extends StatelessWidget {
                 shape: BoxShape.circle
             ),
           ),
-          eventLoader: (day) {
-            return [];
-          },
-
-
           calendarBuilders: CalendarBuilders(dowBuilder: (context, day) {
             switch (day.weekday) {
               case 6:
@@ -71,7 +69,52 @@ class DietCalendar extends StatelessWidget {
                 );
             }
             return null;
-          }),
+          },
+            markerBuilder: (context, day, events) {
+              List<DietData> breakfastForDay = provider.breakfastForPeriod.where((diet) => isSameDay(diet.eatingTime, day)).toList();
+              List<DietData> lunchForDay = provider.lunchForPeriod.where((diet) => isSameDay(diet.eatingTime, day)).toList();
+              List<DietData> dinnerForDay = provider.dinnerForPeriod.where((diet) => isSameDay(diet.eatingTime, day)).toList();
+
+              final hasBreakfast = breakfastForDay.isNotEmpty;
+              final hasLunch = lunchForDay.isNotEmpty;
+              final hasDinner = dinnerForDay.isNotEmpty;
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (hasBreakfast)
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  if (hasLunch)
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.green,
+                      ),
+                    ),
+                  if (hasDinner)
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.blue,
+                      ),
+                    ),
+                ],
+              );
+            },
+
+
+          ),
 
         );
       },

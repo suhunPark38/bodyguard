@@ -73,20 +73,20 @@ class DietPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.25,
-                    child: const Row(
+                    child:  Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         DietsCard(
                           classification: 0,
-                          //cardColor: Colors.amber.shade50, 젠장 색상이 내 맘대로 안돼!
+                          cardColor: Colors.orange.shade50,
                         ),
                         DietsCard(
                           classification: 1,
-                          //cardColor: Colors.red.shade50,
+                          cardColor: Colors.green.shade50,
                         ),
                         DietsCard(
                           classification: 2,
-                          //cardColor: Colors.cyan.shade50,
+                          cardColor: Colors.blue.shade50,
                         ),
                       ],
                     ),
