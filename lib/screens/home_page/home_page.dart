@@ -5,6 +5,7 @@ import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../model/store_model.dart';
 import '../../providers/today_health_data_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../widgets/custom_button.dart';
@@ -14,10 +15,14 @@ import '../enter_calories_page/enter_calories_page.dart';
 import '../search_page/search_page.dart';
 import '../shopping_page/shopping_page.dart';
 
+import '../../services/store_service.dart';
+
+
+
 class HomePage extends StatelessWidget {
 
 
-  final List<String> _list = ["card1", "card2", "card3"];
+
   final DateTime now = DateTime.now();
 
   HomePage({super.key});
@@ -384,13 +389,25 @@ class HomePage extends StatelessWidget {
                         enableInfiniteScroll: true,
                         onPageChanged: ((index, reason) {}),
                       ),
-                      items: _list.map((String item) {
-                        return SizedBox(
-                          width: double.maxFinite,
-                          height: 100,
-                          child: Card(child: Text(item)),
-                        );
-                      }).toList(),
+                      items: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StoreListPage(), // StoreListPage로 이동
+                              ),
+                            );
+                          },
+                          child: Image.network(
+                            'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FawFDhgaAgPlvTtxr0A0H%2Fmain.jpeg?alt=media&token=ef1ba81b-fb87-4de5-b448-881648ba6753',
+                            fit: BoxFit.fitWidth, // 이미지 채우기 모드
+                          ),
+                        ),
+
+
+                        Image.asset('assets/menu/소바.jpeg'),
+                      ]
                     ),
                   ],
                 ),
@@ -402,3 +419,4 @@ class HomePage extends StatelessWidget {
 
     );
   }}
+
