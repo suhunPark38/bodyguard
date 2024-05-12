@@ -1,3 +1,4 @@
+import 'package:bodyguard/screens/store_menu_page/store_menu_page.dart';
 import 'package:bodyguard/widgets/calorie_info.dart';
 import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:bodyguard/utils/notification.dart';
@@ -387,13 +388,42 @@ class HomePage extends StatelessWidget {
                       ),
                       items: [
                         GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => StoreListPage(), // StoreListPage로 이동
-                              ),
-                            );
+                          onTap: () async {
+                            // 해당 가게의 ID를 가지고 있는 페이지로 이동
+                            StoreService storeService = StoreService();
+                            var store = await storeService.getStoreById('awFDhgaAgPlvTtxr0A0H');
+                            if (store != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoreMenuPage(store: store),
+                                ),
+                              );
+                            } else {
+                              // 해당 ID의 가게가 없는 경우에 대한 처리
+                            }
+                          },
+                          child: Image.network(
+                            'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FawFDhgaAgPlvTtxr0A0H%2Fmain.jpeg?alt=media&token=ef1ba81b-fb87-4de5-b448-881648ba6753',
+                            fit: BoxFit.fitWidth, // 이미지 채우기 모드
+                          ),
+                        ),
+
+                        GestureDetector(
+                          onTap: () async {
+                            // 해당 가게의 ID를 가지고 있는 페이지로 이동
+                            StoreService storeService = StoreService();
+                            var store = await storeService.getStoreById('awFDhgaAgPlvTtxr0A0H');
+                            if (store != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoreMenuPage(store: store),
+                                ),
+                              );
+                            } else {
+                              // 해당 ID의 가게가 없는 경우에 대한 처리
+                            }
                           },
                           child: Image.network(
                             'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FawFDhgaAgPlvTtxr0A0H%2Fmain.jpeg?alt=media&token=ef1ba81b-fb87-4de5-b448-881648ba6753',
@@ -402,7 +432,53 @@ class HomePage extends StatelessWidget {
                         ),
 
 
-                        Image.asset('assets/menu/소바.jpeg'),
+
+                        GestureDetector(
+                          onTap: () async {
+                            // 해당 가게의 ID를 가지고 있는 페이지로 이동
+                            StoreService storeService = StoreService();
+                            var store = await storeService.getStoreById('JtxEXh1htARMYrmj8PeC');
+                            if (store != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoreMenuPage(store: store),
+                                ),
+                              );
+                            } else {
+                              // 해당 ID의 가게가 없는 경우에 대한 처리
+                            }
+                          },
+                          child: Image.network(
+                            'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FJtxEXh1htARMYrmj8PeC%2Fmain.jpeg?alt=media&token=cb527971-007d-46f7-98ee-dfd583f22d9f',
+                            fit: BoxFit.fitWidth, // 이미지 채우기 모드
+                          ),
+                        ),
+
+
+                        GestureDetector(
+                          onTap: () async {
+                            // 해당 가게의 ID를 가지고 있는 페이지로 이동
+                            StoreService storeService = StoreService();
+                            var store = await storeService.getStoreById('nFyINsmkNwpJ9vfyv2Gz');
+                            if (store != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoreMenuPage(store: store),
+                                ),
+                              );
+                            } else {
+                              // 해당 ID의 가게가 없는 경우에 대한 처리
+                            }
+                          },
+                          child: Image.network(
+                            'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FnFyINsmkNwpJ9vfyv2Gz%2Fmain.jpeg?alt=media&token=d9cb31c8-6b10-4448-b8f2-8e24de64c9b3',
+                            fit: BoxFit.fitWidth, // 이미지 채우기 모드
+                          ),
+                        ),
+
+
                       ]
                     ),
                   ],

@@ -89,5 +89,20 @@ class StoreService {
         .map((snapshot) => snapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>?))
         .toList());
   }
+  Future<Store?> getStoreById(String storeId) async {
+    try {
+      DocumentSnapshot storeSnapshot = await _storeCollection.doc(storeId).get();
+      if (storeSnapshot.exists) {
+        Store store = Store.fromJson(storeSnapshot.id, storeSnapshot.data() as Map<String, dynamic>);
+        return store;
+      } else {
+        return null; // 해당 ID의 가게가 존재하지 않을 경우 null 반환
+      }
+    } catch (e) {
+      print("Error getting store by ID: $e");
+      return null; // 에러 발생 시 null 반환
+    }
+  }
+
 }
 
