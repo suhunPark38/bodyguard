@@ -1,4 +1,4 @@
-import 'package:bodyguard/screens/payment_detail_page/widgets/diet_input_dialog2.dart';
+import 'package:bodyguard/screens/payment_detail_page/widgets/diet_input_dialog_from_payment.dart';
 import 'package:bodyguard/widgets/nutrient_info_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -156,15 +156,14 @@ class PaymentDetailPage extends StatelessWidget {
   }
 }
 void _showDialogsSequentially(BuildContext context, List<StoreMenu> checkedMenus, Payment payment) {
-  // 다이얼로그를 순차적으로 연 후에 마지막 다이얼로그가 닫힌 후에 스낵바를 표시
+
   _showDialog(context, checkedMenus, 0, payment).then((_) {
-    // 마지막 다이얼로그가 닫힌 후에 실행될 코드
-    // 여기서 스낵바를 표시
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('메뉴가 입력되었습니다.'),
+        content: const Text('칼로리와 영양성분을 확인해보세요.'),
         action: SnackBarAction(
-          label: '확인',
+          label: '확인하기',
           onPressed: () {
             Navigator.push(
               context,
@@ -186,7 +185,7 @@ Future<void> _showDialog(BuildContext context, List<StoreMenu> checkedMenus, int
     await showDialog(
       context: context,
       builder: (BuildContext builder) {
-        return DietInputDialog2(payment: payment, i: index);
+        return DietInputDialogFromPayment(payment: payment, checkedMenuIndex: index);
       },
     );
     // 현재 다이얼로그가 닫힌 후에 다음 다이얼로그를 연다

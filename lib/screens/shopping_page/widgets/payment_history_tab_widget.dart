@@ -163,7 +163,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                       child: ListTile(
                         title: Text(
                           totalFoodCount > 1
-                              ? '$firstMenu와 ${totalFoodCount - 1}개의 음식'
+                              ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
                               : firstMenu,
                         ),
                         subtitle: Text(
@@ -203,7 +203,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                   child: ListTile(
                     title: Text(
                       totalFoodCount > 1
-                          ? '$firstMenu와 ${totalFoodCount - 1}개의 음식'
+                          ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
                           : firstMenu,
                     ),
                     subtitle: Text(
