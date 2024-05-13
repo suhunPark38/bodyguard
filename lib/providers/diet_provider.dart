@@ -41,21 +41,25 @@ class DietProvider with ChangeNotifier {
     }
   }
 
+  // 식단 데이터 조회
   void notifySelectDiets(DateTime eatingTime) async {
     _eatingTime = eatingTime;
     _updateDietsList(_eatingTime);
   }
 
+  /// 식단 데이터 삽입
   void notifyInsertDiet(DietCompanion dietCompanion) {
     database.insertDiet(dietCompanion);
     _updateDietsList(_eatingTime);
   }
 
+  /// 식단 데이터 삭제
   void notifyDeleteDiet(int dietId) {
     database.deleteDiet(dietId);
     _updateDietsList(_eatingTime);
   }
 
+  // 식단 데이터 수정
   void notifyUpdateDiet(DietCompanion dietCompanion) {
     database.updateDiet(dietCompanion, dietCompanion.dietId.value);
     _updateDietsList(_eatingTime);
@@ -64,7 +68,7 @@ class DietProvider with ChangeNotifier {
 
 
 
-
+  /// 식단 데이터 변경이 일어날 때마다 각 list 최신화
   void _updateDietsList(DateTime eatingTime) async {
     _diets = await database.getDietByEatingTime(eatingTime);
 
