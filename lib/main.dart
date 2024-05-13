@@ -1,6 +1,9 @@
 import 'package:bodyguard/providers/diet_provider.dart';
+import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/today_health_data_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
+import 'package:bodyguard/test_health.dart';
+import 'package:bodyguard/utils/health_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -9,18 +12,26 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'utils/notification.dart';
 import 'screens/home_page/my_home_page.dart';
-import 'providers/activity_provider.dart';
-import 'services/activity_service.dart'; // ActivityProvider import 추가
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );// Firebase 초기화
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+  initializeDateFormatting().then((_) => runApp(
+    //HealthApp()
+    const MyApp()
+  ));
+
+  // google health connect 연동을 위한 권한 확인 && app 설치 여부 확인
+  HealthUtil().installHealthConnect();
+  HealthUtil().authorize();
+
   FlutterLocalNotification.init(); // 로컬 알림 초기화
   FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -31,9 +42,8 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => TodayHealthDataProvider()),
           ChangeNotifierProvider(create: (context) => ShoppingProvider()),
-    ChangeNotifierProvider(create: (_) => DietProvider()),
-          ChangeNotifierProvider(create: (_) => ActivityProvider()),
-
+          ChangeNotifierProvider(create: (_) => DietProvider()),
+          ChangeNotifierProvider(create: (_) => HealthDataProvider()),
         ],
         child: MaterialApp(
           theme: ThemeData(
@@ -65,7 +75,8 @@ class MyApp extends StatelessWidget {
             Locale('ko', 'KR'),
           ],
           home: const MyHomePage(),
-        ));
+        )
+    );
   }
 }
 
