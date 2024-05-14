@@ -1,3 +1,5 @@
+import 'package:bodyguard/screens/home_page/widget/food_info_widget.dart';
+import 'package:bodyguard/screens/home_page/widget/store_menu_widget.dart';
 import 'package:bodyguard/screens/store_menu_page/store_menu_page.dart';
 import 'package:bodyguard/widgets/calorie_info.dart';
 import 'package:bodyguard/widgets/nutrition_info.dart';
@@ -6,6 +8,7 @@ import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../model/store_menu.dart';
 import '../../model/store_model.dart';
 import '../../providers/today_health_data_provider.dart';
 import '../../providers/shopping_provider.dart';
@@ -22,6 +25,7 @@ import '../../services/store_service.dart';
 class HomePage extends StatelessWidget {
   final List<String> _list = ["card1", "card2", "card3"];
   final DateTime now = DateTime.now();
+  StoreService storeService = StoreService();
 
   HomePage({super.key});
 
@@ -100,6 +104,7 @@ class HomePage extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
+                          color: Colors.white,
                           child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Column(
@@ -378,105 +383,25 @@ class HomePage extends StatelessWidget {
                     ),
                     CarouselSlider(
                       options: CarouselOptions(
-                        height: 180,
+                        height: 250,
                         aspectRatio: 16 / 9,
-                        viewportFraction: 0.9,
+                        viewportFraction: 1,
                         autoPlay: true,
                         autoPlayInterval: const Duration(seconds: 4),
                         enableInfiniteScroll: true,
                         onPageChanged: ((index, reason) {}),
                       ),
                       items: [
-                        GestureDetector(
-                          onTap: () async {
-                            // 해당 가게의 ID를 가지고 있는 페이지로 이동
-                            StoreService storeService = StoreService();
-                            var store = await storeService.getStoreById('awFDhgaAgPlvTtxr0A0H');
-                            if (store != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StoreMenuPage(store: store),
-                                ),
-                              );
-                            } else {
-                              // 해당 ID의 가게가 없는 경우에 대한 처리
-                            }
-                          },
-                          child: Image.network(
-                            'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FawFDhgaAgPlvTtxr0A0H%2Fmain.jpeg?alt=media&token=ef1ba81b-fb87-4de5-b448-881648ba6753',
-                            fit: BoxFit.fitWidth, // 이미지 채우기 모드
-                          ),
-                        ),
 
-                        GestureDetector(
-                          onTap: () async {
-                            // 해당 가게의 ID를 가지고 있는 페이지로 이동
-                            StoreService storeService = StoreService();
-                            var store = await storeService.getStoreById('awFDhgaAgPlvTtxr0A0H');
-                            if (store != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StoreMenuPage(store: store),
-                                ),
-                              );
-                            } else {
-                              // 해당 ID의 가게가 없는 경우에 대한 처리
-                            }
-                          },
-                          child: Image.network(
-                            'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FawFDhgaAgPlvTtxr0A0H%2Fmain.jpeg?alt=media&token=ef1ba81b-fb87-4de5-b448-881648ba6753',
-                            fit: BoxFit.fitWidth, // 이미지 채우기 모드
-                          ),
-                        ),
+                          StoreMenuWidget(storeId: 'awFDhgaAgPlvTtxr0A0H',
+                              foodId: 'o7iCM8lbFt1Vpeg1TLlm', storeService: storeService),
+
+
+                        StoreMenuWidget(storeId: 'JtxEXh1htARMYrmj8PeC',
+                            foodId: 'v2HY5F9K3SdehELEVO5f', storeService: storeService),// foodId 전달
 
 
 
-                        GestureDetector(
-                          onTap: () async {
-                            // 해당 가게의 ID를 가지고 있는 페이지로 이동
-                            StoreService storeService = StoreService();
-                            var store = await storeService.getStoreById('JtxEXh1htARMYrmj8PeC');
-                            if (store != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StoreMenuPage(store: store),
-                                ),
-                              );
-                            } else {
-                              // 해당 ID의 가게가 없는 경우에 대한 처리
-                            }
-                          },
-                          child: Image.network(
-                            'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FJtxEXh1htARMYrmj8PeC%2Fmain.jpeg?alt=media&token=cb527971-007d-46f7-98ee-dfd583f22d9f',
-                            fit: BoxFit.fitWidth, // 이미지 채우기 모드
-                          ),
-                        ),
-
-
-                        GestureDetector(
-                          onTap: () async {
-                            // 해당 가게의 ID를 가지고 있는 페이지로 이동
-                            StoreService storeService = StoreService();
-                            var store = await storeService.getStoreById('nFyINsmkNwpJ9vfyv2Gz');
-                            if (store != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StoreMenuPage(store: store),
-                                ),
-                              );
-                            } else {
-                              // 해당 ID의 가게가 없는 경우에 대한 처리
-                            }
-                          },
-                          child: Image.network(
-                            'https://firebasestorage.googleapis.com/v0/b/bodyguard-d274c.appspot.com/o/store%2FnFyINsmkNwpJ9vfyv2Gz%2Fmain.jpeg?alt=media&token=d9cb31c8-6b10-4448-b8f2-8e24de64c9b3',
-                            fit: BoxFit.fitWidth, // 이미지 채우기 모드
-                          ),
-                        ),
 
 
                       ]
