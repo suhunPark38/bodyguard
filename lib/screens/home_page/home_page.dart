@@ -385,7 +385,7 @@ class HomePage extends StatelessWidget {
                       options: CarouselOptions(
                         height: 250,
                         aspectRatio: 16 / 9,
-                        viewportFraction: 1,
+                        viewportFraction: 1.1,
                         autoPlay: true,
                         autoPlayInterval: const Duration(seconds: 4),
                         enableInfiniteScroll: true,
