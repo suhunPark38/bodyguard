@@ -36,7 +36,7 @@ class TodayHealthDataProvider extends ChangeNotifier {
   void getMealTime(DateTime date){
     int hour = date.hour;
 
-    if (hour >= 7 && hour < 12) {
+    if (hour >= 6 && hour < 12) {
       _mealTimeDetails =  '아침을 주문할까요?';
     } else if (hour >= 12 && hour < 17) {
       _mealTimeDetails =  '점심을 주문할까요?';

@@ -60,13 +60,75 @@ class StoreService {
         StoreMenu menu = StoreMenu.fromJson(menuSnapshot.id, menuSnapshot.data()! as Map<String, dynamic>);
         return menu;
       } else {
-        return null; // 해당 ID의 메뉴가 존재하지 않을 경우 null 반환
+        return null; // 해당 ID의 메뉴가 존재하지 않을 경우 null 반환a
       }
     } catch (e) {
       print("Error getting menu by ID: $e");
       return null; // 에러 발생 시 null 반환
     }
   }
+
+
+  Future<List<String>> getAllCuisineTypes() async {
+    try {
+      QuerySnapshot querySnapshot = await _storeCollection.get();
+      Set<String> cuisineTypesSet = Set(); // 중복을 허용하지 않는 Set 활용
+      for (var doc in querySnapshot.docs) {
+        cuisineTypesSet.add(doc['cuisineType'] as String); // 가게 종류를 Set에 추가
+      }
+      return cuisineTypesSet.toList(); // Set을 List로 변환하여 반환
+    } catch (e) {
+      print("Error getting all cuisine types: $e");
+      return []; // 에러 발생 시 빈 리스트 반환
+    }
+  }
+
+  Stream<List<Store>> getStoresByCuisineType(String cuisineType)  {
+    return _storeCollection.where('cuisineType', isEqualTo: cuisineType)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>?))
+        .toList());
+  }
+  Future<Store?> getStoreById(String storeId) async {
+    try {
+      DocumentSnapshot storeSnapshot = await _storeCollection.doc(storeId).get();
+      if (storeSnapshot.exists) {
+        Store store = Store.fromJson(storeSnapshot.id, storeSnapshot.data() as Map<String, dynamic>);
+        return store;
+      } else {
+        return null; // 해당 ID의 가게가 존재하지 않을 경우 null 반환
+      }
+    } catch (e) {
+      print("Error getting store by ID: $e");
+      return null; // 에러 발생 시 null 반환
+    }
+  }
+
+  Future<Map<String, dynamic>?> getFoodInfo(String storeId, String foodId) async {
+    try {
+      DocumentSnapshot foodSnapshot = await _storeCollection.doc(storeId).collection('menu').doc(foodId).get();
+      if (foodSnapshot.exists) {
+        Map<String, dynamic> data = foodSnapshot.data() as Map<String, dynamic>;
+        return {
+          'image': data['image'],
+          'menuName': data['menuName'],
+          'price': data['price'],
+          'calories': data['calories'],
+          'carbohydrate': data['carbohydrate'],
+          'protein': data['protein'],
+          'fat': data['fat'],
+          'sodium': data['sodium'],
+          'sugar': data['sugar'],
+        };
+      } else {
+        return null; // 해당 ID의 음식이 존재하지 않을 경우 null 반환
+      }
+    } catch (e) {
+      print("Error getting food info by ID: $e");
+      return null; // 에러 발생 시 null 반환
+    }
+  }
+
 
 }
 

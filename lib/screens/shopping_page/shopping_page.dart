@@ -1,13 +1,13 @@
-import 'package:bodyguard/providers/shopping_provider.dart';
-import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
+import 'package:bodyguard/screens/shopping_page/widgets/payment_history_tab_widget.dart';
+import 'package:bodyguard/screens/shopping_page/widgets/payment_tab_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../model/payment.dart';
-import '../../map.dart';
 
+import '../../map.dart';
+import '../../providers/shopping_provider.dart';
+import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
-import '../../widgets/nutrient_info_button.dart';
+import '../store_list_page/store_list_page.dart';
 
 class ShoppingPage extends StatelessWidget {
   const ShoppingPage({super.key});
@@ -27,7 +27,7 @@ class ShoppingPage extends StatelessWidget {
                 if (provider.currentTabIndex == 0) //결제하기 탭일때
                   TextButton(
                     onPressed: provider.handleReset,
-                    child: const Text("초기화하기"),
+                    child: const Text("모두 지우기"),
                   ),
               ],
               bottom: TabBar(
@@ -44,238 +44,8 @@ class ShoppingPage extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: TabBarView(
                 children: [
-                  CustomScrollView(
-                    slivers: [
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              for (var entry in provider.storeMenuMap.entries)
-                                Column(
-                                  children: [
-                                    Text(
-                                      entry.key,
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    const Divider(
-                                      thickness: 1,
-                                      color: Colors.grey,
-                                    ),
-                                    for (var menu in entry.value)
-                                      Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(children: [
-                                                    Text(
-                                                      menu.menuName,
-                                                      style: const TextStyle(
-                                                          fontSize: 15),
-                                                      softWrap: true,
-                                                      textAlign: TextAlign.left,
-                                                    ),
-                                                    NutrientInfoButton(
-                                                        size: 15, menu: menu),
-                                                  ]),
-                                                  Text(
-                                                    '개당 ${menu.price}원',
-                                                    style: const TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    '${provider.menuQuantities[menu]! * menu.price}원',
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      provider.removeMenu(menu);
-                                                    },
-                                                    child:
-                                                        const Icon(Icons.close),
-                                                  ),
-                                                  const SizedBox(height: 10),
-                                                  Row(
-                                                    children: [
-                                                      IconButton(
-                                                        icon: const Icon(
-                                                            Icons.remove),
-                                                        onPressed: () {
-                                                          if (provider.menuQuantities[
-                                                                  menu]! >
-                                                              1) {
-                                                            provider.updateMenuQuantity(
-                                                                menu.id,
-                                                                provider.menuQuantities[
-                                                                        menu]! -
-                                                                    1);
-                                                            provider
-                                                                .calculateTotalPrice();
-                                                          }
-                                                        },
-                                                      ),
-                                                      Text(
-                                                        '${provider.menuQuantities[menu]}',
-                                                        style: const TextStyle(
-                                                            fontSize: 15),
-                                                      ),
-                                                      IconButton(
-                                                        icon: const Icon(
-                                                            Icons.add),
-                                                        onPressed: () {
-                                                          provider.updateMenuQuantity(
-                                                              menu.id,
-                                                              (provider.menuQuantities[
-                                                                          menu] ??
-                                                                      1) +
-                                                                  1);
-                                                          provider
-                                                              .calculateTotalPrice();
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              const Spacer(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            OutlinedButton(
-                                onPressed: () {
-                                  final first = DateTime(2024);
-                                  final now = DateTime.now();
-                                  provider.setStartDate(first);
-                                  provider.setEndDate(now);
-                                },
-                                child: const Text("전체")),
-                            OutlinedButton(
-                                onPressed: () {
-                                  final now = DateTime.now();
-                                  final oneWeekAgo =
-                                      now.subtract(const Duration(days: 7));
-                                  provider.setStartDate(oneWeekAgo);
-                                  provider.setEndDate(now);
-                                },
-                                child: const Text("일주일 전")),
-                            OutlinedButton(
-                                onPressed: () {
-                                  final now = DateTime.now();
-                                  final oneMonthAgo = DateTime(
-                                      now.year, now.month - 1, now.day);
-                                  provider.setStartDate(oneMonthAgo);
-                                  provider.setEndDate(now);
-                                },
-                                child: const Text("한달 전")),
-                          ]),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                                '시작일 ${provider.selectedStartDate.year  }년'
-                                ' ${provider.selectedStartDate.month}월'
-                                ' ${provider.selectedStartDate.day }일',style:const TextStyle(fontSize: 12)),
-                            IconButton(
-                              icon: const Icon(Icons.calendar_today),
-                              onPressed: () async {
-                                final selectedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2024),
-                                  lastDate: DateTime.now(),
-                                );
-                                if (selectedDate != null) {
-                                  provider.setStartDate(selectedDate);
-                                }
-                              },
-                            ),
-                            Text('종료일 ${provider.selectedEndDate.year}년'
-                                ' ${provider.selectedEndDate.month}월'
-                                ' ${provider.selectedEndDate.day}일',style:const TextStyle(fontSize: 12)),
-                            IconButton(
-                              icon: const Icon(Icons.calendar_today),
-                              onPressed: () async {
-                                final selectedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2024),
-                                  lastDate: DateTime.now(),
-                                );
-                                if (selectedDate != null) {
-                                  provider.setEndDate(selectedDate);
-                                }
-                              },
-                            ),
-                          ]),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: provider.sortedAndFilteredPayments.length,
-                          itemBuilder: (context, index) {
-                            final payment =
-                                provider.sortedAndFilteredPayments[index];
-                            final formattedTimestamp =
-                                '${payment.timestamp.year}년 ${payment.timestamp.month}월 ${payment.timestamp.day}일 ${payment.timestamp.hour}시 ${payment.timestamp.minute}분';
-                            return Card(
-                              child: ListTile(
-                                title: Text(
-                                    '${payment.menus[0].menuName}외의 ${payment.menus.length - 1}종류의 음식'),
-                                subtitle: Text(
-                                  '결제 상태: ${payment.status.toString().split('.').last}'
-                                  '\n결제 일시: $formattedTimestamp'
-                                  '\n결제 금액: ${payment.totalPrice}원'
-                                  '\n배달 방식: ${payment.deliveryType}',
-                                ),
-                                  trailing: CustomButton(
-                              onPressed: () {
-                              }, text: Text("칼로리 기록",style:const TextStyle(fontSize: 12)),
-                            ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  PaymentTabWidget(provider: provider),
+                  PaymentHistoryTabWidget(provider: provider),
                 ],
               ),
             ),
@@ -365,7 +135,7 @@ class ShoppingPage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "${provider.totalPrice}원",
+                            "${formatNumber(provider.totalPrice)}원",
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -389,14 +159,13 @@ class ShoppingPage extends StatelessWidget {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('음식이 텅 비었어요.')));
                             } else {
-                              provider.completePayment();
+                              provider.completePayment(context);
                               provider.refreshPayments();
                               provider.handleReset(); //결제를 완료 후 장바구니 데이터 클리어
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('결제를 성공했습니다.')));
                             }
                           },
-                          text: Text('${provider.totalPrice}원 결제하기'),
+                          text: Text(
+                              '${formatNumber(provider.totalPrice)}원 결제하기'),
                         ),
                       ),
                       const SizedBox(height: 5),

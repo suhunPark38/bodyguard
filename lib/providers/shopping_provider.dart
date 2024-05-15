@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:bodyguard/model/store_menu.dart';
 import 'package:bodyguard/database/shopping_database.dart';
 import 'package:uuid/uuid.dart';
+import '../model/menu_item.dart';
 import '../model/payment.dart';
+import '../screens/shopping_page/widgets/filter_button.dart';
 import '../services/payment_service.dart';
 import '../services/store_service.dart';
+import '../utils/format_util.dart';
 
 class ShoppingProvider extends ChangeNotifier {
+  final List<StoreMenu> _checkedMenus = []; //체크되고 제출되지 않은 메뉴
+
   List<StoreMenu> _selectedMenus = []; //선택된 메뉴들
-  String? _deliveryType; // 배달 종류 배달 혹은 포장
+  String? _deliveryType = 'delivery'; // 배달 종류 배달 혹은 포장
   int _totalPrice = 0; // 총가격
   int _currentTabIndex = 0; // 쇼핑 페이지 현재 탭
 
@@ -18,6 +23,11 @@ class ShoppingProvider extends ChangeNotifier {
   List<Payment> _payments = []; //결제 내역
   DateTime _selectedStartDate = DateTime(2024);
   DateTime _selectedEndDate = DateTime.now();
+
+  FilterType _selectedFilter = FilterType.all;
+  bool _isRowVisible = false;
+
+  List<StoreMenu> get checkedMenus => _checkedMenus;
 
   List<StoreMenu> get selectedMenus => _selectedMenus;
 
@@ -34,12 +44,16 @@ class ShoppingProvider extends ChangeNotifier {
   List<Payment> get payments => _payments;
 
   DateTime get selectedStartDate => _selectedStartDate;
+
   DateTime get selectedEndDate => _selectedEndDate;
+
+  FilterType get selectedFilter => _selectedFilter;
+
+  bool get isRowVisible=> _isRowVisible;
 
   ShoppingProvider() {
     _initializeData();
   }
-
 
   // 데이터 초기화를 위한 비동기 함수
   Future<void> _initializeData() async {
@@ -67,6 +81,16 @@ class ShoppingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSelectedFilter(FilterType filter) {
+    _selectedFilter = filter;
+    notifyListeners();
+  }
+
+  void toggleVisibility(){
+    _isRowVisible = !_isRowVisible;
+    notifyListeners();
+  }
+
   // 배달 종류 핸들러 함수
   void handleDeliveryTypeChange(String? value) {
     _deliveryType = value;
@@ -78,7 +102,6 @@ class ShoppingProvider extends ChangeNotifier {
     _selectedMenus.clear();
     _storeMenuMap.clear();
     _menuQuantities.clear();
-    _deliveryType = null;
     _totalPrice = 0;
     ShoppingDatabase.clearData();
     notifyListeners();
@@ -106,13 +129,19 @@ class ShoppingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //장바구니에 메뉴 추가 함수
+// 장바구니에 메뉴 추가 함수
   void addMenu(String storeId, StoreMenu menu, int quantity) {
-    _selectedMenus.add(menu);
-    _menuQuantities[menu] = quantity; // 해당 메뉴의 수량 설정
-    _storeMenuMap
-        .putIfAbsent(menu.storeName, () => [])
-        .add(menu); // 스토어 메뉴 맵에 추가
+    if (_selectedMenus.contains(menu)) {
+      // 이미 선택된 메뉴라면 수량만 증가시킴
+      _menuQuantities[menu] = (_menuQuantities[menu]! + quantity);
+    } else {
+      // 선택된 메뉴가 아니라면 새로 추가
+      _selectedMenus.add(menu);
+      _menuQuantities[menu] = quantity; // 해당 메뉴의 수량 설정
+      _storeMenuMap
+          .putIfAbsent(menu.storeName, () => [])
+          .add(menu); // 스토어 메뉴 맵에 추가
+    }
     ShoppingDatabase.instance.insertMenu(storeId, menu.id, quantity);
     calculateTotalPrice();
   }
@@ -129,6 +158,18 @@ class ShoppingProvider extends ChangeNotifier {
     }
     ShoppingDatabase.instance.removeMenu(menu.id);
     calculateTotalPrice();
+  }
+
+  //메뉴 체크를 위한 함수
+  void checkMenu(StoreMenu menu) {
+    _checkedMenus.add(menu);
+    notifyListeners();
+  }
+
+  //메뉴 언체크를 위한 함수
+  void uncheckMenu(StoreMenu menu) {
+    _checkedMenus.remove(menu);
+    notifyListeners();
   }
 
   //데이터베이스에서 메뉴를 불러오는 함수(장바구니 기능)
@@ -158,21 +199,80 @@ class ShoppingProvider extends ChangeNotifier {
     calculateTotalPrice();
   }
 
-  //결제 내역 추가 함수
-  Future<void> completePayment() async {
-    final payment = Payment(
-      orderId: const Uuid().v4(),
-      currency: 'KRW',
-      status: PaymentStatus.completed,
-      timestamp: DateTime.now(),
-      totalPrice: _totalPrice,
-      menus: _selectedMenus,
-      deliveryType: _deliveryType!,
-    );
+  void completePayment(BuildContext context) {
+    // 선택된 메뉴들을 가게 이름으로 그룹화합니다.
+    Map<String, List<StoreMenu>> storeMenuGroups = {};
+    for (var menu in _selectedMenus) {
+      final storeName = menu.storeName;
+      storeMenuGroups.putIfAbsent(storeName, () => []).add(menu);
+    }
 
-    try {
-      await PaymentService().addPayment(payment);
-    } catch (e) {}
+    // 각 가게별로 결제를 진행합니다.
+    for (var storeName in storeMenuGroups.keys) {
+      final List<StoreMenu> storeMenus = storeMenuGroups[storeName]!;
+      final int storeTotalPrice = calculateTotalPriceForStore(storeMenus);
+
+      final List<MenuItem> menuItems = [];
+      for (var menu in storeMenus) {
+        final int quantity = _menuQuantities[menu] ?? 0;
+        menuItems.add(MenuItem(menu: menu, quantity: quantity));
+      }
+
+      final payment = Payment(
+        orderId: generateOrderId(),
+        currency: 'KRW',
+        status: PaymentStatus.completed,
+        timestamp: DateTime.now(),
+        totalPrice: storeTotalPrice,
+        menuItems: menuItems,
+        deliveryType: _deliveryType!,
+      );
+
+      try {
+        // 각 가게별로 결제를 진행합니다.
+        PaymentService().addPayment(payment); // 비동기 호출이므로 await 사용
+        // 결제가 성공하면 해당 가게의 메뉴들을 삭제합니다.
+        removeMenusByStore(storeName);
+        // 결제가 성공했을 때 스낵바 표시
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$storeName 결제가 성공적으로 완료되었습니다.'),
+            duration: const Duration(seconds: 2), // 스낵바 표시 시간 설정
+          ),
+        );
+      } catch (e) {
+        print('가게별 결제 중 오류가 발생했습니다: $e');
+        // 결제가 실패했을 때 스낵바 표시
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('결제 중 오류가 발생했습니다: $e'),
+            duration: Duration(seconds: 2), // 스낵바 표시 시간 설정
+          ),
+        );
+      }
+    }
+  }
+
+  int calculateTotalPriceForStore(List<StoreMenu> storeMenus) {
+    int totalPrice = 0;
+    for (var menu in storeMenus) {
+      totalPrice += (menu.price * _menuQuantities[menu]!);
+    }
+    return totalPrice;
+  }
+
+  void removeMenusByStore(String storeName) {
+    List<StoreMenu> storeMenusToRemove = [];
+    for (var menu in _selectedMenus) {
+      if (menu.storeName == storeName) {
+        storeMenusToRemove.add(menu);
+      }
+    }
+    for (var menu in storeMenusToRemove) {
+      _selectedMenus.remove(menu);
+      _menuQuantities.remove(menu);
+    }
+    _storeMenuMap.remove(storeName);
   }
 
   //결제 내역 불러오기 함수
@@ -193,25 +293,23 @@ class ShoppingProvider extends ChangeNotifier {
     fetchPayments(forceRefresh: true);
   }
 
-
   // 선택한 기간에 해당하는 결제 내역을 필터링하는 함수
   List<Payment> filterPaymentsByDate(DateTime startDate, DateTime endDate) {
     final filteredPayments = _payments.where((payment) {
       // 선택한 날짜의 시간 부분을 00:00:00으로 설정하여 필터링
-      final paymentDate = DateTime(payment.timestamp.year, payment.timestamp.month, payment.timestamp.day);
-      return paymentDate.isAfter(startDate.subtract(const Duration(days: 1))) && paymentDate.isBefore(endDate.add(Duration(days: 1)));
+      final paymentDate = DateTime(payment.timestamp.year,
+          payment.timestamp.month, payment.timestamp.day);
+      return paymentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
+          paymentDate.isBefore(endDate.add(Duration(days: 1)));
     }).toList();
     return filteredPayments;
   }
 
-
-
   // 정렬 및 필터링된 결제 내역을 반환하는 함수
   List<Payment> get sortedAndFilteredPayments {
-    List<Payment> payments = filterPaymentsByDate(_selectedStartDate, _selectedEndDate);
+    List<Payment> payments =
+        filterPaymentsByDate(_selectedStartDate, _selectedEndDate);
     payments.sort((a, b) => b.timestamp.compareTo(a.timestamp)); // 시간 역순으로 정렬
     return payments;
-
   }
-
 }

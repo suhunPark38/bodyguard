@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 
-import 'package:bodyguard/screens/enter_calories_page/widgets/diet_delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../database/config_database.dart';
 import '../model/fetched_diet_data.dart';
+import '../screens/diet_page/widgets/diet_delete_dialog.dart';
 
 class DietUtil {
   static final DietUtil _instance = DietUtil._internal();
@@ -19,14 +19,15 @@ class DietUtil {
   DietUtil._internal();
 
   /// openAPI 이용, 식품 영양 정보 가져오기
-  Future<List<FetchedDietData>> Fetchinfo(String? inputText) async{
-    if(inputText == null){
+  Future<List<FetchedDietData>> Fetchinfo(String? inputText) async {
+    if (inputText == null) {
       log('값 받아오기 실패');
       throw Exception('Failed to load data');
     }
     log("받은 검색의 값${inputText}");
     log('새로운 api');
-    var url = "http://openapi.foodsafetykorea.go.kr/api"; //sample/I2790/xml/1/5/DESC_KOR=값 &RESEARCH_YEAR=값 &MAKER_NAME=값 &FOOD_CD=값 &CHNG_DT=값";
+    var url =
+        "http://openapi.foodsafetykorea.go.kr/api"; //sample/I2790/xml/1/5/DESC_KOR=값 &RESEARCH_YEAR=값 &MAKER_NAME=값 &FOOD_CD=값 &CHNG_DT=값";
     url += "/e9362f2ec93a4ad2ba85";
     url += "/I2790"; //데이터를 받는 키(키: 벨류 형식) ex) body:{}
     url += "/json";
@@ -42,7 +43,8 @@ class DietUtil {
       Map<String?, dynamic> body = map["I2790"]; // 앞서 데이터를 받는 키 입력하면 됨
       List<dynamic> item = body["row"];
       log("리스트의 크기: ${item.length}");
-      List<FetchedDietData> allInfo = item.map((dynamic items) => FetchedDietData.fromJson(items)).toList();
+      List<FetchedDietData> allInfo =
+          item.map((dynamic items) => FetchedDietData.fromJson(items)).toList();
       // allInfo - Json문서를 변환
       log('allInfo: ${allInfo.last.DESC_KOR}');
       return allInfo;
@@ -52,7 +54,6 @@ class DietUtil {
       log('값 받아오기 실패');
       throw Exception('Failed to load data');
     }
-
   }
 
   /// 식단 정보 알림창 띄우기
@@ -68,9 +69,9 @@ class DietUtil {
                     children: [
                       TextButton(
                         onPressed: () => showDialog(
-                          context: context,
-                          builder: (context) => DietDeleteDialog(context: context, dietData: diet)
-                        ),
+                            context: context,
+                            builder: (context) => DietDeleteDialog(
+                                context: context, dietData: diet)),
                         child: const Icon(Icons.edit), // 휴지통 아이콘
                       ),
                     ],
@@ -130,11 +131,10 @@ class DietUtil {
                   child: Text('닫기'),
                 ),
                 TextButton(
-                  onPressed: () =>
-                      showDialog(
-                          context: context,
-                          builder: (context) => DietDeleteDialog(context: context, dietData: diet)
-                      ),
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) =>
+                          DietDeleteDialog(context: context, dietData: diet)),
                   child: const Icon(Icons.delete), // 휴지통 아이콘
                 ),
               ],

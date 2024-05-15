@@ -1,9 +1,10 @@
-import 'package:bodyguard/screens/enter_calories_page/widgets/diet_edit_dialog.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../database/config_database.dart';
 import 'diet_delete_dialog.dart';
+import 'diet_edit_dialog.dart';
 
 class DietInfoDialog extends StatelessWidget {
   final BuildContext parentContext;

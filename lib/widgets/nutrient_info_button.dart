@@ -21,7 +21,8 @@ class NutrientInfoButton extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('영양성분표(${menu.menuName})'),
+              title: Text('영양성분표'
+                  '\n(${menu.menuName})'),
               content: SingleChildScrollView(
                 child: DataTable(
                   columns: const [
@@ -37,19 +38,20 @@ class NutrientInfoButton extends StatelessWidget {
                     ),
                     DataRow(cells: [
                       const DataCell(
-                        Column(mainAxisAlignment:MainAxisAlignment.center,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('탄수화물'),
                             Text('당'),
                           ],
                         ),
                       ),
-                      DataCell(
-                          Column(mainAxisAlignment:MainAxisAlignment.center,
-                              children: [
-                        Text('${menu.carbohydrate}g'),
-                        Text('${menu.sugar}g'),
-                      ])),
+                      DataCell(Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('${menu.carbohydrate}g'),
+                            Text('${menu.sugar}g'),
+                          ])),
                     ]),
                     DataRow(
                       cells: [
