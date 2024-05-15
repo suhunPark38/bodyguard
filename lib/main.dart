@@ -4,6 +4,11 @@ import 'package:bodyguard/providers/today_health_data_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/utils/health_util.dart';
 
+import 'package:bodyguard/providers/user_info_provider.dart';
+import 'package:bodyguard/screens/search_page/search_page.dart';
+import 'package:bodyguard/widgets/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:health/health.dart';
@@ -12,10 +17,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'utils/notification.dart';
-import 'screens/home_page/my_home_page.dart';
+import 'screens/my_home_page/my_home_page.dart';
 
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -45,10 +50,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => TodayHealthDataProvider()),
+          ChangeNotifierProvider(
+              create: (context) => TodayHealthDataProvider()),
           ChangeNotifierProvider(create: (context) => ShoppingProvider()),
           ChangeNotifierProvider(create: (_) => DietProvider()),
           ChangeNotifierProvider(create: (_) => HealthDataProvider()),
+          ChangeNotifierProvider(create: (_) => DietProvider()),
+          ChangeNotifierProvider(create: (context) => UserInfoProvider()),
         ],
         child: MaterialApp(
           theme: ThemeData(
@@ -79,10 +87,45 @@ class MyApp extends StatelessWidget {
           supportedLocales: const [
             Locale('ko', 'KR'),
           ],
-          home: const MyHomePage(),
-        )
-    );
+          home: Scaffold(
+             body: AuthenticationWrapper(),
+          ),
+        ));
   }
 }
 
 
+
+
+//main실행 후 실행시키는 첫 위젯
+class Start extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AuthenticationWrapper();
+  }
+}
+//자동 로그인을 위한 클래스
+//만약 사용자가 로그아웃을 하면 첫 로그인 페이지로 다시 돌아감
+//앱이 종료 후 실행해도 자동 로그인 가능
+class AuthenticationWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        print('Connection State: ${snapshot.connectionState}');
+        print('Has data: ${snapshot.hasData}');
+        print('Data: ${snapshot.data}');
+        if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.hasData) {
+            return const MyHomePage(initialIndex: 0,);
+          }
+          return const Login();
+        }
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../home_page/my_home_page.dart';
+import '../my_home_page/my_home_page.dart';
 
 import '../../model/activity_model.dart';
 
@@ -32,7 +32,7 @@ class _ActivityPageState extends State<ActivityPage> {
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
+                MaterialPageRoute(builder: (context) => const MyHomePage( initialIndex: 0,)),
                     (route) => false,
               );
             },

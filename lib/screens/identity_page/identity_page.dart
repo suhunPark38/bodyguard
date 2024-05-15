@@ -1,4 +1,7 @@
+import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../services/auth_service.dart';
 import '../order_history_page/order_history_page.dart';
 import 'appInstructions_page.dart';
 import 'myInfo_detail_page.dart';
@@ -7,18 +10,21 @@ import 'qna_page.dart';
 import 'settings_page.dart';
 import 'tos_page.dart';
 import 'announcement_page.dart';
+class IdentityPage extends StatefulWidget{
+  const IdentityPage({Key? key}) : super(key: key);
 
+  @override
+  _IdentityPage createState() => _IdentityPage();
+}
 
-class IdentityPage extends StatelessWidget {
+class _IdentityPage extends State<IdentityPage> {
   List<String> identityList = [
     '내정보',
-    '내 주문 및 배송',
+    '결제 내역',
     '주소지 및 배송지 변경',
     '자주 묻는 질문',
-    '공지사항',
-    '설정',
     '약관 및 정책',
-    '앱 사용 도우미'
+        '설정',
   ];
 
   @override
@@ -31,17 +37,22 @@ class IdentityPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Icon(Icons.face, size: 40),
-                Text(
-                  '사용자1 님 안녕하세요.',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
+                Consumer<UserInfoProvider>(
+                    builder: (context ,userInfo, child){
+                      return userInfo.D(" 님 안녕하세요.");
+                    }),
+                Spacer(),
+                TextButton(
+                  onPressed: () async {
+                    Auth().userLoginOut();
+                  },
+                    child: Text("로그아웃")
                 ),
               ],
             ),
@@ -82,7 +93,7 @@ class DetailPage extends StatelessWidget {
     Widget buildPageContent() {
       if (detail == '내정보') {
         return MyInfoDetailPage();
-      } else if (detail == '내 주문 및 배송') {
+      } else if (detail == '결제 내역') {
         return OrderHistoryPage();
       } else if (detail == '주소지 및 배송지 변경') {
         return AddressChangePage();

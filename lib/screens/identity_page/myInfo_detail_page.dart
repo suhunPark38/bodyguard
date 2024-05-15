@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 
-class MyInfoDetailPage extends StatelessWidget {
+import '../../services/auth_service.dart';
+import '../../widgets/sign_up.dart';
 
+class MyInfoDetailPage extends StatefulWidget {
+  const MyInfoDetailPage({Key? key}) : super(key: key);
 
   @override
+  _MyInfoDeailPage createState() => _MyInfoDeailPage();
+}
+
+
+class _MyInfoDeailPage extends State<MyInfoDetailPage>{
+  @override
   Widget build(BuildContext context) {
+    bool _showEditForm = false;
+
 
     return Scaffold(
         appBar: AppBar(
@@ -15,30 +26,31 @@ class MyInfoDetailPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundImage: NetworkImage('https://example.com/user_profile.jpg'),
+          Row(
+            children: [
+              TextButton(
+                  onPressed: (){
+                    Auth().userLoginOut();
+                    Navigator.pop(context);
+                  },
+                  child: Text("로그아웃")
+              ),
+            ],
           ),
-          SizedBox(height: 20),
-          Text(
-            '사용자 이름: 사용자1',
-            style: TextStyle(fontSize: 18),
-          ),
-          Text(
-            '이메일: user@example.com',
-            style: TextStyle(fontSize: 18),
-          ),
-          Text(
-            '전화번호: 010-1234-5678',
-            style: TextStyle(fontSize: 18),
-          ),
-          SizedBox(height: 20),
+
           ElevatedButton(
             onPressed: () {
-              // 사용자 정보 편집 페이지로 이동하는 코드 작성
+              setState(() {
+                _showEditForm = !_showEditForm;  // 폼 보여주기 상태 토글
+              });
             },
-            child: Text('정보 수정'),
+            child: Text(_showEditForm ? '폼 숨기기' : '정보 수정'),
           ),
+          if (_showEditForm)
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              //child: SignUp(),  // SignUp 폼을 여기에 표시
+            ),
           Divider(),
           Text(
             '최근 활동',

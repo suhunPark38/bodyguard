@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../services/admin_firebase.dart';
+
 
 
 class AnnouncementPage extends StatefulWidget {
@@ -20,12 +22,35 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
       appBar: AppBar(
         title: Text('공지사항'),
       ),
-      body: ListView.builder(
-        itemCount: notices.length,
-        itemBuilder: (context, index) {
-          return NoticeItem(notice: notices[index]);
+      body: StreamBuilder<List<Map<String, String>>>(
+        stream: AdminFirebase().announcement(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return CircularProgressIndicator();
+            default:
+              if (snapshot.hasData) {
+                List<Map<String, String>> notice = snapshot.data!;
+                return ListView.builder(
+                  itemCount: notice.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: ListTile(
+                        title: Text(notice[index]["Title"]!),
+                        subtitle: Text(notice[index]["Content"]!),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return Text('No data available.');
+              }
+          }
         },
-      ),
+      )
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../services/admin_firebase.dart';
+
 
 
 class AppInstructionsPage extends StatelessWidget {
@@ -11,7 +13,52 @@ class AppInstructionsPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.0),
-        child: Column(
+        child: StreamBuilder<List<Map<String, String>>>(
+      stream: AdminFirebase().appInstructions(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return CircularProgressIndicator();
+          default:
+            if (snapshot.hasData) {
+              List<Map<String, String>> Instructions = snapshot.data!;
+              return ListView.builder(
+                itemCount: Instructions.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      Text(
+                        Instructions[index]["Title"]!,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      Text(
+                        Instructions[index]["Text"]!,
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              return Text('No data available.');
+            }
+        }
+      },
+      )
+      ),
+    );
+  }
+}
+
+
+/*Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -67,7 +114,4 @@ class AppInstructionsPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
+        */

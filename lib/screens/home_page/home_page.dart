@@ -1,23 +1,39 @@
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/utils/date_util.dart';
+import 'package:bodyguard/screens/home_page/widget/food_info_widget.dart';
+import 'package:bodyguard/screens/home_page/widget/store_menu_widget.dart';
+import 'package:bodyguard/screens/store_menu_page/store_menu_page.dart';
+import 'package:bodyguard/widgets/calorie_info.dart';
+import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
+import '../../model/store_menu.dart';
+import '../../model/store_model.dart';
+import '../../model/user_model.dart';
+import '../../providers/today_health_data_provider.dart';
 import '../../providers/shopping_provider.dart';
+import '../../providers/user_info_provider.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
 import '../activity_page/activity_page.dart';
 import '../body_page/body_page.dart';
-import '../enter_calories_page/enter_calories_page.dart';
-import '../search_page/search_page.dart';
-import '../shopping_page/shopping_page.dart';
+import '../diet_page/diet_page.dart';
+import '../my_home_page/my_home_page.dart';
+
+import '../../services/store_service.dart';
+
+
 
 class HomePage extends StatelessWidget {
 
 
   final List<String> _list = ["card1", "card2", "card3"];
   final DateTime now = DateTime.now();
+  StoreService storeService = StoreService();
 
 
   HomePage({super.key});
@@ -32,23 +48,28 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SearchPage(),
-                ),
+                    builder: (context) => const MyHomePage(
+                          initialIndex: 1,
+                        )),
+                (route) => false,
               );
             },
           ),
           IconButton(
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {
-              Provider.of<ShoppingProvider>(context, listen: false).setCurrentTabIndex(0);
-              Navigator.push(
+              Provider.of<ShoppingProvider>(context, listen: false)
+                  .setCurrentTabIndex(0);
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ShoppingPage(),
-                ),
+                    builder: (context) => const MyHomePage(
+                          initialIndex: 3,
+                        )),
+                (route) => false,
               );
             },
           ),
@@ -62,8 +83,9 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body:
-        Consumer<HealthDataProvider>(
-          builder: (context, provider, child) {
+        Consumer2<HealthDataProvider, UserInfoProvider>(
+          builder: (context, provider, userInfo ,child) {
+            userInfo.initializeData();
             return RefreshIndicator(onRefresh: () async {
               //provider.fetchStepData(DateTime.now());
             }, child: Padding(
@@ -72,15 +94,7 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "오늘 사용자1님은?",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ]),
+                    userInfo.D("님의 하루는?"),
                     const SizedBox(
                       height: 5,
                     ),
@@ -91,6 +105,7 @@ class HomePage extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
+                          color: Colors.white,
                           child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Column(
@@ -98,7 +113,7 @@ class HomePage extends StatelessWidget {
                                   children: [
                                     const Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             "식사",
@@ -115,8 +130,8 @@ class HomePage extends StatelessWidget {
                                             fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 10),
                                     Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           SizedBox(
                                               width: 110,
@@ -127,14 +142,14 @@ class HomePage extends StatelessWidget {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                      StoreListPage(),
+                                                          StoreListPage(),
                                                     ),
                                                   );
                                                 },
                                                 text: const Text(
                                                   "주문하기",
-                                                  style: TextStyle(
-                                                      fontSize: 10),
+                                                  style:
+                                                      TextStyle(fontSize: 10),
                                                 ),
                                               ))
                                         ])
@@ -143,7 +158,8 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 10),
                     GridView(
                       shrinkWrap: true,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
@@ -156,8 +172,7 @@ class HomePage extends StatelessWidget {
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
@@ -190,7 +205,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                  const MyEnterCaloriesPage(),
+                                                      const DietPage(),
                                                 ),
                                               );
                                             },
@@ -207,12 +222,11 @@ class HomePage extends StatelessWidget {
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "물",
@@ -253,12 +267,11 @@ class HomePage extends StatelessWidget {
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "체중",
@@ -304,12 +317,11 @@ class HomePage extends StatelessWidget {
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "걷기",
@@ -368,29 +380,35 @@ class HomePage extends StatelessWidget {
                     ),
                     CarouselSlider(
                       options: CarouselOptions(
-                        height: 180,
+                        height: 250,
                         aspectRatio: 16 / 9,
-                        viewportFraction: 0.9,
+                        viewportFraction: 1.1,
                         autoPlay: true,
                         autoPlayInterval: const Duration(seconds: 4),
                         enableInfiniteScroll: true,
                         onPageChanged: ((index, reason) {}),
                       ),
-                      items: _list.map((String item) {
-                        return SizedBox(
-                          width: double.maxFinite,
-                          height: 100,
-                          child: Card(child: Text(item)),
-                        );
-                      }).toList(),
+                      items: [
+
+                          StoreMenuWidget(storeId: 'awFDhgaAgPlvTtxr0A0H',
+                              foodId: 'o7iCM8lbFt1Vpeg1TLlm', storeService: storeService),
+
+
+                        StoreMenuWidget(storeId: 'JtxEXh1htARMYrmj8PeC',
+                            foodId: 'v2HY5F9K3SdehELEVO5f', storeService: storeService),// foodId 전달
+
+
+
+
+
+                      ]
                     ),
                   ],
                 ),
               ),
             ),
-            );
-          },
-        ),
-
+          );
+        },
+      ),
     );
   }}

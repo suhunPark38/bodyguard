@@ -65,9 +65,7 @@ class NaverMapApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         body: Stack(
           children: [
             Container(
@@ -105,7 +103,7 @@ class NaverMapApp extends StatelessWidget {
               builder: (BuildContext context, ScrollController scrollController) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.blueGrey,
+                    color: Color(0xFF80A4B4),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20)),
@@ -158,8 +156,7 @@ class NaverMapApp extends StatelessWidget {
             )
           ],
         ),
-      ),
-    );
+      );
   }
 
   List<NMarker> createMarkersFromStores(List<Store> stores, NaverMapController controller) {
