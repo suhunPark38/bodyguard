@@ -102,7 +102,7 @@ flutter:
     - assets/body.png
     - assets/body12.png
     - assets/body_icon.png
-
+    - assets/loginImage.png
 
 
   # The following line ensures that the Material Icons font is
