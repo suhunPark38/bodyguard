@@ -1,8 +1,15 @@
+import 'package:bodyguard/screens/home_page/widget/food_info_widget.dart';
+import 'package:bodyguard/screens/home_page/widget/store_menu_widget.dart';
+import 'package:bodyguard/screens/store_menu_page/store_menu_page.dart';
+import 'package:bodyguard/widgets/calorie_info.dart';
+import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../model/store_menu.dart';
+import '../../model/store_model.dart';
 import '../../providers/today_health_data_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../widgets/custom_button.dart';
@@ -11,9 +18,14 @@ import '../body_page/body_page.dart';
 import '../diet_page/diet_page.dart';
 import '../my_home_page/my_home_page.dart';
 
+import '../../services/store_service.dart';
+
+
+
 class HomePage extends StatelessWidget {
   final List<String> _list = ["card1", "card2", "card3"];
   final DateTime now = DateTime.now();
+  StoreService storeService = StoreService();
 
   HomePage({super.key});
 
@@ -54,6 +66,7 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications_none),
             onPressed: () {
+
               FlutterLocalNotification.showNotification();
             },
           ),
@@ -91,6 +104,7 @@ class HomePage extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
+                          color: Colors.white,
                           child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Column(
@@ -369,21 +383,28 @@ class HomePage extends StatelessWidget {
                     ),
                     CarouselSlider(
                       options: CarouselOptions(
-                        height: 180,
+                        height: 250,
                         aspectRatio: 16 / 9,
-                        viewportFraction: 0.9,
+                        viewportFraction: 1.1,
                         autoPlay: true,
                         autoPlayInterval: const Duration(seconds: 4),
                         enableInfiniteScroll: true,
                         onPageChanged: ((index, reason) {}),
                       ),
-                      items: _list.map((String item) {
-                        return SizedBox(
-                          width: double.maxFinite,
-                          height: 100,
-                          child: Card(child: Text(item)),
-                        );
-                      }).toList(),
+                      items: [
+
+                          StoreMenuWidget(storeId: 'awFDhgaAgPlvTtxr0A0H',
+                              foodId: 'o7iCM8lbFt1Vpeg1TLlm', storeService: storeService),
+
+
+                        StoreMenuWidget(storeId: 'JtxEXh1htARMYrmj8PeC',
+                            foodId: 'v2HY5F9K3SdehELEVO5f', storeService: storeService),// foodId 전달
+
+
+
+
+
+                      ]
                     ),
                   ],
                 ),
@@ -395,3 +416,4 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
