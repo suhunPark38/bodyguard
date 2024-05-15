@@ -25,13 +25,15 @@ class _CustomSearchbar extends State<CustomSearchbar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SearchBar(
-          hintText: "음식명을 입력하세요",
+        TextField(
           controller: controller,
           onSubmitted: (value) {
             inputText = value;
             searchItem();
           },
+          decoration: InputDecoration(
+            hintText: "음식명을 입력하세요",
+          ),
         ),
         //SizedBox(height: 15.0),
         Expanded(
