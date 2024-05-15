@@ -5,7 +5,6 @@ import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/utils/health_util.dart';
 
 import 'package:bodyguard/providers/user_info_provider.dart';
-import 'package:bodyguard/screens/search_page/search_page.dart';
 import 'package:bodyguard/widgets/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
