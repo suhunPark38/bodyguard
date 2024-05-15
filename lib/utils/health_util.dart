@@ -23,7 +23,7 @@ class HealthUtil {
   // Set up corresponding permissions
   // READ only
   List<HealthDataAccess> get permissions =>
-      types.map((e) => HealthDataAccess.READ).toList();
+      types.map((e) => HealthDataAccess.READ_WRITE).toList();
 
 
   // 안드로이드에서 사용하는 dataType

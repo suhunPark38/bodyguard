@@ -1,12 +1,9 @@
-import 'package:bodyguard/database/config_database.dart';
 import 'package:bodyguard/screens/enter_calories_page/widgets/diet_search_screen.dart';
 import 'package:bodyguard/screens/enter_calories_page/widgets/diets_card.dart';
 import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'package:bodyguard/database/config_database.dart';
-import '../../providers/today_health_data_provider.dart';
 import '../home_page/my_home_page.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:provider/provider.dart';

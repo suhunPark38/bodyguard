@@ -174,8 +174,20 @@ class _HealthAppState extends State<HealthApp> {
 
     // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
+        value: 1.925,
+        type: HealthDataType.HEIGHT,
+        startTime: earlier,
+        endTime: now);
+    success &= await Health().writeHealthData(
+        value: 90, type: HealthDataType.WEIGHT, startTime: now);
+    success &= await Health().writeHealthData(
         value: 90,
         type: HealthDataType.STEPS,
+        startTime: earlier,
+        endTime: now);
+    success &= await Health().writeHealthData(
+        value: 1.8,
+        type: HealthDataType.WATER,
         startTime: earlier,
         endTime: now);
 

@@ -3,8 +3,10 @@ import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/today_health_data_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/utils/health_util.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:health/health.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -18,11 +20,18 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );// Firebase 초기화
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+
+  // health connect 사용 설정
+  Health().configure(useHealthConnectIfAvailable: true);
 
   // google health connect 연동을 위한 권한 확인 && app 설치 여부 확인
-  HealthUtil().installHealthConnect();
   HealthUtil().authorize();
+  HealthUtil().installHealthConnect();
+
+  initializeDateFormatting().then((_) => runApp(
+    const MyApp()
+  ));
+
 
   FlutterLocalNotification.init(); // 로컬 알림 초기화
   FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
