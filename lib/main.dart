@@ -26,7 +26,7 @@ void main() async {
 
   // google health connect 연동을 위한 권한 확인 && app 설치 여부 확인
   HealthUtil().authorize();
-  HealthUtil().installHealthConnect();
+  //HealthUtil().installHealthConnect();
 
   initializeDateFormatting().then((_) => runApp(
     const MyApp()

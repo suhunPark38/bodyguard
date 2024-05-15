@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
         Consumer<HealthDataProvider>(
           builder: (context, provider, child) {
             return RefreshIndicator(onRefresh: () async {
-              provider.fetchStepData(DateTime.now());
+              //provider.fetchStepData(DateTime.now());
             }, child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
