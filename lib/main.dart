@@ -1,31 +1,46 @@
 import 'package:bodyguard/providers/diet_provider.dart';
+import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/today_health_data_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
+import 'package:bodyguard/utils/health_util.dart';
+
 import 'package:bodyguard/providers/user_info_provider.dart';
-import 'package:bodyguard/screens/search_page/search_page.dart';
 import 'package:bodyguard/widgets/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:health/health.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'utils/notification.dart';
 import 'screens/my_home_page/my_home_page.dart';
-import 'providers/activity_provider.dart';
-import 'services/activity_service.dart'; // ActivityProvider import 추가
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  ); // Firebase 초기화
-  initializeDateFormatting().then((_) => runApp(MyApp()));
+  );// Firebase 초기화
+
+  // health connect 사용 설정
+  Health().configure(useHealthConnectIfAvailable: true);
+
+  // google health connect 연동을 위한 권한 확인 && app 설치 여부 확인
+  HealthUtil().authorize();
+  //HealthUtil().installHealthConnect();
+
+  initializeDateFormatting().then((_) => runApp(
+    const MyApp()
+  ));
+
+
   FlutterLocalNotification.init(); // 로컬 알림 초기화
   FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -38,7 +53,8 @@ class MyApp extends StatelessWidget {
               create: (context) => TodayHealthDataProvider()),
           ChangeNotifierProvider(create: (context) => ShoppingProvider()),
           ChangeNotifierProvider(create: (_) => DietProvider()),
-          ChangeNotifierProvider(create: (_) => ActivityProvider()),
+          ChangeNotifierProvider(create: (_) => HealthDataProvider()),
+          ChangeNotifierProvider(create: (_) => DietProvider()),
           ChangeNotifierProvider(create: (context) => UserInfoProvider()),
         ],
         child: MaterialApp(

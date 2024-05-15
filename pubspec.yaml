@@ -56,6 +56,11 @@ dependencies:
     sdk: flutter
 
 
+  #플러터 health 연동
+  health: ^10.2.0
+
+  permission_handler: ^11.3.1
+
 
 
 

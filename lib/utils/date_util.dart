@@ -17,4 +17,22 @@ class DateUtil {
     return dateTime.copyWith(hour: now.hour, minute: now.minute);
   }
 
+  /// 시간 입력 받아서 구분하기
+  String getMealTime(DateTime date){
+    String mealTimeDetails = '';
+    int hour = date.hour;
+
+    if (hour >= 7 && hour < 12) {
+      mealTimeDetails =  '아침을 주문할까요?';
+    } else if (hour >= 12 && hour < 17) {
+      mealTimeDetails =  '점심을 주문할까요?';
+    } else if (hour >= 17 && hour < 22) {
+      mealTimeDetails =  '저녁을 주문할까요?';
+    } else {
+      mealTimeDetails =  '메뉴를 주문할까요?';
+    }
+
+    return mealTimeDetails;
+  }
+
 }
