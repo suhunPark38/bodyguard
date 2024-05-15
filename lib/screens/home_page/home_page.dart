@@ -1,12 +1,18 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bodyguard/services/user_firebase.dart';
 import 'package:bodyguard/widgets/calorie_info.dart';
 import 'package:bodyguard/widgets/nutrition_info.dart';
 import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
+import '../../model/user_model.dart';
 import '../../providers/today_health_data_provider.dart';
 import '../../providers/shopping_provider.dart';
+import '../../providers/user_info_provider.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
 import '../activity_page/activity_page.dart';
 import '../body_page/body_page.dart';
@@ -62,26 +68,20 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body:
-        Consumer<TodayHealthDataProvider>(
-          builder: (context, provider, child) {
+        Consumer2<TodayHealthDataProvider, UserInfoProvider>(
+          builder: (context, provider, userInfo ,child) {
+            userInfo.initializeData();
             return RefreshIndicator(onRefresh: () async {
               await provider.fetchTodayTotalCalories(now);
               provider.getMealTime(now);
+
             }, child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "오늘 사용자1님은?",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ]),
+                    userInfo.D("님의 하루는?"),
                     const SizedBox(
                       height: 5,
                     ),
@@ -401,4 +401,23 @@ class HomePage extends StatelessWidget {
         ),
 
     );
-  }}
+  }
+
+  Marquee customMarquee(String text){
+    return Marquee(
+      text: text,
+      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      scrollAxis: Axis.horizontal,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      blankSpace: 20.0,
+      velocity: 100.0,
+      pauseAfterRound: Duration(seconds: 1),
+      startPadding: 10.0,
+      accelerationDuration: Duration(seconds: 1),
+      accelerationCurve: Curves.linear,
+      decelerationDuration: Duration(milliseconds: 500),
+      decelerationCurve: Curves.easeOut,
+    );
+  }
+
+}
