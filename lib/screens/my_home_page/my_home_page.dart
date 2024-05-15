@@ -2,18 +2,20 @@ import 'package:bodyguard/screens/health_page/health_page.dart';
 import 'package:flutter/material.dart';
 import '../../utils/custom_icon.dart';
 import '../shopping_page/shopping_page.dart';
-import 'home_page.dart';
+import '../home_page/home_page.dart';
 import '../search_page/search_page.dart';
 import '../identity_page/identity_page.dart';
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  final int initialIndex;
+
+  const MyHomePage({Key? key, required this.initialIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 5, // 탭의 수
-      initialIndex: 0, // 홈페이지가 먼저 띄워지도록 함
+      initialIndex: initialIndex, // 시작 탭을 받을 수 있도록
       child: Scaffold(
         appBar: null,
         body: TabBarView(

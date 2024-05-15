@@ -8,7 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'utils/notification.dart';
-import 'screens/home_page/my_home_page.dart';
+import 'screens/my_home_page/my_home_page.dart';
 import 'providers/activity_provider.dart';
 import 'services/activity_service.dart'; // ActivityProvider import 추가
 
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
           supportedLocales: const [
             Locale('ko', 'KR'),
           ],
-          home: const MyHomePage(),
+          home: const MyHomePage(initialIndex: 0,),
         ));
   }
 }

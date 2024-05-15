@@ -12,7 +12,7 @@ import 'announcement_page.dart';
 class IdentityPage extends StatelessWidget {
   List<String> identityList = [
     '내정보',
-    '내 주문 및 배송',
+    '결제 내역',
     '주소지 및 배송지 변경',
     '자주 묻는 질문',
     '공지사항',
@@ -82,7 +82,7 @@ class DetailPage extends StatelessWidget {
     Widget buildPageContent() {
       if (detail == '내정보') {
         return MyInfoDetailPage();
-      } else if (detail == '내 주문 및 배송') {
+      } else if (detail == '결제 내역') {
         return OrderHistoryPage();
       } else if (detail == '주소지 및 배송지 변경') {
         return AddressChangePage();

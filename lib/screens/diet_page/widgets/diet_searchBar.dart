@@ -1,11 +1,10 @@
 import 'dart:async';
-
-import 'package:bodyguard/screens/enter_calories_page/widgets/diet_input_dialog.dart';
 import 'package:bodyguard/utils/diet_util.dart';
 import 'package:flutter/material.dart';
 
 
 import '../../../model/fetched_diet_data.dart';
+import 'diet_input_dialog.dart';
 
 class CustomSearchbar extends StatefulWidget {
   State<CustomSearchbar> createState() => _CustomSearchbar();
@@ -26,13 +25,15 @@ class _CustomSearchbar extends State<CustomSearchbar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SearchBar(
-          hintText: "음식명을 입력하세요",
+        TextField(
           controller: controller,
           onSubmitted: (value) {
             inputText = value;
             searchItem();
           },
+          decoration: InputDecoration(
+            hintText: "음식명을 입력하세요",
+          ),
         ),
         //SizedBox(height: 15.0),
         Expanded(
