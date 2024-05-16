@@ -89,6 +89,24 @@ class StoreService {
         .map((snapshot) => snapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>?))
         .toList());
   }
+  Future<String?> getFirstStoreImageByCuisineType(String cuisineType) async {
+    try {
+      QuerySnapshot querySnapshot = await _storeCollection.where('cuisineType', isEqualTo: cuisineType).limit(1).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot doc = querySnapshot.docs.first;
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        String? image = data['image'] as String?;
+        return image;
+      } else {
+        return null; // 해당 요리 종류에 속하는 가게가 없을 경우 null 반환
+      }
+    } catch (e) {
+      print("Error getting first store image by cuisine type: $e");
+      return null; // 에러 발생 시 null 반환
+    }
+  }
+
+
   Future<Store?> getStoreById(String storeId) async {
     try {
       DocumentSnapshot storeSnapshot = await _storeCollection.doc(storeId).get();

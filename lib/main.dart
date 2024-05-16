@@ -1,5 +1,6 @@
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/providers/search_provider.dart';
 import 'package:bodyguard/providers/today_health_data_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/utils/health_util.dart';
@@ -18,12 +19,11 @@ import 'firebase_options.dart';
 import 'utils/notification.dart';
 import 'screens/my_home_page/my_home_page.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  );// Firebase 초기화
+  ); // Firebase 초기화
 
   // health connect 사용 설정
   Health().configure(useHealthConnectIfAvailable: true);
@@ -32,15 +32,11 @@ Future<void> main() async {
   HealthUtil().authorize();
   //HealthUtil().installHealthConnect();
 
-  initializeDateFormatting().then((_) => runApp(
-    const MyApp()
-  ));
-
-
   FlutterLocalNotification.init(); // 로컬 알림 초기화
   FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
-}
 
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -54,7 +50,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => ShoppingProvider()),
           ChangeNotifierProvider(create: (_) => DietProvider()),
           ChangeNotifierProvider(create: (_) => HealthDataProvider()),
-          ChangeNotifierProvider(create: (_) => DietProvider()),
+          ChangeNotifierProvider(create: (_) => SearchProvider()),
           ChangeNotifierProvider(create: (context) => UserInfoProvider()),
         ],
         child: MaterialApp(
@@ -87,14 +83,11 @@ class MyApp extends StatelessWidget {
             Locale('ko', 'KR'),
           ],
           home: Scaffold(
-             body: AuthenticationWrapper(),
+            body: AuthenticationWrapper(),
           ),
         ));
   }
 }
-
-
-
 
 //main실행 후 실행시키는 첫 위젯
 class Start extends StatelessWidget {
@@ -103,6 +96,7 @@ class Start extends StatelessWidget {
     return AuthenticationWrapper();
   }
 }
+
 //자동 로그인을 위한 클래스
 //만약 사용자가 로그아웃을 하면 첫 로그인 페이지로 다시 돌아감
 //앱이 종료 후 실행해도 자동 로그인 가능
@@ -117,7 +111,9 @@ class AuthenticationWrapper extends StatelessWidget {
         print('Data: ${snapshot.data}');
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.hasData) {
-            return const MyHomePage(initialIndex: 0,);
+            return const MyHomePage(
+              initialIndex: 0,
+            );
           }
           return const Login();
         }
