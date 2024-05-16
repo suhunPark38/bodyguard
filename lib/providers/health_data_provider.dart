@@ -19,7 +19,7 @@ class HealthDataProvider with ChangeNotifier {
   double get water => _water;
 
   HealthDataProvider(){
-    //fetchStepData(DateTime.now());
+    fetchStepData(DateTime.now());
   }
 
   /// Fetch data points from the health plugin and show them in the app.
