@@ -13,12 +13,10 @@ class StoreListPage extends StatelessWidget {
       future: StoreService().getAllCuisineTypes(), // 모든 가게 종류 가져오기
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-
           return const Center(
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.hasError) {
-
           return const Center(
             child: Text('Error'),
           );
@@ -26,7 +24,8 @@ class StoreListPage extends StatelessWidget {
           List<String> cuisineTypes = snapshot.data!;
           return DefaultTabController(
             length: cuisineTypes.length,
-            initialIndex: 0,
+            initialIndex: Provider.of<ShoppingProvider>(context, listen: false)
+                .currentStoreTabIndex,
             child: Scaffold(
               appBar: AppBar(
                 title: const Text('가게'),
@@ -42,8 +41,11 @@ class StoreListPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => const MyHomePage(initialIndex: 0,)),
-                            (route) => false,
+                        MaterialPageRoute(
+                            builder: (context) => const MyHomePage(
+                                  initialIndex: 0,
+                                )),
+                        (route) => false,
                       );
                     },
                     icon: const Icon(Icons.home),
@@ -60,11 +62,15 @@ class StoreListPage extends StatelessWidget {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Provider.of<ShoppingProvider>(context, listen: false).setCurrentTabIndex(0);
+                  Provider.of<ShoppingProvider>(context, listen: false)
+                      .setCurrentShoppingTabIndex(0);
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => const MyHomePage(initialIndex: 3,)),
-                        (route) => false,
+                    MaterialPageRoute(
+                        builder: (context) => const MyHomePage(
+                              initialIndex: 3,
+                            )),
+                    (route) => false,
                   );
                 },
                 child: const Icon(Icons.shopping_cart),

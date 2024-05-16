@@ -18,13 +18,13 @@ class ShoppingPage extends StatelessWidget {
       return Consumer<ShoppingProvider>(builder: (context, provider, child) {
         return DefaultTabController(
           length: 2,
-          initialIndex: provider.currentTabIndex,
+          initialIndex: provider.currentShoppingTabIndex,
           child: Scaffold(
             appBar: AppBar(
               title: const Text('쇼핑'),
               centerTitle: true,
               actions: [
-                if (provider.currentTabIndex == 0) //결제하기 탭일때
+                if (provider.currentShoppingTabIndex == 0) //결제하기 탭일때
                   TextButton(
                     onPressed: provider.handleReset,
                     child: const Text("모두 지우기"),
@@ -32,7 +32,7 @@ class ShoppingPage extends StatelessWidget {
               ],
               bottom: TabBar(
                 onTap: (index) {
-                  provider.setCurrentTabIndex(index);
+                  provider.setCurrentShoppingTabIndex(index);
                 },
                 tabs: const [
                   Tab(text: '결제하기'),
@@ -50,7 +50,7 @@ class ShoppingPage extends StatelessWidget {
               ),
             ),
             persistentFooterButtons: [
-              if (provider.currentTabIndex == 0) //결제하기 탭일때
+              if (provider.currentShoppingTabIndex == 0) //결제하기 탭일때
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
@@ -109,6 +109,7 @@ class ShoppingPage extends StatelessWidget {
                             height: 20,
                             child: CustomButton(
                               onPressed: () async {
+                                provider.setCurrentStoreTabIndex(0);
                                 await Navigator.push(
                                   context,
                                   MaterialPageRoute(
