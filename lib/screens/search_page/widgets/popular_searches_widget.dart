@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/search_provider.dart';
 
 class PopularSearchesWidget extends StatelessWidget {
+  @override
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
@@ -35,76 +38,88 @@ class PopularSearchesWidget extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 왼쪽 열: 인기 검색어 순위 1부터 5까지
+// 왼쪽 열: 인기 검색어 순위 1부터 5까지
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(5, (index) {
-                  return GestureDetector(
-                    onTap: () {
-                      _handleSearchTap(
-                          context, searchProvider.popularSearches[index]);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5.0, horizontal: 16.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            "${index + 1}  ",
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal,
+                children: List.generate(
+                    min(5, searchProvider.popularSearches.length), (index) {
+                  if (index < searchProvider.popularSearches.length) {
+                    return GestureDetector(
+                      onTap: () {
+                        _handleSearchTap(
+                            context, searchProvider.popularSearches[index]);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5.0, horizontal: 16.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              "${index + 1}  ",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal,
+                              ),
                             ),
-                          ),
-                          Text(
-                            searchProvider.popularSearches[index],
-                            style: const TextStyle(
-                              fontSize: 12,
+                            Text(
+                              searchProvider.popularSearches[index],
+                              style: const TextStyle(
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    return SizedBox(); // Return an empty SizedBox if index is out of bounds
+                  }
                 }),
               ),
             ),
-            // 오른쪽 열: 인기 검색어 순위 6부터 10까지
+
+// 오른쪽 열: 인기 검색어 순위 6부터 10까지
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(5, (index) {
+                children: List.generate(
+                    min(5, searchProvider.popularSearches.length), (index) {
                   final int rightColumnIndex = index + 5;
-                  return GestureDetector(
-                    onTap: () {
-                      _handleSearchTap(context,
-                          searchProvider.popularSearches[rightColumnIndex]);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5.0, horizontal: 16.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            "${rightColumnIndex + 1}  ",
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal,
+                  if (rightColumnIndex <
+                      searchProvider.popularSearches.length) {
+                    return GestureDetector(
+                      onTap: () {
+                        _handleSearchTap(context,
+                            searchProvider.popularSearches[rightColumnIndex]);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5.0, horizontal: 16.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              "${rightColumnIndex + 1}  ",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal,
+                              ),
                             ),
-                          ),
-                          Text(
-                            searchProvider.popularSearches[rightColumnIndex],
-                            style: const TextStyle(
-                              fontSize: 12,
+                            Text(
+                              searchProvider.popularSearches[rightColumnIndex],
+                              style: const TextStyle(
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    return SizedBox(); // Return an empty SizedBox if index is out of bounds
+                  }
                 }),
               ),
             ),
