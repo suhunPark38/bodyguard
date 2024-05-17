@@ -11,9 +11,8 @@ import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../activity_page/activity_page.dart';
 import '../body_page/body_page.dart';
-import '../diet_page/diet_page.dart';
+import '../health_page/health_page.dart';
 import '../my_home_page/my_home_page.dart';
-
 import '../../services/store_service.dart';
 
 
@@ -192,12 +191,13 @@ class HomePage extends StatelessWidget {
                                           height: 20,
                                           child: CustomButton(
                                             onPressed: () {
-                                              Navigator.push(
+                                              Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const DietPage(),
-                                                ),
+                                                    builder: (context) => const MyHomePage(
+                                                      initialIndex: 2,
+                                                    )),
+                                                    (route) => false,
                                               );
                                             },
                                             text: const Text(

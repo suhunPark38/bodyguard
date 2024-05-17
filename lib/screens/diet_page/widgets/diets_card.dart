@@ -54,9 +54,9 @@ class DietsCard extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                     const SizedBox(height: 10),
                   ],
@@ -70,35 +70,57 @@ class DietsCard extends StatelessWidget {
                 itemCount: diets.length,
                 itemBuilder: (context, index) {
                   DietData diet = diets[index];
-                  return SizedBox(
-                    height: 31, //사용자가 스크롤 할 수 있다고 인지할 수 있게 하기 위함
-                      child: TextButton(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => DietInfoDialog(
-                        parentContext: context,
-                        diet: diet,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 1.0),
+                    child: Container(
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.white, width: 1),
+                      ),
+                      child: InkWell(
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (context) => DietInfoDialog(
+                            parentContext: context,
+                            diet: diet,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                diet.menuName,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios, size: 12, color: Colors.white),
+                          ],
+                        ),
                       ),
                     ),
-                    child: Text(
-                      diet.menuName,
-                      style: const TextStyle(fontSize: 12),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ));
+                  );
                 },
               ),
             ),
+
             Text(
               '${CalculateUtil().getSumOfLists(
-                    diets.map((diet) => diet.calories).toList(),
-                  ).toStringAsFixed(1)} kcal',
+                diets.map((diet) => diet.calories).toList(),
+              ).toStringAsFixed(1)} kcal',
               style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),

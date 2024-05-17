@@ -77,6 +77,7 @@ dependencies:
 
   # 상태 바 위젯
   percent_indicator: ^4.2.3
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
