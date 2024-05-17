@@ -18,8 +18,10 @@ class DietPage extends StatelessWidget {
         final DateTime now = DateTime.utc(
             DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
-        final double caloriesPercentage = provider.calculateCaloriesPercentage();
-        final bool isOverRecommended = provider.totalNutritionalInfo.calories > provider.recommendedCalories;
+        final double caloriesPercentage =
+            provider.calculateCaloriesPercentage();
+        final bool isOverRecommended = provider.totalNutritionalInfo.calories >
+            provider.recommendedCalories;
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -61,43 +63,77 @@ class DietPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${provider.totalNutritionalInfo.calories.toStringAsFixed(1)} / ${provider.recommendedCalories}kcal',
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        const Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "총 칼로리",
+                                style: TextStyle(
+                                    color: Colors.blueGrey, fontSize: 15),
+                              ),
+                              Icon(Icons.fastfood)
+                            ]),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+
+                            Row(
+                              children: [
+                                Text(
+                                  '${provider.totalNutritionalInfo.calories.toStringAsFixed(1)} / ${provider.recommendedCalories}kcal',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        
+                        const SizedBox(height: 10),
+                        LinearProgressIndicator(
+                          value: caloriesPercentage,
+                          backgroundColor: Colors.grey.shade300,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            isOverRecommended ? Colors.pink : Colors.teal,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '0',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              '${provider.recommendedCalories}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                LinearProgressIndicator(
-                  value: caloriesPercentage,
-                  backgroundColor: Colors.grey.shade300,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isOverRecommended ? Colors.pink : Colors.teal,
                   ),
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                     Text(
-                      '0',
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
-                    ),
-                    Text(
-                      '${provider.recommendedCalories}',
-                      style:  TextStyle(fontSize: 12, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
-                    ),
-                  ],
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -121,16 +157,29 @@ class DietPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      '영양소 비율',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ],
-                ),
-                const NutritionInfo(),
+                    child: const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "영양소",
+                                      style: TextStyle(
+                                          color: Colors.blueGrey, fontSize: 15),
+                                    ),
+                                    Icon(Icons.analytics)
+                                  ]),
+                              SizedBox(height: 25),
+                              NutritionInfo(),
+                            ])))
               ],
             ),
           ),
