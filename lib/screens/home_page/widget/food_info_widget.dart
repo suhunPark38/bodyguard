@@ -1,6 +1,6 @@
-// FoodInfoWidget
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../services/store_service.dart';
 
@@ -10,12 +10,18 @@ class FoodInfoWidget extends StatelessWidget {
   final StoreService storeService;
 
   final textStyle = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.bold, // 폰트 굵기
-    color: Colors.black, // 텍스트 색상
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
   );
 
-   FoodInfoWidget({
+  final TtextStyle = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
+
+  FoodInfoWidget({
     Key? key,
     required this.storeId,
     required this.foodId,
@@ -28,71 +34,177 @@ class FoodInfoWidget extends StatelessWidget {
       future: storeService.getFoodInfo(storeId, foodId),
       builder: (context, AsyncSnapshot<Map<String, dynamic>?> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('데이터를 가져오는 중 오류가 발생했습니다.'));
+        } else if (!snapshot.hasData || snapshot.data == null) {
+          return Center(child: Text('음식 정보가 없습니다.'));
         } else {
-          if (snapshot.hasData && snapshot.data != null) {
-            Map<String, dynamic> foodInfo = snapshot.data!;
-            return
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
+          Map<String, dynamic> foodInfo = snapshot.data!;
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            elevation: 1,
+            margin: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: Container(
-                          // 이미지와 텍스트를 함께 감싸는 컨테이너
-                          color: snapshot.connectionState == ConnectionState.done ? null : Colors.grey,
-                          child: Row(
-                            children: [
-                              // 이미지
-                              Image.network(
-                                foodInfo['image'],
-                                fit: BoxFit.fitWidth,
-                                width: 200,
-                              ),
-                              SizedBox(width: 20,),
-                              // 텍스트
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center, // 텍스트를 세로 방향으로 중앙에 정렬
-                                children: [
-                                  Text('이름: ${foodInfo['menuName']}', style: textStyle), // 텍스트 스타일 적용
-                                  Text('가격: ${foodInfo['price']} 원', style: textStyle), // 텍스트 스타일 적용
-                                  Text('칼로리: ${foodInfo['calories']} kcal', style: textStyle), // 텍스트 스타일 적용
-                                  Text('탄수화물: ${foodInfo['carbohydrate']} g', style: textStyle), // 텍스트 스타일 적용
-                                  Text('단백질: ${foodInfo['protein']} g', style: textStyle), // 텍스트 스타일 적용
-                                  Text('지방: ${foodInfo['fat']} g', style: textStyle), // 텍스트 스타일 적용
-                                  Text('나트륨: ${foodInfo['sodium']} g', style: textStyle), // 텍스트 스타일 적용
-                                  Text('당: ${foodInfo['sugar']} g', style: textStyle), // 텍스트 스타일 적용
-                                ],
-                              ),
-                            ],
-                          ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          foodInfo['image'],
+                          width: 200,
+                          height: 150,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                      : null,
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ),
-                      // 로딩 인디케이터를 숨기는 데 사용될 위젯
-                      // 이미지 로딩이 완료되면 높이가 0이 됩니다.
-                      SizedBox(
-                        height: snapshot.connectionState == ConnectionState.done ? 0 : 20,
-                        child: CircularProgressIndicator(),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.store, color: Colors.orange[300]),
+                                SizedBox(width: 8),
+                                Text('${foodInfo['storeName']}', style: TtextStyle),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Icon(Icons.restaurant_menu, color: Colors.grey[400]),
+                                SizedBox(width: 8),
+                                Text('${foodInfo['menuName']}', style: TtextStyle),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Text('₩', style: TextStyle(color: Colors.greenAccent, fontSize: 20)),
+                                SizedBox(width: 8),
+                                Text('${foodInfo['price']}', style: TtextStyle),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-              );
+                  SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.local_fire_department, color: Colors.redAccent),
+                              SizedBox(width: 8),
+                              Text('${foodInfo['calories']} kcal', style: textStyle),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              ImageIcon(
+                                AssetImage("assets/nutrition_icon/protein.png"),
+                                size: 24.0,
+                                color: Colors.brown,
+                              ),
+                              SizedBox(width: 8),
+                              Text('단백질: ${foodInfo['protein']} g', style: textStyle),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              ImageIcon(
+                                AssetImage("assets/nutrition_icon/salt.png"),
+                                size: 24.0,
+                                color: Colors.blueAccent,
+                              ),
+                              SizedBox(width: 8),
+                              Text('나트륨: ${foodInfo['sodium']} g', style: textStyle),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              ImageIcon(
+                                AssetImage("assets/nutrition_icon/carbohydrates.png"),
+                                size: 28.0,
+                                color: Colors.amber[600],
+                              ),
+                              SizedBox(width: 8),
+                              Text('탄수화물: ${foodInfo['carbohydrate']} g', style: textStyle),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Icon(Icons.fastfood, color: Colors.pinkAccent),
+                              SizedBox(width: 8),
+                              Text('지방: ${foodInfo['fat']} g', style: textStyle),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              ImageIcon(
+                                AssetImage("assets/nutrition_icon/sugar.png"),
+                                size: 30.0,
+                                color: Colors.black,
+                              ),
+                              SizedBox(width: 8),
+                              Text('당: ${foodInfo['sugar']} g', style: textStyle),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
 
 
-
-          } else if (snapshot.hasError) {
-            return Text('데이터를 가져오는 중 오류가 발생했습니다.');
-          } else {
-            return Text('음식 정보가 없습니다.');
-          }
         }
       },
     );
   }
-
 }

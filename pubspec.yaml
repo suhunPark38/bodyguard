@@ -99,9 +99,14 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/body.png
-    - assets/body12.png
-    - assets/body_icon.png
+
+
+    - assets/nutrition_icon/protein.png
+    - assets/nutrition_icon/carbohydrates.png
+    - assets/nutrition_icon/salt.png
+    - assets/nutrition_icon/sugar.png
+
+
     - assets/loginImage.png
 
 

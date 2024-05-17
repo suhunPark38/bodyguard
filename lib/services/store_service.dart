@@ -110,6 +110,7 @@ class StoreService {
       if (foodSnapshot.exists) {
         Map<String, dynamic> data = foodSnapshot.data() as Map<String, dynamic>;
         return {
+          'storeName': data['storeName'],
           'image': data['image'],
           'menuName': data['menuName'],
           'price': data['price'],
