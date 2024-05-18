@@ -1,3 +1,4 @@
+import 'package:bodyguard/providers/diet_data_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/search_provider.dart';
@@ -8,7 +9,6 @@ import 'package:bodyguard/utils/health_util.dart';
 import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:bodyguard/widgets/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:health/health.dart';
@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => HealthDataProvider()),
           ChangeNotifierProvider(create: (_) => SearchProvider()),
           ChangeNotifierProvider(create: (context) => UserInfoProvider()),
+          ChangeNotifierProvider(create: (context) => DietDataProvider()),
         ],
         child: MaterialApp(
           theme: ThemeData(

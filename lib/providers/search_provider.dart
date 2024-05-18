@@ -83,7 +83,6 @@ class SearchProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //검색을 했을 때 함수
   Future<void> submitSearch(String searchText) async {
     SearchKeywordService().addKeyword(searchText);
     _searchResults.clear();

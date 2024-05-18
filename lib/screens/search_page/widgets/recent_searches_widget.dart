@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/diet_data_provider.dart';
 import '../../../providers/search_provider.dart';
 import '../../search_results_page/search_results_page.dart';
 
@@ -42,6 +43,8 @@ class RecentSearchesWidget extends StatelessWidget {
           children: searchProvider.recentSearches
               .map((search) => GestureDetector(
                     onTap: () async {
+                      Provider.of<DietDataProvider>(context, listen: false)
+                          .fetchDietData(search);
                       searchProvider.setSearchControllerText(search);
                       searchProvider.submitSearch(search);
                       Navigator.push(

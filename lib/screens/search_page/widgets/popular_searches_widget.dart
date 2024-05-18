@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/diet_data_provider.dart';
 import '../../../providers/search_provider.dart';
 import '../../search_results_page/search_results_page.dart';
 
@@ -132,6 +133,7 @@ class PopularSearchesWidget extends StatelessWidget {
   }
 
   Future<void> _handleSearchTap(BuildContext context, String search) async {
+    Provider.of<DietDataProvider>(context, listen: false).fetchDietData(search);
     final searchProvider = Provider.of<SearchProvider>(context, listen: false);
     searchProvider.setSearchControllerText(search);
     searchProvider.submitSearch(search);

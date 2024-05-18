@@ -1,87 +1,86 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../map.dart';
 import '../../model/store_model.dart';
+import '../../providers/diet_data_provider.dart';
 import '../../providers/search_provider.dart';
 import '../../providers/shopping_provider.dart';
+import '../../widgets/custom_search_bar.dart';
+import '../../widgets/diet_data_list_view.dart';
 import '../../widgets/store_card.dart';
 import '../my_home_page/my_home_page.dart';
-import '../store_menu_page/store_menu_page.dart';
 
 class SearchResultsPage extends StatelessWidget {
-  const SearchResultsPage({super.key});
+  const SearchResultsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
-    List<Store> stores = searchProvider.searchResults;
-    return Scaffold(
-      appBar: AppBar(
-        title: SizedBox(
-          height: 40.0,
-          child: TextField(
+    final List<Store> stores = searchProvider.searchResults;
+
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: CustomSearchBar(
             controller: searchProvider.searchController,
-            textAlignVertical: TextAlignVertical.bottom,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              hintText: "검색어를 입력하세요",
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  searchProvider.setSearchControllerText('');
-                },
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.grey[100],
-            ),
+            hintText: "검색어를 입력하세요",
             onChanged: (value) {
               // 검색어가 변경될 때마다 호출되는 콜백 함수
             },
             onSubmitted: (value) async {
+              Provider.of<DietDataProvider>(context, listen: false)
+                  .fetchDietData(value);
               searchProvider.submitSearch(value);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchResultsPage(),
-                ),
-              );
               searchProvider.addRecentSearch(value);
             },
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
             onPressed: () {
-              Provider.of<ShoppingProvider>(context, listen: false)
-                  .setCurrentShoppingTabIndex(0);
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MyHomePage(
-                    initialIndex: 3,
-                  ),
-                ),
-                (route) => false,
-              );
+              searchProvider.setSearchControllerText('');
             },
           ),
-        ],
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(8.0),
-        itemCount: stores.length,
-        itemBuilder: (context, index) {
-          Store store = stores[index];
-          return StoreCard(store: store);
-        },
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.shopping_cart),
+              onPressed: () {
+                Provider.of<ShoppingProvider>(context, listen: false)
+                    .setCurrentShoppingTabIndex(0);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyHomePage(
+                      initialIndex: 3,
+                    ),
+                  ),
+                  (route) => false,
+                );
+              },
+            ),
+          ],
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: '전체'),
+              Tab(text: '가게'),
+              Tab(text: '영양 정보'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            Center(child: Text("전체")),
+            ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: stores.length,
+              itemBuilder: (context, index) {
+                Store store = stores[index];
+                return StoreCard(store: store);
+              },
+            ),
+            Expanded(
+              child: DietDataListView(),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/custom_button.dart';
 import '../diet_page/diet_page.dart';
-import '../diet_page/widgets/diet_search_screen.dart';
+import '../diet_search_page/diet_search_page.dart';
 
 class HealthPage extends StatelessWidget {
   const HealthPage({super.key});
@@ -35,7 +35,7 @@ class HealthPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DietSearchScreen(),
+                          builder: (context) => DietSearchPage(),
                         ),
                       );
                     },

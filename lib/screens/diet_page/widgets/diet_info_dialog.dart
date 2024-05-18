@@ -10,7 +10,7 @@ class DietInfoDialog extends StatelessWidget {
   final BuildContext parentContext;
   final DietData diet;
 
-  const DietInfoDialog({required this.parentContext, required this.diet});
+  const DietInfoDialog({super.key, required this.parentContext, required this.diet});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class DietInfoDialog extends StatelessWidget {
       ),
       content: SingleChildScrollView(
         child: DataTable(
-          columns: [
+          columns: const [
             DataColumn(label: Text('정보')),
             DataColumn(label: Text('내용')),
           ],

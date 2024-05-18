@@ -4,8 +4,10 @@ import 'package:bodyguard/screens/search_page/widgets/recent_searches_widget.dar
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/diet_data_provider.dart';
 import '../../providers/search_provider.dart';
 import '../../providers/shopping_provider.dart';
+import '../../widgets/custom_search_bar.dart';
 import '../my_home_page/my_home_page.dart';
 import '../search_results_page/search_results_page.dart';
 
@@ -18,41 +20,27 @@ class SearchPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: SizedBox(
-          height: 40.0,
-          child: TextField(
-            controller: searchProvider.searchController,
-            textAlignVertical: TextAlignVertical.bottom,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              hintText: "검색어를 입력하세요",
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  searchProvider.setSearchControllerText('');
-                },
+        title: CustomSearchBar(
+          controller: searchProvider.searchController,
+          hintText: "검색어를 입력하세요",
+          onChanged: (value) {
+            // 검색어가 변경될 때마다 호출되는 콜백 함수
+          },
+          onSubmitted: (value) async {
+            Provider.of<DietDataProvider>(context, listen: false)
+                .fetchDietData(value);
+            searchProvider.submitSearch(value);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SearchResultsPage(),
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.grey[100],
-            ),
-            onChanged: (value) {
-              // 검색어가 변경될 때마다 호출되는 콜백 함수
-            },
-            onSubmitted: (value) async {
-              searchProvider.submitSearch(value);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchResultsPage(),
-                ),
-              );
-              searchProvider.addRecentSearch(value);
-            },
-          ),
+            );
+            searchProvider.addRecentSearch(value);
+          },
+          onPressed: () {
+            searchProvider.setSearchControllerText('');
+          },
         ),
         centerTitle: true,
         actions: [
