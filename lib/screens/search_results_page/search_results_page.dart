@@ -19,7 +19,7 @@ class SearchResultsPage extends StatelessWidget {
     final List<Store> stores = searchProvider.searchResults;
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: CustomSearchBar(
@@ -29,10 +29,18 @@ class SearchResultsPage extends StatelessWidget {
               // 검색어가 변경될 때마다 호출되는 콜백 함수
             },
             onSubmitted: (value) async {
-              Provider.of<DietDataProvider>(context, listen: false)
-                  .fetchDietData(value);
-              searchProvider.submitSearch(value);
-              searchProvider.addRecentSearch(value);
+              if (value.trim().isNotEmpty) {
+                Provider.of<DietDataProvider>(context, listen: false)
+                    .fetchDietData(value);
+                searchProvider.submitSearch(value);
+                searchProvider.addRecentSearch(value);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('검색어를 입력하세요.'),
+                  ),
+                );
+              }
             },
             onPressed: () {
               searchProvider.setSearchControllerText('');
@@ -59,7 +67,6 @@ class SearchResultsPage extends StatelessWidget {
           ],
           bottom: const TabBar(
             tabs: [
-              Tab(text: '전체'),
               Tab(text: '가게'),
               Tab(text: '영양 정보'),
             ],
@@ -67,7 +74,6 @@ class SearchResultsPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            Center(child: Text("전체")),
             ListView.builder(
               padding: const EdgeInsets.all(8.0),
               itemCount: stores.length,
@@ -75,10 +81,13 @@ class SearchResultsPage extends StatelessWidget {
                 Store store = stores[index];
                 return StoreCard(store: store);
               },
-            ),
-            Expanded(
+            ), const Padding(
+      padding: EdgeInsets.all(16.0),
+      child:
+      Center(
               child: DietDataListView(),
             ),
+            )
           ],
         ),
       ),

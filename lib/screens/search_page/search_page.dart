@@ -27,16 +27,24 @@ class SearchPage extends StatelessWidget {
             // 검색어가 변경될 때마다 호출되는 콜백 함수
           },
           onSubmitted: (value) async {
-            Provider.of<DietDataProvider>(context, listen: false)
-                .fetchDietData(value);
-            searchProvider.submitSearch(value);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SearchResultsPage(),
-              ),
-            );
-            searchProvider.addRecentSearch(value);
+            if (value.trim().isNotEmpty) {
+              Provider.of<DietDataProvider>(context, listen: false)
+                  .fetchDietData(value);
+              searchProvider.submitSearch(value);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchResultsPage(),
+                ),
+              );
+              searchProvider.addRecentSearch(value);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('검색어를 입력하세요.'),
+                ),
+              );
+            }
           },
           onPressed: () {
             searchProvider.setSearchControllerText('');

@@ -90,6 +90,7 @@ class DietsCard extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                        Expanded(child:
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
@@ -103,6 +104,7 @@ class DietsCard extends StatelessWidget {
                                 maxLines: 1,
                               ),
                             ),
+                        ),
                             const Icon(Icons.arrow_forward_ios, size: 12, color: Colors.white),
                           ],
                         ),

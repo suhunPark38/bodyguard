@@ -14,27 +14,37 @@ class DietSearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("식단 기록"),
+          title: const Text("식단 검색"),
         ),
-        body: Column(
-          children: [
-            CustomSearchBar(
-              controller: controller,
-              hintText: "기록할 음식을 입력하세요",
-              onChanged: (value) {},
-              onSubmitted: (value) async {
-                Provider.of<DietDataProvider>(context, listen: false)
-                    .fetchDietData(value);
-              },
-              onPressed: () {
-                _setControllerText('');
-              },
-            ),
-            const Expanded(
-              child: DietDataListView(),
-            ),
-          ],
-        ));
+        body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                CustomSearchBar(
+                  controller: controller,
+                  hintText: "기록할 음식을 입력하세요",
+                  onChanged: (value) {},
+                  onSubmitted: (value) async {
+                    if (value.trim().isNotEmpty) {
+                      Provider.of<DietDataProvider>(context, listen: false)
+                          .fetchDietData(value);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('기록할 음식을 입력하세요'),
+                        ),
+                      );
+                    }
+                  },
+                  onPressed: () {
+                    _setControllerText('');
+                  },
+                ),
+                const Expanded(
+                  child: DietDataListView(),
+                ),
+              ],
+            )));
   }
 
   void _setControllerText(String text) {

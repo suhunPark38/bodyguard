@@ -7,6 +7,8 @@ import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/database/config_database.dart';
 import 'package:intl/intl.dart';
 
+import '../../my_home_page/my_home_page.dart';
+
 class DietInputDialog extends StatelessWidget {
   final FetchedDietData selectedData;
 
@@ -176,8 +178,14 @@ class DietInputDialogContent extends StatelessWidget {
                         (double.tryParse(selectedData.NUTR_CONT5) ?? 0.0) *
                             provider.amount),
                   ));
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyHomePage(
+                          initialIndex: 2,
+                        )),
+                        (route) => false,
+                  );
                 }
               },
               child: const Text('확인'),

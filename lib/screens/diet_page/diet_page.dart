@@ -83,7 +83,7 @@ class DietPage extends StatelessWidget {
                               ),
                               Icon(Icons.fastfood)
                             ]),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
