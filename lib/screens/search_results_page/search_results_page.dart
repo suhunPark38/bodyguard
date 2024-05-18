@@ -1,16 +1,12 @@
-import 'package:bodyguard/screens/search_page/widgets/categories_widget.dart';
-import 'package:bodyguard/screens/search_page/widgets/popular_searches_widget.dart';
-import 'package:bodyguard/screens/search_page/widgets/recent_searches_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/search_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../my_home_page/my_home_page.dart';
-import '../search_results_page/search_results_page.dart';
 
-class SearchPage extends StatelessWidget {
-  const SearchPage({super.key});
+class SearchResultsPage extends StatelessWidget {
+  const SearchResultsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +40,7 @@ class SearchPage extends StatelessWidget {
             },
             onSubmitted: (value) async {
               searchProvider.submitSearch(value);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const SearchResultsPage(),
@@ -74,18 +70,16 @@ class SearchPage extends StatelessWidget {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await searchProvider.loadPopularSearches();
+      body: ListView.builder(
+        itemCount: searchProvider.searchResults.length,
+        itemBuilder: (context, index) {
+          final store = searchProvider.searchResults[index];
+          return ListTile(
+            title: Text(store.storeName),
+            subtitle: Text(store.cuisineType),
+            // 여기에 다른 정보들을 표시할 수 있음
+          );
         },
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: const [
-            RecentSearchesWidget(),
-            PopularSearchesWidget(),
-            CategoriesWidget(),
-          ],
-        ),
       ),
     );
   }

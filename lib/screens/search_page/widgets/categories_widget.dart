@@ -7,6 +7,8 @@ import '../../../services/store_service.dart';
 import '../../store_list_page/store_list_page.dart';
 
 class CategoriesWidget extends StatelessWidget {
+  const CategoriesWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
@@ -17,7 +19,7 @@ class CategoriesWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               "카테고리",
               style: TextStyle(
                 fontSize: 20,
@@ -39,7 +41,7 @@ class CategoriesWidget extends StatelessWidget {
         searchProvider.isListViewVisible
             ? ListView.separated(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: searchProvider.cuisineTypes.length,
                 itemBuilder: (context, index) {
                   Future<String?> getImageUrl() async {
@@ -59,7 +61,7 @@ class CategoriesWidget extends StatelessWidget {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return CircularProgressIndicator();
+                              return const CircularProgressIndicator();
                             } else if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
                             } else {
@@ -72,7 +74,7 @@ class CategoriesWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    trailing: Icon(Icons.keyboard_arrow_right),
+                    trailing: const Icon(Icons.keyboard_arrow_right),
                     onTap: () {
                       Provider.of<ShoppingProvider>(context, listen: false)
                           .setCurrentStoreTabIndex(index);

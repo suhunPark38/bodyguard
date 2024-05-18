@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/search_provider.dart';
+import '../../search_results_page/search_results_page.dart';
 
 class PopularSearchesWidget extends StatelessWidget {
-  @override
+  const PopularSearchesWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
@@ -38,7 +40,6 @@ class PopularSearchesWidget extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-// 왼쪽 열: 인기 검색어 순위 1부터 5까지
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,13 +75,11 @@ class PopularSearchesWidget extends StatelessWidget {
                       ),
                     );
                   } else {
-                    return SizedBox(); // Return an empty SizedBox if index is out of bounds
+                    return const SizedBox();
                   }
                 }),
               ),
             ),
-
-// 오른쪽 열: 인기 검색어 순위 6부터 10까지
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,24 +117,31 @@ class PopularSearchesWidget extends StatelessWidget {
                       ),
                     );
                   } else {
-                    return SizedBox(); // Return an empty SizedBox if index is out of bounds
+                    return const SizedBox();
                   }
                 }),
               ),
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         )
       ],
     );
   }
 
-  void _handleSearchTap(BuildContext context, String search) {
-    Provider.of<SearchProvider>(context, listen: false)
-        .setSearchControllerText(search);
-    print("검색어 '$search'를 탭했습니다.");
+  Future<void> _handleSearchTap(BuildContext context, String search) async {
+    final searchProvider = Provider.of<SearchProvider>(context, listen: false);
+    searchProvider.setSearchControllerText(search);
+    searchProvider.submitSearch(search);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SearchResultsPage(),
+      ),
+    );
+    searchProvider.addRecentSearch(search);
   }
 
   void _showMorePopularSearchesDialog(
@@ -144,7 +150,7 @@ class PopularSearchesWidget extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('인기 검색어 (상위 20개)'),
+          title: const Text('인기 검색어 (상위 20개)'),
           content: SingleChildScrollView(
             child: Column(
               children: searchProvider.popularSearches.map((search) {
@@ -163,7 +169,7 @@ class PopularSearchesWidget extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('닫기'),
+              child: const Text('닫기'),
             ),
           ],
         );

@@ -13,11 +13,19 @@ class SearchProvider with ChangeNotifier {
   final SearchHistoryDatabase _database = SearchHistoryDatabase();
   bool _isListViewVisible = true;
 
+  List<Store> _searchResults = [];
+
   TextEditingController get searchController => _searchController;
+
   List<String> get recentSearches => _recentSearches;
+
   List<String> get popularSearches => _popularSearches;
+
   List<String> get cuisineTypes => _cuisineTypes;
+
   bool get isListViewVisible => _isListViewVisible;
+
+  List<Store> get searchResults => _searchResults;
 
   SearchProvider() {
     _loadSearchHistory();
@@ -32,7 +40,7 @@ class SearchProvider with ChangeNotifier {
 
   Future<void> loadPopularSearches() async {
     _popularSearches =
-    await SearchKeywordService().getTop20KeywordsBySearchCount();
+        await SearchKeywordService().getTop20KeywordsBySearchCount();
     if (_popularSearches.length < 20) {
       int dummyCount = 20 - _popularSearches.length;
       _popularSearches.addAll(List.generate(dummyCount, (index) => "인기 검색어"));
@@ -72,6 +80,14 @@ class SearchProvider with ChangeNotifier {
 
   void toggleListViewVisibility() {
     _isListViewVisible = !_isListViewVisible;
+    notifyListeners();
+  }
+
+  //검색을 했을 때 함수
+  Future<void> submitSearch(String searchText) async {
+    SearchKeywordService().addKeyword(searchText);
+    _searchResults.clear();
+    _searchResults = await StoreService().searchStores(searchText);
     notifyListeners();
   }
 }
