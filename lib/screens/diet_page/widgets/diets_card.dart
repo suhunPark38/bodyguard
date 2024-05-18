@@ -80,41 +80,44 @@ class DietsCard extends StatelessWidget {
                         border: Border.all(color: Colors.white, width: 1),
                       ),
                       child: InkWell(
-                        onTap: () => showDialog(
-                          context: context,
-                          builder: (context) => DietInfoDialog(
-                            parentContext: context,
-                            diet: diet,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                        Expanded(child:
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                diet.menuName,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
+                        onTap: () =>
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  DietInfoDialog(
+                                    parentContext: context,
+                                    diet: diet,
+                                  ),
                             ),
-                        ),
-                            const Icon(Icons.arrow_forward_ios, size: 12, color: Colors.white),
-                          ],
-                        ),
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(child:
+                            Text(
+                            diet.menuName,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                              ),
+                        const Icon(Icons.arrow_forward_ios,
+                            size: 12, color: Colors.white),
+                        ],
                       ),
                     ),
+                  ),)
+                  ,
                   );
                 },
               ),
             ),
-
             Text(
               '${CalculateUtil().getSumOfLists(
                 diets.map((diet) => diet.calories).toList(),
