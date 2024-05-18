@@ -1,9 +1,14 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../map.dart';
+import '../../model/store_model.dart';
 import '../../providers/search_provider.dart';
 import '../../providers/shopping_provider.dart';
+import '../../widgets/store_card.dart';
 import '../my_home_page/my_home_page.dart';
+import '../store_menu_page/store_menu_page.dart';
 
 class SearchResultsPage extends StatelessWidget {
   const SearchResultsPage({super.key});
@@ -11,7 +16,7 @@ class SearchResultsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
-
+    List<Store> stores = searchProvider.searchResults;
     return Scaffold(
       appBar: AppBar(
         title: SizedBox(
@@ -71,14 +76,11 @@ class SearchResultsPage extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        itemCount: searchProvider.searchResults.length,
+        padding: const EdgeInsets.all(8.0),
+        itemCount: stores.length,
         itemBuilder: (context, index) {
-          final store = searchProvider.searchResults[index];
-          return ListTile(
-            title: Text(store.storeName),
-            subtitle: Text(store.cuisineType),
-            // 여기에 다른 정보들을 표시할 수 있음
-          );
+          Store store = stores[index];
+          return StoreCard(store: store);
         },
       ),
     );
