@@ -11,9 +11,8 @@ import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../activity_page/activity_page.dart';
 import '../body_page/body_page.dart';
-import '../diet_page/diet_page.dart';
+import '../health_page/health_page.dart';
 import '../my_home_page/my_home_page.dart';
-
 import '../../services/store_service.dart';
 
 
@@ -21,7 +20,6 @@ import '../../services/store_service.dart';
 class HomePage extends StatelessWidget {
 
 
-  final List<String> _list = ["card1", "card2", "card3"];
   final DateTime now = DateTime.now();
   StoreService storeService = StoreService();
 
@@ -52,7 +50,7 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {
               Provider.of<ShoppingProvider>(context, listen: false)
-                  .setCurrentTabIndex(0);
+                  .setCurrentShoppingTabIndex(0);
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -128,6 +126,8 @@ class HomePage extends StatelessWidget {
                                               height: 25,
                                               child: CustomButton(
                                                 onPressed: () {
+                                                  Provider.of<ShoppingProvider>(context, listen: false)
+                                                      .setCurrentStoreTabIndex(0);
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -191,12 +191,13 @@ class HomePage extends StatelessWidget {
                                           height: 20,
                                           child: CustomButton(
                                             onPressed: () {
-                                              Navigator.push(
+                                              Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const DietPage(),
-                                                ),
+                                                    builder: (context) => const MyHomePage(
+                                                      initialIndex: 2,
+                                                    )),
+                                                    (route) => false,
                                               );
                                             },
                                             text: const Text(

@@ -8,7 +8,7 @@ import '../../model/store_menu.dart';
 import '../../providers/shopping_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
-import '../diet_page/diet_page.dart';
+import '../my_home_page/my_home_page.dart';
 
 class PaymentDetailPage extends StatelessWidget {
   final Payment payment;
@@ -42,7 +42,8 @@ class PaymentDetailPage extends StatelessWidget {
                 ...payment.menuItems.map((menuItem) {
                   final totalPricePerItem =
                       menuItem.menu.price * menuItem.quantity;
-                  bool isSelected = provider.checkedMenus.contains(menuItem.menu);
+                  bool isSelected =
+                      provider.checkedMenus.contains(menuItem.menu);
                   return Container(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Row(
@@ -130,47 +131,45 @@ class PaymentDetailPage extends StatelessWidget {
           ],
         );
       }),
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: CustomButton(
-                  onPressed: () {
-                    if (Provider.of<ShoppingProvider>(context, listen: false).checkedMenus.isNotEmpty) {
-                      final checkedMenus = Provider.of<ShoppingProvider>(context, listen: false).checkedMenus;
-                      _showDialogsSequentially(context, checkedMenus, payment);
-                    }
-                  },
-                  text: const Text('칼로리 기록하기'),
-                ),
-              ),
-
-            ],
+      persistentFooterButtons: [
+        SizedBox(
+          width: double.maxFinite,
+          height: 40,
+          child: CustomButton(
+            onPressed: () {
+              if (Provider.of<ShoppingProvider>(context, listen: false)
+                  .checkedMenus
+                  .isNotEmpty) {
+                final checkedMenus =
+                    Provider.of<ShoppingProvider>(context, listen: false)
+                        .checkedMenus;
+                _showDialogsSequentially(context, checkedMenus, payment);
+              }
+            },
+            text: const Text('칼로리 기록하기'),
           ),
         ),
-      ),
+      ],
     );
   }
 }
-void _showDialogsSequentially(BuildContext context, List<StoreMenu> checkedMenus, Payment payment) {
 
+void _showDialogsSequentially(
+    BuildContext context, List<StoreMenu> checkedMenus, Payment payment) {
   _showDialog(context, checkedMenus, 0, payment).then((_) {
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('칼로리와 영양성분을 확인해보세요.'),
         action: SnackBarAction(
           label: '확인하기',
           onPressed: () {
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                const DietPage(),
-              ),
+                  builder: (context) => const MyHomePage(
+                        initialIndex: 2,
+                      )),
+              (route) => false,
             );
           },
         ),
@@ -179,13 +178,15 @@ void _showDialogsSequentially(BuildContext context, List<StoreMenu> checkedMenus
   });
 }
 
-Future<void> _showDialog(BuildContext context, List<StoreMenu> checkedMenus, int index, Payment payment) async {
+Future<void> _showDialog(BuildContext context, List<StoreMenu> checkedMenus,
+    int index, Payment payment) async {
   if (index < checkedMenus.length) {
     // 다이얼로그를 보여줌
     await showDialog(
       context: context,
       builder: (BuildContext builder) {
-        return DietInputDialogFromPayment(payment: payment, checkedMenuIndex: index);
+        return DietInputDialogFromPayment(
+            payment: payment, checkedMenuIndex: index);
       },
     );
     // 현재 다이얼로그가 닫힌 후에 다음 다이얼로그를 연다

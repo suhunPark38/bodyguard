@@ -27,6 +27,8 @@ class DietProvider with ChangeNotifier {
   List<DietData> _lunchForPeriod = [];
   List<DietData> _dinnerForPeriod = [];
 
+  final double _recommendedCalories = 2000;
+
   List<DietData> get diets => _diets;
 
   List<DietData> get breakfast => _breakfast;
@@ -36,6 +38,8 @@ class DietProvider with ChangeNotifier {
   List<DietData> get dinner => _dinner;
 
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
+
+  double get recommendedCalories => _recommendedCalories;
 
   DateTime get focusedDay => _focusedDay;
 
@@ -80,6 +84,10 @@ class DietProvider with ChangeNotifier {
     if (!_disposed) {
       super.notifyListeners();
     }
+  }
+
+  double calculateCaloriesPercentage() {
+    return (_totalNutritionalInfo.calories / _recommendedCalories).clamp(0.0, 1.0);
   }
 
   // 식단 데이터 조회

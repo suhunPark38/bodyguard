@@ -89,6 +89,24 @@ class StoreService {
         .map((snapshot) => snapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>?))
         .toList());
   }
+  Future<String?> getFirstStoreImageByCuisineType(String cuisineType) async {
+    try {
+      QuerySnapshot querySnapshot = await _storeCollection.where('cuisineType', isEqualTo: cuisineType).limit(1).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot doc = querySnapshot.docs.first;
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        String? image = data['image'] as String?;
+        return image;
+      } else {
+        return null; // 해당 요리 종류에 속하는 가게가 없을 경우 null 반환
+      }
+    } catch (e) {
+      print("Error getting first store image by cuisine type: $e");
+      return null; // 에러 발생 시 null 반환
+    }
+  }
+
+
   Future<Store?> getStoreById(String storeId) async {
     try {
       DocumentSnapshot storeSnapshot = await _storeCollection.doc(storeId).get();
@@ -129,6 +147,47 @@ class StoreService {
     }
   }
 
+
+  Future<List<Store>> searchStores(String query) async {
+    List<Store> results = [];
+
+    try {
+      // 이름으로 검색
+      QuerySnapshot nameSnapshot = await _storeCollection
+          .where('storeName', isGreaterThanOrEqualTo: query)
+          .where('storeName', isLessThan: query + '\uf8ff')
+          .get();
+      results.addAll(nameSnapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>)));
+
+      // 요리 종류로 검색
+      QuerySnapshot cuisineSnapshot = await _storeCollection
+          .where('cuisineType', isEqualTo: query)
+          .get();
+      results.addAll(cuisineSnapshot.docs.map((doc) => Store.fromJson(doc.id, doc.data() as Map<String, dynamic>)));
+
+      // 메뉴 이름으로 검색
+      QuerySnapshot storesSnapshot = await _storeCollection.get();
+      for (var storeDoc in storesSnapshot.docs) {
+        QuerySnapshot menuSnapshot = await _storeCollection
+            .doc(storeDoc.id)
+            .collection('menu')
+            .where('menuName', isGreaterThanOrEqualTo: query)
+            .where('menuName', isLessThan: query + '\uf8ff')
+            .get();
+        if (menuSnapshot.docs.isNotEmpty) {
+          results.add(Store.fromJson(storeDoc.id, storeDoc.data() as Map<String, dynamic>));
+        }
+      }
+
+      // 중복 제거
+      results = results.toSet().toList();
+
+    } catch (e) {
+      print("Error searching stores: $e");
+    }
+
+    return results;
+  }
 
 }
 

@@ -1,7 +1,7 @@
 import 'package:bodyguard/model/diet_record.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
 class NutritionInfo extends StatelessWidget {
@@ -16,48 +16,90 @@ class NutritionInfo extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          buildCircularChart(
-              totalAmount, total.carbohydrates, "탄수화물", Colors.pink),
-          buildCircularChart(totalAmount, total.protein, "단백질", Colors.yellow),
-          buildCircularChart(totalAmount, total.fat, "지방", Colors.blue),
+          SizedBox(
+            height: constraints.maxWidth * 0.5,
+            width: constraints.maxWidth * 0.5,
+            child: PieChart(
+              PieChartData(
+                sections: _buildPieChartSections(total, totalAmount),
+                centerSpaceRadius: 35,
+                sectionsSpace: 4,
+              ),
+            ),
+          ),
+          _buildLegend(total),
         ],
       );
     });
   }
 
-  Widget buildCircularChart(
-      double totalAmount, double nutrition, String label, Color color) {
+  List<PieChartSectionData> _buildPieChartSections(DietRecord total, double totalAmount) {
+    return [
+      PieChartSectionData(
+        color: Colors.green,
+        value: total.carbohydrates,
+        title: '${(total.carbohydrates / totalAmount * 100).toStringAsFixed(1)}%',
+        radius: 35,
+        titleStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+      PieChartSectionData(
+        color: Colors.orangeAccent,
+        value: total.protein,
+        title: '${(total.protein / totalAmount * 100).toStringAsFixed(1)}%',
+        radius: 35,
+        titleStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+      PieChartSectionData(
+        color: Colors.brown.shade800,
+        value: total.fat,
+        title: '${(total.fat / totalAmount * 100).toStringAsFixed(1)}%',
+        radius: 35,
+        titleStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    ];
+  }
+
+  Widget _buildLegend(DietRecord total) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CircularPercentIndicator(
-          radius: 40.0,
-          lineWidth: 6.0,
-          animation: true,
-          animationDuration: 1000,
-          percent: nutrition / totalAmount,
-          center: Text(
-            '${(nutrition / totalAmount * 100).toStringAsFixed(1)} %',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-          circularStrokeCap: CircularStrokeCap.round,
-          progressColor: color,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Text('$label (g)', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(
-            '${nutrition.toStringAsFixed(1)} / ${totalAmount.toStringAsFixed(1)}',
-            style: const TextStyle(
-              fontSize: 12,
-                fontWeight: FontWeight.w500
+        _buildLegendItem('탄수화물', Colors.green, total.carbohydrates),
+        _buildLegendItem('단백질', Colors.orangeAccent, total.protein),
+        _buildLegendItem('지방', Colors.brown.shade800, total.fat),
+      ],
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color, double value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          Container(
+            width: 16,
+            height: 16,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color,
             ),
           ),
-        ),
-      ],
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '${value.toStringAsFixed(1)}g',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
