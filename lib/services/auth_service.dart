@@ -68,25 +68,51 @@ class Auth{
   }
 
   Future<String?> sendPWResetEmail({required String email}) async {
-    try{
-      if(UserFirebase().getUser(email) != null){
+    try {
+      String? userCheck = await UserFirebase().getUser(email);
+      if (userCheck != null) {
         return "이메일을 확인해주세요";
       }
-      FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       return null;
-    } on FirebaseAuthException catch (e){
+    } on FirebaseAuthException catch (e) {
       log(e.code);
-      switch (e.code){
+      switch (e.code) {
         default:
-          errorMessage = e.code;
+          return e.code;
       }
-      return errorMessage;
     }
   }
+
 
   String getUid(Object value){
     return (value as UserCredential).user!.uid;
   }
+
+  Future<String?> getUiD() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.uid;  // 사용자 UID 반환
+    } else {
+      return null;  // 로그인한 사용자가 없으면 null 반환
+    }
+  }
+
+  Future<void> updatePassword(String newPW) async {
+      try {
+        await FirebaseAuth.instance.currentUser?.updatePassword(newPW);
+        print("비밀번호가 성공적으로 업데이트 되었습니다.");
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'requires-recent-login') {
+          print('비밀번호를 변경하기 전에 최근에 로그인해야 합니다.');
+          // 여기서 사용자에게 재로그인을 요청하거나 다른 처리를 할 수 있습니다.
+        } else {
+          print('비밀번호 업데이트 실패: ${e.message}');
+        }
+      } catch (e) {
+        print('비밀번호 업데이트 중 알 수 없는 에러가 발생했습니다: $e');
+      }
+    }
 
   String getCurrentUid(){
     print("getCurrentUid: ${FirebaseAuth.instance.currentUser!.uid}");

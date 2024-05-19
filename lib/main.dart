@@ -15,12 +15,14 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'map.dart';
 import 'utils/notification.dart';
 import 'screens/my_home_page/my_home_page.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  mapInitialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );// Firebase 초기화
@@ -58,6 +60,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => UserInfoProvider()),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             useMaterial3: true, //false로 수정시 material2
             fontFamily: "Pretendard",
