@@ -74,7 +74,7 @@ class _CustomSearchbarState extends State<CustomSearchbar> {
                             title: Text(snapshot.data![index].DESC_KOR, style: TextStyle(fontWeight: FontWeight.bold)),
                             subtitle: Text("${snapshot.data![index].NUTR_CONT1} kcal"),
                             trailing: IconButton(
-                              icon: Icon(Icons.info_outline, color: Colors.blue),
+                              icon: Icon(Icons.info_outline, color: Colors.black),
                               onPressed: () => _showDietDetail(context, snapshot.data![index]),
                             )
                           ),
@@ -120,46 +120,46 @@ void _showDietDetail(BuildContext context, FetchedDietData selectedData) {
           children: [
             Row(
               children: [
-                Icon(Icons.business, color: Colors.deepPurple), // 업체 아이콘 추가
+                Icon(Icons.business, ), // 업체 아이콘 추가
                 SizedBox(width: 10), // 아이콘과 텍스트 사이 간격 조정
                 Expanded(
                   child: Text(
                     '업체명: ${selectedData.MAKER_NAME}',
-                    style: TextStyle(fontSize: 16, color: Colors.deepPurple[700]), // 본문 폰트 크기 및 색상 조정
+                    style: TextStyle(fontSize: 16, ), // 본문 폰트 크기 및 색상 조정
                   ),
                 ),
               ],
             ),
             SizedBox(height: 10),
-            Divider(color: Colors.deepPurple[200]), // 구분선 추가
+            Divider(), // 구분선 추가
             SizedBox(height: 10),
             _buildNutritionInfo(
               icon: Icons.local_fire_department,
-              iconColor: Colors.redAccent,
+              iconColor: Colors.black,
               title: '칼로리',
               value: '${selectedData.NUTR_CONT1} kcal',
-              textColor: Colors.redAccent,
+              textColor: Colors.black
             ),
             _buildNutritionInfo(
               image: AssetImage("assets/nutrition_icon/carbohydrates.png"),
-              iconColor: Colors.orange,
+              iconColor: Colors.black,
               title: '탄수화물',
               value: '${selectedData.NUTR_CONT2}g',
-              textColor: Colors.orange,
+              textColor: Colors.black,
             ),
             _buildNutritionInfo(
               image: AssetImage("assets/nutrition_icon/protein.png"),
-              iconColor: Colors.brown,
+              iconColor: Colors.black,
               title: '단백질',
               value: '${selectedData.NUTR_CONT3}g',
-              textColor: Colors.brown,
+              textColor: Colors.black,
             ),
             _buildNutritionInfo(
               icon: Icons.fastfood,
-              iconColor: Colors.pinkAccent,
+              iconColor: Colors.black,
               title: '지방',
               value: '${selectedData.NUTR_CONT4}g',
-              textColor: Colors.pinkAccent,
+              textColor: Colors.black,
             ),
             _buildNutritionInfo(
               image: AssetImage("assets/nutrition_icon/sugar.png"),
@@ -170,10 +170,10 @@ void _showDietDetail(BuildContext context, FetchedDietData selectedData) {
             ),
             _buildNutritionInfo(
               image: AssetImage("assets/nutrition_icon/salt.png"),
-              iconColor: Colors.blueAccent,
+              iconColor: Colors.black,
               title: '나트륨',
               value: '${selectedData.NUTR_CONT6}mg',
-              textColor: Colors.blueAccent,
+              textColor: Colors.black,
             ),
           ],
         ),
