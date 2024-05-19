@@ -1,66 +1,90 @@
-import 'package:bodyguard/screens/health_page/health_page.dart';
 import 'package:flutter/material.dart';
+import 'package:bodyguard/screens/health_page/health_page.dart';
 import '../../utils/custom_icon.dart';
 import '../shopping_page/shopping_page.dart';
 import '../home_page/home_page.dart';
 import '../search_page/search_page.dart';
 import '../identity_page/identity_page.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   final int initialIndex;
 
   const MyHomePage({Key? key, required this.initialIndex}) : super(key: key);
 
   @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, vsync: this, initialIndex: widget.initialIndex);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 5, // 탭의 수
-      initialIndex: initialIndex, // 시작 탭을 받을 수 있도록
-      child: Scaffold(
-        appBar: null,
-        body: TabBarView(
-          children: [
-            HomePage(),
-            const SearchPage(),
-            HealthPage(),
-            const ShoppingPage(),
-            IdentityPage(),
-          ],
-        ),
-        extendBodyBehindAppBar: true,
-        bottomNavigationBar: const TabBar(
-          tabs: [
-            Tab(
-              icon: Icon(
-                Icons.home,
-              ),
-              text: '홈',
-            ),
-            Tab(
-              icon: Icon(
-                Icons.search,
-              ),
-              text: '검색',
-            ),
-            Tab(
-              icon: Icon(CustomIcon.emo_sunglasses),
-              child: Text('보디가드', style: TextStyle(fontSize: 13)),
-            ),
-            Tab(
-              icon: Icon(
-                Icons.shopping_cart,
-              ),
-              text: '쇼핑',
-            ),
-            Tab(
-              icon: Icon(
-                Icons.perm_identity_rounded,
-              ),
-              text: 'my',
-            ),
-          ],
-        ),
+    return Scaffold(
+      appBar: null,
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          HomePage(),
+          const SearchPage(),
+          HealthPage(),
+          const ShoppingPage(),
+          IdentityPage(),
+        ],
       ),
+      extendBodyBehindAppBar: true,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (int index) {
+          setState(() {
+            _tabController.animateTo(index);
+          });
+        },
+        currentIndex: _tabController.index,
+        selectedItemColor: Colors.black, // 선택된 아이템의 색상을 회색으로 설정
+        unselectedItemColor: Colors.black, // 선택되지 않은 아이템의 색상을 회색으로 설정
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined, color: Colors.black), // 아이콘 색상을 검은색으로 설정
+            label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search, color: Colors.black), // 아이콘 색상을 검은색으로 설정
+            label: '검색',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(
+              AssetImage("assets/Bodyguard_logo.png"),
+              size: 50.0,
+              color: Colors.black,
+              // 아이콘 색상을 검은색으로 설정
+            ),
+            label: "",
+
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart, color: Colors.black), // 아이콘 색상을 검은색으로 설정
+            label: '쇼핑',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.perm_identity_rounded, color: Colors.black), // 아이콘 색상을 검은색으로 설정
+            label: 'my',
+          ),
+        ],
+      ),
+
+
     );
   }
 }

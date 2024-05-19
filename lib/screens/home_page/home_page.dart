@@ -174,7 +174,7 @@ class HomePage extends StatelessWidget {
                                                   color: Colors.blueGrey,
                                                   fontSize: 15),
                                             ),
-                                            Icon(Icons.fastfood)
+                                            Icon(Icons.local_fire_department)
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
@@ -371,7 +371,7 @@ class HomePage extends StatelessWidget {
                     ),
                     CarouselSlider(
                       options: CarouselOptions(
-                        height: 250,
+                        height: 350,
                         aspectRatio: 16 / 9,
                         viewportFraction: 1.1,
                         autoPlay: true,
