@@ -37,7 +37,7 @@ class WaterWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Text(
-                        "${water} ml",
+                        "${water * 1000} ml",
                         style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold),

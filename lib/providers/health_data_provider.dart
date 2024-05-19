@@ -6,20 +6,21 @@ class HealthDataProvider with ChangeNotifier {
 
   AppState _state = AppState.DATA_NOT_FETCHED;
   int _steps = 0;
-  int _height = 0;
-  int _weight = 0;
-  int _totalCalorie = 0;
+  double _height = 0;
+  double _weight = 0;
+  double _totalCalorie = 0;
   double _water = 0;
 
   int get state => state;
   int get steps => _steps;
-  int get height => _height;
-  int get weight => _weight;
-  int get totalCalorie => _totalCalorie;
+  double get height => _height;
+  double get weight => _weight;
+  double get totalCalorie => _totalCalorie;
   double get water => _water;
 
   HealthDataProvider(){
     fetchStepData(DateTime.now());
+    fetchData(DateTime.now());
   }
 
   /// Fetch data points from the health plugin and show them in the app.
@@ -49,21 +50,21 @@ class HealthDataProvider with ChangeNotifier {
     // Iterate through healthData to populate fields
     for (var dataPoint in healthData) {
       switch (dataPoint.type) {
-        case HealthDataType.STEPS:
-          final value = dataPoint.value as Map<String, dynamic>;
-          _steps = value['numeric_value'] as int;
+        case HealthDataType.TOTAL_CALORIES_BURNED:
+          final value = dataPoint.value.toJson();
+          _totalCalorie = value['numeric_value'] as double;
           break;
         case HealthDataType.HEIGHT:
-          final value = dataPoint.value as Map<String, dynamic>;
-          _height = value['numeric_value'] as int;
+          final value = dataPoint.value.toJson();
+          _height = value['numeric_value'] as double;
           break;
         case HealthDataType.WEIGHT:
-          final value = dataPoint.value as Map<String, dynamic>;
-          _weight = value['numeric_value'] as int;;
+          final value = dataPoint.value.toJson();
+          _weight = value['numeric_value'] as double;;
           break;
         case HealthDataType.WATER:
-          final value = dataPoint.value as Map<String, dynamic>;
-          _water = value['numeric_value'] as double;
+          final value = dataPoint.value.toJson();
+          _water = (value['numeric_value'] as double);
           break;
         default:
           break;
@@ -72,7 +73,7 @@ class HealthDataProvider with ChangeNotifier {
 
 
       _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
-    print(healthData);
+
     print(_state);
     notifyListeners();
   }
@@ -110,8 +111,8 @@ class HealthDataProvider with ChangeNotifier {
     } else {
       debugPrint("Authorization not granted - error in authorization");
       _state = AppState.DATA_NOT_FETCHED;
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   /// 걸음 수 데이터 추가
@@ -136,7 +137,6 @@ class HealthDataProvider with ChangeNotifier {
 
       print(_state);
       notifyListeners();
-
   }
 
   /// 신장(키) 데이터 추가
@@ -186,6 +186,8 @@ class HealthDataProvider with ChangeNotifier {
     final now = DateTime.now();
     final earlier = now.subtract(Duration(minutes: 20));
 
+    _water += add;
+
     // Add data for supported types
     // NOTE: These are only the ones supported on Androids new API Health Connect.
     // Both Android's Google Fit and iOS' HealthKit have more types that we support in the enum list [HealthDataType]
@@ -194,7 +196,7 @@ class HealthDataProvider with ChangeNotifier {
 
     // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
-        value: add,
+        value: _water,
         type: HealthDataType.WATER,
         startTime: earlier,
         endTime: now);
@@ -224,4 +226,17 @@ enum AppState {
   HEALTH_CONNECT_STATUS,
 }
 
+enum ExerciseData {
+  running(1.5, 600),
+  cycling(2.0, 500),
+  swimming(1.0, 700),
+  walking(1.0, 200),
+  weightTraining(1.0, 400);
+
+  final double runningTime;
+  final double burnedCaloriePerHour;
+  const ExerciseData(this.runningTime, this.burnedCaloriePerHour);
+
+  double get totalBurnedCalories => runningTime * burnedCaloriePerHour;
+}
 
