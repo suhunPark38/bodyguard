@@ -1,8 +1,5 @@
-import 'package:bodyguard/providers/diet_data_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
-import 'package:bodyguard/providers/search_provider.dart';
-import 'package:bodyguard/providers/today_health_data_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/utils/health_util.dart';
 
@@ -19,11 +16,12 @@ import 'firebase_options.dart';
 import 'utils/notification.dart';
 import 'screens/my_home_page/my_home_page.dart';
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  ); // Firebase 초기화
+  );// Firebase 초기화
 
   // health connect 사용 설정
   Health().configure(useHealthConnectIfAvailable: true);
@@ -32,11 +30,15 @@ Future<void> main() async {
   HealthUtil().authorize();
   //HealthUtil().installHealthConnect();
 
+  initializeDateFormatting().then((_) => runApp(
+    const MyApp()
+  ));
+
+
   FlutterLocalNotification.init(); // 로컬 알림 초기화
   FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
-
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -45,8 +47,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-              create: (context) => TodayHealthDataProvider()),
           ChangeNotifierProvider(create: (context) => ShoppingProvider()),
           ChangeNotifierProvider(create: (_) => DietProvider()),
           ChangeNotifierProvider(create: (_) => HealthDataProvider()),
@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => DietDataProvider()),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             useMaterial3: true, //false로 수정시 material2
             fontFamily: "Pretendard",

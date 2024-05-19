@@ -28,6 +28,7 @@ class HealthUtil {
 
   // 안드로이드에서 사용하는 dataType
   get dataTypesAndroid => [
+    HealthDataType.TOTAL_CALORIES_BURNED,
     HealthDataType.STEPS,
     HealthDataType.HEIGHT,
     HealthDataType.WEIGHT,
@@ -36,6 +37,7 @@ class HealthUtil {
 
   // IOS에서 사용하는 dataType
   get dataTypesIOS => [
+    HealthDataType.TOTAL_CALORIES_BURNED,
     HealthDataType.STEPS,
     HealthDataType.HEIGHT,
     HealthDataType.WEIGHT,

@@ -230,7 +230,7 @@ class HomePage extends StatelessWidget {
                                       const SizedBox(height: 25),
                                       Text(
                                         "${provider
-                                            .water}ml",
+                                            .water * 1000}ml",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -361,7 +361,7 @@ class HomePage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "사용자1님, 이런건 어떠세요?",
+                            "이런건 어떠세요?",
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
