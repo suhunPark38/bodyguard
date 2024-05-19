@@ -224,7 +224,7 @@ class _SignUpState extends State<SignUp> {
                     ? CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
-                    : Text("로그인"),
+                    : Text("회원가입"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlue[50],
                   minimumSize: Size(250, 50),
