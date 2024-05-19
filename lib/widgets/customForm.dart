@@ -13,14 +13,16 @@ class CustomForm{
   }
 
   // 기본 데코레이션을 위한 함수
-    InputDecoration buildDefaultDecoration(String labelText){
+    InputDecoration buildDefaultDecoration({required String labelText, bool isReadOnly = false}){
       return InputDecoration(
         labelText: labelText,
         fillColor: Colors.white, // 채우기 색
         filled: true, // 채우기 유무 default = false
         labelStyle: TextStyle(color: Colors.black), // 레이블 스타일
-        focusedBorder: OutlineInputBorder(), // 포커스 시 테두리
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)), // 활성화 시 테두리
+        focusedBorder: isReadOnly ?  InputBorder.none : OutlineInputBorder(), // 포커스 시 테두리
+        enabledBorder: isReadOnly ?
+          OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)) : // readOnly일 때 파란색 테두리
+          OutlineInputBorder(borderSide: BorderSide(color: Colors.black)), // readOnly가 아닐 때 회색 테두리
         errorStyle: TextStyle(color: Colors.redAccent), // 오류 텍스트 스타일
         errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)), // 오류 시 테두리
         focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red, width: 2)), // 포커스된 상태의 오류 테두리
@@ -28,6 +30,39 @@ class CustomForm{
       );
     }
 
+  Widget buildTextField({
+    required String label,
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    REGEXP regExp = REGEXP.text,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    String? Function(String?)? validator,
+    InputDecoration? decoration,
+    String? errorText,
+    EdgeInsets padding = const EdgeInsets.fromLTRB(20, 10, 20, 0),
+    bool readOnly = false
+
+  }) {
+    return Container(
+      padding: padding,
+      child: TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        obscureText: obscureText,
+        readOnly: readOnly,
+        keyboardType: keyboardType,
+        decoration: decoration ?? buildDefaultDecoration(labelText: label),
+        validator: validator ?? (value) => CheckValidate().validate(
+          focusNode: focusNode,
+          value: value!,
+          emptytext: label,
+          regExp: regExp,
+          lasttext: errorText ?? label,
+        ),
+      ),
+    );
+  }
 
 
   // 닉네임 텍스트 필드
@@ -43,7 +78,7 @@ class CustomForm{
           controller: controller,
           keyboardType: TextInputType.name,
           focusNode: focusNode,
-          decoration: decoration ?? buildDefaultDecoration('닉네임'),
+          decoration: decoration ?? buildDefaultDecoration(labelText: '닉네임'),
           validator: (value) =>
               CheckValidate().validate(focusNode: focusNode, value: value!, emptytext: "닉네임", regExp: REGEXP.text),
         ),
@@ -66,7 +101,7 @@ class CustomForm{
             controller: controller,
             keyboardType: TextInputType.emailAddress,
             focusNode: focusNode,
-            decoration: decoration ?? buildDefaultDecoration("이메일"),
+            decoration: decoration ?? buildDefaultDecoration(labelText: "이메일"),
             validator: (value) =>
                 CheckValidate().validate(focusNode: focusNode,value: value!, emptytext: "이메일", regExp: REGEXP.email, lasttext: "이메일"),
                 //CheckValidate().validate1(value: value!, emptytext: "이메일", regExp: REGEXP.email, lasttext: "이메일"),
@@ -89,7 +124,7 @@ class CustomForm{
           controller: controller,
           obscureText: true,
           focusNode: focusNode,
-          decoration: decoration ?? buildDefaultDecoration('비밀번호'),
+          decoration: decoration ?? buildDefaultDecoration(labelText: '비밀번호'),
           validator: (value) => CheckValidate().validate(focusNode: focusNode, value: value!, emptytext: "비밀번호", regExp: REGEXP.password, lasttext: "6자 이상"),
         ),
       );
@@ -108,31 +143,11 @@ class CustomForm{
           controller: controller,
           keyboardType: TextInputType.number,
           focusNode: focusNode,
-          decoration: decoration ?? buildDefaultDecoration('나이'),
+          decoration: decoration ?? buildDefaultDecoration(labelText: '나이'),
           validator: (value) => CheckValidate().validate(focusNode: focusNode, value: value!, emptytext: "나이", regExp: REGEXP.age, lasttext: "나이"),
         ),
       );
     }
-
-  // 생년월일 텍스트 필드
-  Container sexTextField({
-      required TextEditingController controller,
-      required FocusNode focusNode,
-      InputDecoration? decoration,
-      EdgeInsets padding = const EdgeInsets.fromLTRB(20, 10, 20, 0),
-    }) {
-      return Container(
-        padding: padding,
-        child: TextFormField(
-          controller: controller,
-          keyboardType: TextInputType.name,
-          focusNode: focusNode,
-          decoration: decoration ?? buildDefaultDecoration('생년월일'),
-          validator: (value) => CheckValidate().validate(focusNode: focusNode, value: value!, emptytext: "생년월일", regExp: REGEXP.text, lasttext: "생년월일 8자리"),
-        ),
-      );
-    }
-
   // 키 텍스트 필드
   Container heightTextField({
       required TextEditingController controller,
@@ -146,7 +161,7 @@ class CustomForm{
           controller: controller,
           keyboardType: TextInputType.number,
           focusNode: focusNode,
-          decoration: decoration ?? buildDefaultDecoration('키(cm)'),
+          decoration: decoration ?? buildDefaultDecoration(labelText: '키(cm)'),
           validator: (value) => CheckValidate().validate(focusNode: focusNode, value: value!, emptytext: "키(cm)", regExp: REGEXP.number),
         ),
       );
@@ -165,7 +180,7 @@ class CustomForm{
           controller: controller,
           keyboardType: TextInputType.number,
           focusNode: focusNode,
-          decoration: decoration ?? buildDefaultDecoration('몸무게(kg)'),
+          decoration: decoration ?? buildDefaultDecoration(labelText: '몸무게(kg)'),
           validator: (value) => CheckValidate().validate(focusNode: focusNode, value: value!, emptytext: "몸무게(kg)", regExp: REGEXP.number),
         ),
       );

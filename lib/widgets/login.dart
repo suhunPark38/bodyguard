@@ -1,15 +1,13 @@
-
 import 'dart:developer';
 import 'package:bodyguard/widgets/forget_password.dart';
 import 'package:bodyguard/widgets/sign_up.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-
 import '../main.dart';
 import '../services/auth_service.dart';
 import '../utils/regExp.dart';
+import 'customForm.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -23,8 +21,8 @@ class _LoginState extends State<Login> {
   TextEditingController id = TextEditingController();
   TextEditingController pw = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  FocusNode _emailFocus = new FocusNode();
-  FocusNode _passwordFocus = new FocusNode();
+  FocusNode _emailFocus = FocusNode();
+  FocusNode _passwordFocus = FocusNode();
   //final pwtext = "특수문자, 대소문자, 숫자 포함 8자 이상 15자 이내로 입력하세요.";
   String pwtext = "6자 이상으로 입력하세요";
 
@@ -54,12 +52,29 @@ class _LoginState extends State<Login> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    _showEmailInput(),
-                    _showPasswordInput(),
+                    CustomForm().buildTextField(
+                      label: "이메일", // 이메일
+                      controller: id,
+                      focusNode: _emailFocus,
+                      keyboardType: TextInputType.emailAddress,
+                      regExp: REGEXP.email,
+                    ),
+                    CustomForm().buildTextField(
+                      label: "비밀번호", // 비밀번호
+                      controller: pw,
+                      focusNode: _passwordFocus,
+                      obscureText: true,
+                      keyboardType: TextInputType.visiblePassword,
+                      regExp: REGEXP.password,
+                      errorText: "6자 이상 입력하세요"
+                    ),
                   ],
                 ),
               ),
-              ForgetPassword().showForgetButton(context),
+              TextButton(
+                onPressed: () => showForgetPasswordDialog(context),
+                child: Text("비밀번호 재설정"),
+              ),
               Builder(
                 builder: (context) {
                   return Container(
@@ -122,87 +137,4 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget loginColumn({
-    required TextEditingController controller,
-    required String labelText,
-    bool obscureText = true,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Column(
-      children: [
-        Text(
-          labelText,
-          maxLines: 1,
-          style: TextStyle(fontSize: 25, color: Colors.deepPurpleAccent),
-        ),
-        SizedBox(
-          width: 250.0, // 너비를 200으로 설정
-          child: TextField(
-            controller: controller,
-            maxLines: 1,
-            obscureText: false,
-            keyboardType: TextInputType.emailAddress,
-            enabled: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0), // 모서리 둥글게
-                borderSide: BorderSide(color: Colors.blueGrey),
-              ),
-              floatingLabelAlignment: FloatingLabelAlignment.center,
-              fillColor: Colors.lightBlue[50], // 배경색 설정
-              filled: true, // fillColor 사용을 활성화
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _showEmailInput() {
-    return Padding(
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-        child: Column(
-          children: [
-            Padding(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: TextFormField(
-                  controller: id,
-                  keyboardType: TextInputType.emailAddress,
-                  focusNode: _emailFocus,
-                  decoration: _textFormDecoration('이메일', '이메일을 입력해주세요'),
-                  validator: (value) =>
-                      CheckValidate().validate(focusNode: _emailFocus, value: value!, emptytext: "이메일", regExp: REGEXP.email, lasttext: "이메일"),
-                )),
-          ],
-        ));
-  }
-
-  Widget _showPasswordInput() {
-    return Padding(
-        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-        child: Column(
-          children: [
-            Padding(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: TextFormField(
-                  controller: pw,
-                  focusNode: _passwordFocus,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  decoration: _textFormDecoration( "비밀번호", "$pwtext"
-                  ),
-                  validator: (value) =>
-                      CheckValidate().validatePassword(_passwordFocus, value!, pwtext),
-                )),
-          ],
-        ));
-  }
-
-  InputDecoration _textFormDecoration(hintText, helperText) {
-    return new InputDecoration(
-      contentPadding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-      hintText: hintText,
-      helperText: helperText,
-    );
-  }
 }

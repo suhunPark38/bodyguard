@@ -48,11 +48,17 @@ class _IdentityPage extends State<IdentityPage> {
                       return userInfo.D(" 님 안녕하세요.");
                     }),
                 Spacer(),
-                TextButton(
-                  onPressed: () async {
-                    Auth().userLoginOut();
-                  },
-                    child: Text("로그아웃")
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Auth().userLoginOut();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.redAccent),
+                    ),
+                    child: const Text("로그아웃", style: TextStyle(color: Colors.redAccent)),
+                  ),
                 ),
               ],
             ),

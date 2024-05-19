@@ -1,12 +1,15 @@
 import 'dart:developer';
 
-class UserInfoModel{
+class UserInfoModel {
   final String nickName;
   final String email;
   final String gender;
   final double height;
   final double weight;
   final int age;
+  final String roadAddress;
+  final String detailAddress;
+  final List<double> NLatLng;
 
   UserInfoModel({
     required this.nickName,
@@ -14,29 +17,36 @@ class UserInfoModel{
     required this.height,
     required this.weight,
     required this.age,
-    required this.gender
+    required this.gender,
+    required this.roadAddress,
+    required this.NLatLng,
+    required this.detailAddress,
+
   });
+
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserInfoModel &&
-          runtimeType == other.runtimeType &&
-          nickName == other.nickName &&
-          email == other.email &&
-          height == other.height &&
-          weight == other.weight &&
-          age == other.age &&
-          gender == other.gender;
+          other is UserInfoModel && runtimeType == other.runtimeType &&
+              nickName == other.nickName && email == other.email &&
+              gender == other.gender && height == other.height &&
+              weight == other.weight && age == other.age &&
+              roadAddress == other.roadAddress &&
+              detailAddress == other.detailAddress && NLatLng == other.NLatLng;
 
   @override
   int get hashCode =>
       nickName.hashCode ^
       email.hashCode ^
+      gender.hashCode ^
       height.hashCode ^
       weight.hashCode ^
       age.hashCode ^
-      gender.hashCode;
+      roadAddress.hashCode ^
+      detailAddress.hashCode ^
+      NLatLng.hashCode;
+
 
   factory UserInfoModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
@@ -62,6 +72,11 @@ class UserInfoModel{
           (throw FormatException("$key 값을 int로 변환할 수 없습니다."));
     }
 
+    List<double> getDoubleList(List<dynamic> list) {
+      return list.map((item) => double.parse(item.toString())).toList();
+    }
+
+
     if (json == null) {
       throw ArgumentError("json data is null");
     }
@@ -71,7 +86,9 @@ class UserInfoModel{
     final weight = getDoubleValue("weight");
     final age = getIntValue("age");
     final gender = json["gender"];
-
+    final roadAddress = json['roadAddress'];
+    final NLatLng = getDoubleList(json['NLatLng']);
+    final detailAddress = json['DetailAddress'] ?? "";
 
 
     log("user_model의 factory UserInfo.fromJson 출력 값: "
@@ -84,7 +101,9 @@ class UserInfoModel{
       weight: weight,
       age: age,
       gender: gender,
-
+      roadAddress: roadAddress,
+      detailAddress: detailAddress,
+      NLatLng: NLatLng
     );
   }
 
@@ -96,6 +115,9 @@ class UserInfoModel{
       "weight": weight,
       "age": age,
       "gender": gender,
+      "roadAddress": roadAddress,
+      "detailAddress": detailAddress,
+      "NLatLng": NLatLng
 
     };
   }

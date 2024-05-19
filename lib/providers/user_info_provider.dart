@@ -10,7 +10,8 @@ class UserInfoProvider with ChangeNotifier{
 
 
   Stream<UserInfoModel> initializeData() {
-      return UserFirebase().getUserInfo(uid: Auth().getCurrentUid());
+    user = UserFirebase().getUserInfo(uid: Auth().getCurrentUid());
+      return user;
   }
 
   Widget D(String text){
