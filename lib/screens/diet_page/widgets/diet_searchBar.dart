@@ -115,61 +115,69 @@ void _showDietDetail(BuildContext context, FetchedDietData selectedData) {
         ),
       ),
       content: SingleChildScrollView(
-        child: ListBody(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Icon(Icons.business, color: Colors.deepPurple), // 업체 아이콘 추가
                 SizedBox(width: 10), // 아이콘과 텍스트 사이 간격 조정
                 Expanded(
-                  child: Text('업체명: ${selectedData.MAKER_NAME}',
-                      style: TextStyle(fontSize: 16, color: Colors.deepPurple[700])), // 본문 폰트 크기 및 색상 조정
+                  child: Text(
+                    '업체명: ${selectedData.MAKER_NAME}',
+                    style: TextStyle(fontSize: 16, color: Colors.deepPurple[700]), // 본문 폰트 크기 및 색상 조정
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 10),
             Divider(color: Colors.deepPurple[200]), // 구분선 추가
             SizedBox(height: 10),
-            Row(
-              children: [
-                Icon(Icons.fireplace, color: Colors.deepOrange), // 열량 아이콘 추가
-                SizedBox(width: 10), // 아이콘과 텍스트 사이 간격 조정
-                Expanded(
-                  child: Text('열량: ${selectedData.NUTR_CONT1} kcal',
-                      style: TextStyle(fontSize: 16, color: Colors.deepOrange[700])), // 본문 폰트 크기 및 색상 조정
-                ),
-              ],
+            _buildNutritionInfo(
+              icon: Icons.local_fire_department,
+              iconColor: Colors.redAccent,
+              title: '칼로리',
+              value: '${selectedData.NUTR_CONT1} kcal',
+              textColor: Colors.redAccent,
             ),
-            ListTile(
-              leading: Icon(Icons.fastfood, color: Colors.orange), // 탄수화물에 해당하는 아이콘
-              title: Text('탄수화물', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.orange)),
-              subtitle: Text('${selectedData.NUTR_CONT2}g', style: TextStyle(fontSize: 14, color: Colors.orange[800])),
+            _buildNutritionInfo(
+              image: AssetImage("assets/nutrition_icon/carbohydrates.png"),
+              iconColor: Colors.orange,
+              title: '탄수화물',
+              value: '${selectedData.NUTR_CONT2}g',
+              textColor: Colors.orange,
             ),
-            ListTile(
-              leading: Icon(Icons.fitness_center, color: Colors.green), // 단백질에 해당하는 아이콘
-              title: Text('단백질', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)),
-              subtitle: Text('${selectedData.NUTR_CONT3}g', style: TextStyle(fontSize: 14, color: Colors.green[800])),
+            _buildNutritionInfo(
+              image: AssetImage("assets/nutrition_icon/protein.png"),
+              iconColor: Colors.brown,
+              title: '단백질',
+              value: '${selectedData.NUTR_CONT3}g',
+              textColor: Colors.brown,
             ),
-            ListTile(
-              leading: Icon(Icons.local_pizza, color: Colors.red), // 지방에 해당하는 아이콘
-              title: Text('지방', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red)),
-              subtitle: Text('${selectedData.NUTR_CONT4}g', style: TextStyle(fontSize: 14, color: Colors.red[800])),
+            _buildNutritionInfo(
+              icon: Icons.fastfood,
+              iconColor: Colors.pinkAccent,
+              title: '지방',
+              value: '${selectedData.NUTR_CONT4}g',
+              textColor: Colors.pinkAccent,
             ),
-            ListTile(
-              leading: Icon(Icons.cake, color: Colors.pink), // 당류에 해당하는 아이콘
-              title: Text('당류', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.pink)),
-              subtitle: Text('${selectedData.NUTR_CONT5}g', style: TextStyle(fontSize: 14, color: Colors.pink[800])),
+            _buildNutritionInfo(
+              image: AssetImage("assets/nutrition_icon/sugar.png"),
+              iconColor: Colors.black,
+              title: '당류',
+              value: '${selectedData.NUTR_CONT5}g',
+              textColor: Colors.black,
             ),
-            ListTile(
-              leading: Icon(Icons.local_drink, color: Colors.blue), // 나트륨에 해당하는 아이콘
-              title: Text('나트륨', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue)),
-              subtitle: Text('${selectedData.NUTR_CONT6}mg', style: TextStyle(fontSize: 14, color: Colors.blue[800])),
+            _buildNutritionInfo(
+              image: AssetImage("assets/nutrition_icon/salt.png"),
+              iconColor: Colors.blueAccent,
+              title: '나트륨',
+              value: '${selectedData.NUTR_CONT6}mg',
+              textColor: Colors.blueAccent,
             ),
-
           ],
         ),
       ),
-
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
@@ -186,5 +194,23 @@ void _showDietDetail(BuildContext context, FetchedDietData selectedData) {
     ),
   );
 }
+
+Widget _buildNutritionInfo({IconData? icon, AssetImage? image, required Color iconColor, required String title, required String value, required Color textColor}) {
+  return ListTile(
+    leading: icon != null
+        ? Icon(icon, color: iconColor)
+        : ImageIcon(image, size: 28.0, color: iconColor), // 아이콘 또는 이미지 아이콘 사용
+    title: Text(
+      title,
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: iconColor),
+    ),
+    subtitle: Text(
+      value,
+      style: TextStyle(fontSize: 14, color: textColor),
+    ),
+  );
+}
+
+
 
 
