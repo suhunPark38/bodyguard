@@ -148,6 +148,7 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 10),
                     GridView(
                       shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
