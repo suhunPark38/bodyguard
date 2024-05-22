@@ -1,34 +1,28 @@
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/utils/date_util.dart';
-import 'package:bodyguard/screens/home_page/widget/store_menu_widget.dart';
 import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/diet_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../activity_page/activity_page.dart';
-import '../body_page/body_page.dart';
-import '../health_page/health_page.dart';
+import '../identity_page/myInfo_detail_page.dart';
 import '../my_home_page/my_home_page.dart';
-import '../../services/store_service.dart';
 
 
 
 class HomePage extends StatelessWidget {
-
-
-  final DateTime now = DateTime.now();
-  StoreService storeService = StoreService();
-
-
+  final List<String> _list = ["card1", "card2", "card3"];
   HomePage({super.key});
 
 
   @override
   Widget build(BuildContext context) {
+    final dietProvider = Provider.of<DietProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text("BODYGUARD"),
@@ -179,7 +173,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "총 ${provider.totalCalorie}kcal",
+                                        "총 ${dietProvider.todayCalories.toStringAsFixed(1)}kcal",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -292,7 +286,7 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const BodyPage(),
+                                                      const MyInfoDetailPage(),
                                                 ),
                                               );
                                             },
@@ -356,44 +350,33 @@ class HomePage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(
-                      height: 16,
+                      height: 5,
                     ),
-                    const Row(
+                    Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            "이런건 어떠세요?",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
+                          userInfo.D("님 이런건 어떠세요?")
                         ]),
                     const SizedBox(
                       height: 5,
                     ),
                     CarouselSlider(
                       options: CarouselOptions(
-                        height: 350,
+                        height: 180,
                         aspectRatio: 16 / 9,
-                        viewportFraction: 1.1,
+                        viewportFraction: 0.9,
                         autoPlay: true,
                         autoPlayInterval: const Duration(seconds: 4),
                         enableInfiniteScroll: true,
                         onPageChanged: ((index, reason) {}),
                       ),
-                      items: [
-
-                          StoreMenuWidget(storeId: 'awFDhgaAgPlvTtxr0A0H',
-                              foodId: 'o7iCM8lbFt1Vpeg1TLlm', storeService: storeService),
-
-
-                        StoreMenuWidget(storeId: 'JtxEXh1htARMYrmj8PeC',
-                            foodId: 'v2HY5F9K3SdehELEVO5f', storeService: storeService),// foodId 전달
-
-
-
-
-
-                      ]
+                      items: _list.map((String item) {
+                        return SizedBox(
+                          width: double.maxFinite,
+                          height: 100,
+                          child: Card(child: Text(item)),
+                        );
+                      }).toList(),
                     ),
                   ],
                 ),
