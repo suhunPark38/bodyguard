@@ -38,14 +38,13 @@ class _ActivityPageState extends State<ActivityPage> {
         padding: const EdgeInsets.all(16),
         child: Center(
           child: Consumer<HealthDataProvider>(
-            builder: (context, provider, _)
-              => Column(
+            builder: (context, provider, _) => Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     DateWidget(),
                     StepsWidget(currentSteps: provider.steps, targetSteps: 6000),
                     WaterWidget(water: provider.water),
-                    CalorieWidget(targetCalorie: provider.totalCalorie, burnedCalorie: 150.0),
+                    CalorieWidget(totalCalorie: provider.totalCalorie, burnedCalorie: provider.totalCalorie),
                     ExerciseWidget(),
                     BodyInfoWidget(height: provider.height, weight: provider.weight),
 

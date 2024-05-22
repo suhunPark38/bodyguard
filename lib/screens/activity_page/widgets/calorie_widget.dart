@@ -4,10 +4,10 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../../../widgets/custom_button.dart';
 
 class CalorieWidget extends StatelessWidget {
-  final double targetCalorie;
+  final double totalCalorie;
   final double burnedCalorie;
 
-  const CalorieWidget({Key? key, required this.burnedCalorie, required this.targetCalorie})
+  const CalorieWidget({Key? key, required this.burnedCalorie, required this.totalCalorie})
       : super(key: key);
 
   @override
@@ -27,7 +27,7 @@ class CalorieWidget extends StatelessWidget {
                       MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "소모 칼로리",
+                          "활동 칼로리 / 총 칼로리 소모",
                           style: TextStyle(
                               color: Colors.blueGrey,
                               fontSize: 15),
@@ -41,7 +41,7 @@ class CalorieWidget extends StatelessWidget {
                       Column(
                         children: [
                           Text(
-                            "${burnedCalorie}",
+                            "${burnedCalorie.toStringAsFixed(1)}",
                             style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
@@ -49,7 +49,7 @@ class CalorieWidget extends StatelessWidget {
                             softWrap: false,
                           ),
                           Text(
-                            "/${targetCalorie}Kcal",
+                            "/${totalCalorie}kcal",
                             style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold),
@@ -59,7 +59,7 @@ class CalorieWidget extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 25),
-                      _buildStepCircularChart(2000, 150)
+                      _buildStepCircularChart(totalCalorie, burnedCalorie)
                     ],
                   ),
                   const SizedBox(height: 25),
@@ -80,16 +80,16 @@ class CalorieWidget extends StatelessWidget {
   }
 
   Widget _buildStepCircularChart(
-      double targetCalories, double burnedCalories) {
+      double totalCalories, double burnedCalories) {
     return
       CircularPercentIndicator(
         radius: 40.0,
         lineWidth: 6.0,
         animation: true,
         animationDuration: 1000,
-        percent: burnedCalories / targetCalories,
+        percent: burnedCalories / (totalCalories == 0 ? 1 : totalCalories),
         center: Text(
-          '${(burnedCalories / targetCalories * 100).toStringAsFixed(1)} %',
+          '${(burnedCalories / (totalCalories == 0 ? 1 : totalCalories) * 100).toStringAsFixed(1)} %',
           style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         circularStrokeCap: CircularStrokeCap.round,
