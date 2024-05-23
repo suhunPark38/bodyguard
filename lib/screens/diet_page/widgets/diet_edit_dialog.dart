@@ -41,6 +41,7 @@ class _DietEditDialogState extends State<DietEditDialog> {
     amount = widget.diet.amount;
     sodium = widget.diet.sodium;
     eatingTime = widget.diet.eatingTime;
+    classification = widget.diet.classification;
   }
 
   @override
@@ -60,8 +61,8 @@ class _DietEditDialogState extends State<DietEditDialog> {
               Slider(
                 value: amount,
                 min: 0.0,
-                max: 3.0,
-                divisions: 6,
+                max: 10.0,
+                divisions: 100,
                 label: amount.toStringAsFixed(1),
                 onChanged: (double newValue) {
                   setState(() {

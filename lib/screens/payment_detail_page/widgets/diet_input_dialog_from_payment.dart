@@ -34,7 +34,6 @@ class _DietInputDialogState extends State<DietInputDialogFromPayment>
   String menuName = '';
   int classification = 0;
   late DateTime eatingTime;
-  int max = 0;
 
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
@@ -56,10 +55,8 @@ class _DietInputDialogState extends State<DietInputDialogFromPayment>
     eatingTime = widget.payment.timestamp;
 
     classification = _calculateClassification(eatingTime.hour);
-    max = widget.payment.menuItems
-        .firstWhere((menuItem) => menuItem.menu.menuName == menuName)
-        .quantity;
-    amount = max.toDouble();
+
+    amount = 1;
 
     _shakeController = AnimationController(
       duration: const Duration(milliseconds: 50),
@@ -125,8 +122,8 @@ class _DietInputDialogState extends State<DietInputDialogFromPayment>
             Slider(
               value: amount,
               min: 0.0,
-              max: max.toDouble(),
-              divisions: 10 * max,
+              max: 10.0,
+              divisions: 100,
               label: amount.toStringAsFixed(1),
               onChanged: (double newValue) {
                 setState(() {
