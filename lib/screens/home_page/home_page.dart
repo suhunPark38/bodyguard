@@ -19,6 +19,7 @@ import '../../services/store_service.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
+  final StoreService storeService = StoreService();
 
   @override
   _HomePage createState() => _HomePage();
@@ -27,12 +28,6 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage>{
   final DateTime now = DateTime.now();
   StoreService storeService = StoreService();
-  final StoreService storeService = StoreService();
-
-
-  HomePage({super.key});
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,6 +149,7 @@ class _HomePage extends State<HomePage>{
                     const SizedBox(height: 10),
                     GridView(
                       shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
