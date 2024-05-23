@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:bodyguard/screens/health_page/health_page.dart';
-import '../../utils/custom_icon.dart';
 import '../shopping_page/shopping_page.dart';
 import '../home_page/home_page.dart';
 import '../search_page/search_page.dart';
@@ -8,8 +7,9 @@ import '../identity_page/identity_page.dart';
 
 class MyHomePage extends StatefulWidget {
   final int initialIndex;
+  final int? healthIndex;
 
-  const MyHomePage({Key? key, required this.initialIndex}) : super(key: key);
+  const MyHomePage({Key? key, required this.initialIndex, this.healthIndex}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -17,6 +17,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
 
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         children: [
           HomePage(),
           const SearchPage(),
-          HealthPage(),
+          HealthPage(initailIndex: widget.healthIndex ?? 0,),
           const ShoppingPage(),
           IdentityPage(),
         ],

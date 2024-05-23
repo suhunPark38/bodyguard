@@ -25,7 +25,6 @@ class HealthDataProvider with ChangeNotifier {
   HealthDataProvider(){
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
-    fetchWaterData();
   }
 
   /// 기본 데이터 (신장, 몸무게 등) 가져오기
@@ -33,14 +32,18 @@ class HealthDataProvider with ChangeNotifier {
     _state = AppState.FETCHING_DATA;
 
     final now = date;
-    final endTime = DateTime(now.year, now.month, now.day);
+    final startTime = DateTime(now.year, now.month, now.day);
+
+    double totalCalories = 0;
+    double totalActiveCalories = 0;
+    double totalWater = 0;
 
 
     // try {
     // fetch health data
     List<HealthDataPoint> healthData = await Health().getHealthDataFromTypes(
       types: HealthUtil().types,
-      startTime: endTime,
+      startTime: startTime,
       endTime: now,
     );
 
@@ -56,9 +59,10 @@ class HealthDataProvider with ChangeNotifier {
       final value = dataPoint.value.toJson();
       switch (dataPoint.type) {
         case HealthDataType.TOTAL_CALORIES_BURNED:
-          final value = dataPoint.value.toJson();
-          _totalCalorieBurned = value['numeric_value'] as double;
-          print(_totalCalorieBurned);
+          totalCalories += value['numeric_value'] as double;
+          break;
+        case HealthDataType.WATER:
+          totalWater += value['numeric_value'] as double;
           break;
         case HealthDataType.HEIGHT:
           _height = value['numeric_value'] as double;
@@ -67,41 +71,16 @@ class HealthDataProvider with ChangeNotifier {
           _weight = value['numeric_value'] as double;;
           break;
         case HealthDataType.ACTIVE_ENERGY_BURNED:
-          _activeCalorieBurned = (value['numeric_value'] as double);
-          print(_activeCalorieBurned);
+          totalActiveCalories += (value['numeric_value'] as double);
         default:
           break;
       }
     }
-
-      _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
-
-    print(_state);
-    notifyListeners();
-  }
-
-  /// 마신 물 데이터 가져오기
-  Future<void> fetchWaterData() async {
-    _state = AppState.FETCHING_DATA;
-
-    final now = _selectedDate;
-    final endTime = DateTime(now.year, now.month, now.day);
-
-    // fetch health data
-    List<HealthDataPoint> healthData = await Health().getHealthDataFromTypes(
-      types: [HealthDataType.WATER],
-      startTime: endTime,
-      endTime: now,
-    );
-
-    double totalWater = 0;
-    for (var dataPoint in healthData) {
-      final value = dataPoint.value.toJson();
-      totalWater += value['numeric_value'] as double;
-    }
+    _totalCalorieBurned = totalCalories;
+    _activeCalorieBurned = totalActiveCalories;
     _water = totalWater;
 
-    _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
+      _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
 
     print(_state);
     notifyListeners();
@@ -111,7 +90,6 @@ class HealthDataProvider with ChangeNotifier {
   /// Fetch steps from the health plugin and show them in the app.
   Future<void> fetchStepData(DateTime date) async {
     int? fetchedSteps;
-
 
     // get steps for today (i.e., since midnight)
     final now = date;
@@ -212,25 +190,24 @@ class HealthDataProvider with ChangeNotifier {
   /// 물 섭취 데이터 추가
   Future<void> addWaterData(double add) async {
     final now = _selectedDate;
-    final earlier = now.subtract(Duration(minutes: 20));
+    final earlier = now.subtract(Duration(seconds: 20));
 
-    _water += add;
-
-    // Add data for supported types
-    // NOTE: These are only the ones supported on Androids new API Health Connect.
-    // Both Android's Google Fit and iOS' HealthKit have more types that we support in the enum list [HealthDataType]
-    // Add more - like AUDIOGRAM, HEADACHE_SEVERE etc. to try them.
     bool success = true;
+
+    print("add water start");
 
     // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
-        value: _water,
+        value: add,
         type: HealthDataType.WATER,
         startTime: earlier,
         endTime: now);
 
     _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
 
+    print("add water end");
+
+    fetchData(_selectedDate);
     print(_state);
     notifyListeners();
   }
@@ -240,7 +217,6 @@ class HealthDataProvider with ChangeNotifier {
     _selectedDate = _selectedDate.subtract(Duration(days: 1));
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
-    fetchWaterData();
     notifyListeners();
   }
 
@@ -249,7 +225,6 @@ class HealthDataProvider with ChangeNotifier {
     _selectedDate = _selectedDate.add(Duration(days: 1));
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
-    fetchWaterData();
     notifyListeners();
   }
 
@@ -258,7 +233,6 @@ class HealthDataProvider with ChangeNotifier {
     _selectedDate = DateTime.now();
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
-    fetchWaterData();
     notifyListeners();
   }
   
@@ -277,19 +251,5 @@ enum AppState {
   DATA_NOT_DELETED,
   STEPS_READY,
   HEALTH_CONNECT_STATUS,
-}
-
-enum ExerciseData {
-  running(1.5, 600),
-  cycling(2.0, 500),
-  swimming(1.0, 700),
-  walking(1.0, 200),
-  weightTraining(1.0, 400);
-
-  final double runningTime;
-  final double burnedCaloriePerHour;
-  const ExerciseData(this.runningTime, this.burnedCaloriePerHour);
-
-  double get totalBurnedCalories => runningTime * burnedCaloriePerHour;
 }
 
