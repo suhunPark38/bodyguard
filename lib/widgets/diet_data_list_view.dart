@@ -45,51 +45,111 @@ class DietDataListView extends StatelessWidget {
   void _showDietDetail(BuildContext context, FetchedDietData selectedData) {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text(selectedData.DESC_KOR),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)), // 다이얼로그 모서리 둥글게
+        title: Text(
+          selectedData.DESC_KOR,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20, // 폰트 크기 조정
+             // 제목 폰트 색상 변경
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  ListTile(
-                    title: const Text('업체명'),
-                    subtitle: Text(selectedData.MAKER_NAME),
-                  ),
-                  ListTile(
-                    title: const Text('열량'),
-                    subtitle: Text('${selectedData.NUTR_CONT1}kcal'),
-                  ),
-                  ListTile(
-                    title: const Text('탄수화물'),
-                    subtitle: Text('${selectedData.NUTR_CONT2}g'),
-                  ),
-                  ListTile(
-                    title: const Text('단백질'),
-                    subtitle: Text('${selectedData.NUTR_CONT3}g'),
-                  ),
-                  ListTile(
-                    title: const Text('지방'),
-                    subtitle: Text('${selectedData.NUTR_CONT4}g'),
-                  ),
-                  ListTile(
-                    title: const Text('당류'),
-                    subtitle: Text('${selectedData.NUTR_CONT5}g'),
-                  ),
-                  ListTile(
-                    title: const Text('나트륨'),
-                    subtitle: Text('${selectedData.NUTR_CONT6}mg'),
+                  Icon(Icons.business, ), // 업체 아이콘 추가
+                  SizedBox(width: 10), // 아이콘과 텍스트 사이 간격 조정
+                  Expanded(
+                    child: Text(
+                      '업체명: ${selectedData.MAKER_NAME}',
+                      style: TextStyle(fontSize: 16, ), // 본문 폰트 크기 및 색상 조정
+                    ),
                   ),
                 ],
               ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("닫기"),
+              SizedBox(height: 10),
+              Divider(), // 구분선 추가
+              SizedBox(height: 10),
+              _buildNutritionInfo(
+                  icon: Icons.local_fire_department,
+                  iconColor: Colors.black,
+                  title: '칼로리',
+                  value: '${selectedData.NUTR_CONT1} kcal',
+                  textColor: Colors.black
+              ),
+              _buildNutritionInfo(
+                image: AssetImage("assets/nutrition_icon/carbohydrates.png"),
+                iconColor: Colors.black,
+                title: '탄수화물',
+                value: '${selectedData.NUTR_CONT2}g',
+                textColor: Colors.black,
+              ),
+              _buildNutritionInfo(
+                image: AssetImage("assets/nutrition_icon/protein.png"),
+                iconColor: Colors.black,
+                title: '단백질',
+                value: '${selectedData.NUTR_CONT3}g',
+                textColor: Colors.black,
+              ),
+              _buildNutritionInfo(
+                icon: Icons.fastfood,
+                iconColor: Colors.black,
+                title: '지방',
+                value: '${selectedData.NUTR_CONT4}g',
+                textColor: Colors.black,
+              ),
+              _buildNutritionInfo(
+                image: AssetImage("assets/nutrition_icon/sugar.png"),
+                iconColor: Colors.black,
+                title: '당류',
+                value: '${selectedData.NUTR_CONT5}g',
+                textColor: Colors.black,
+              ),
+              _buildNutritionInfo(
+                image: AssetImage("assets/nutrition_icon/salt.png"),
+                iconColor: Colors.black,
+                title: '나트륨',
+                value: '${selectedData.NUTR_CONT6}mg',
+                textColor: Colors.black,
               ),
             ],
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "닫기",
+              style: TextStyle(
+                color: Colors.black, // 버튼 텍스트 색상 변경
+                fontWeight: FontWeight.bold, // 버튼 텍스트 굵기 조정
+              ),
+            ),
+          ),
+        ],
+        backgroundColor: Colors.white, // 다이얼로그 배경색 변경 (필요에 따라 조정)
+      ),
     );
   }
+
+  Widget _buildNutritionInfo({IconData? icon, AssetImage? image, required Color iconColor, required String title, required String value, required Color textColor}) {
+    return ListTile(
+      leading: icon != null
+          ? Icon(icon, color: iconColor)
+          : ImageIcon(image, size: 28.0, color: iconColor), // 아이콘 또는 이미지 아이콘 사용
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: iconColor),
+      ),
+      subtitle: Text(
+        value,
+        style: TextStyle(fontSize: 14, color: textColor),
+      ),
+    );
+  }
+
 }

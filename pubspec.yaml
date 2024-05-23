@@ -41,6 +41,7 @@ dependencies:
   auto_size_text: ^3.0.0
 
   flutter_native_splash: ^2.4.0
+  flutter_launcher_icons: "^0.13.1"
 
   #sqlite 추가
   drift: ^2.16.0
@@ -99,7 +100,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/Bodyguard_logo.png
+    - assets/body_logo_icon.png
 
 
     - assets/nutrition_icon/protein.png
