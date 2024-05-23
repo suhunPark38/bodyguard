@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-
 import '../../services/admin_firebase.dart';
-
-
 
 class QNAPage extends StatefulWidget {
   @override
@@ -10,7 +7,6 @@ class QNAPage extends StatefulWidget {
 }
 
 class _QNAPageState extends State<QNAPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,57 +17,43 @@ class _QNAPageState extends State<QNAPage> {
         stream: AdminFirebase().QNA(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             default:
               if (snapshot.hasData) {
                 List<Map<String, String>> qna = snapshot.data!;
-                return ListView.builder(
+                return ListView.separated(
                   itemCount: qna.length,
+                  separatorBuilder: (context, index) => Divider(height: 1),
                   itemBuilder: (context, index) {
                     return ExpansionTile(
-                      title: Text(qna[index]['Question']!),
+                      title: Text(
+                        qna[index]['Question']!,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       children: [
-                        ListTile(
-                          title: Text(qna[index]['Answer']!),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            title: Text(
+                              qna[index]['Answer']!,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
                         ),
                       ],
                     );
                   },
                 );
               } else {
-                return Text('No data available.');
+                return Center(child: Text('No data available.'));
               }
           }
         },
-      )
-      ,
+      ),
     );
   }
 }
-
-class FAQ {
-  final String question;
-  final String answer;
-
-  FAQ({required this.question, required this.answer});
-}
-
-/*
-body: ListView.builder(
-        itemCount: _faqs.length,
-        itemBuilder: (context, index) {
-          return ExpansionTile(
-            title: Text(_faqs[index].question),
-            children: [
-              ListTile(
-                title: Text(_faqs[index].answer),
-              ),
-            ],
-          );
-        },
-      ),
-      */

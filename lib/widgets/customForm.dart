@@ -7,11 +7,6 @@ import '../utils/regExp.dart';
 
 class CustomForm{
 
-
-  void LoginForm(){
-
-  }
-
   // 기본 데코레이션을 위한 함수
     InputDecoration buildDefaultDecoration({required String labelText, bool isReadOnly = false}){
       return InputDecoration(
@@ -203,7 +198,7 @@ class CustomForm{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const Text("성별", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
+              SizedBox(height: 5),
               Row(
                 children: <Widget>[
                   Expanded(

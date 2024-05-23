@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/menu_item.dart';
 import '../model/payment.dart';
 import '../utils/format_util.dart';
+import 'auth_service.dart';
 
 class PaymentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -10,7 +11,7 @@ class PaymentService {
   // 결제 정보를 Firestore에 추가하는 메서드
   Future<void> addPayment(Payment payment) async {
     try {
-      await _firestore.collection('payments').add({
+      await _firestore.collection('users').doc(Auth().getCurrentUid()).collection('payments').add({
         'orderId': payment.orderId,
         'currency': payment.currency,
         'status': payment.status.toString().split('.').last,
@@ -32,7 +33,7 @@ class PaymentService {
   Future<List<Payment>> getPayments() async {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
-          await _firestore.collection('payments').get();
+          await _firestore.collection('users').doc(Auth().getCurrentUid()).collection('payments').get();
 
       final List<Payment> payments = snapshot.docs.map((doc) {
         final data = doc.data();

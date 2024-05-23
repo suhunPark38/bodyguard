@@ -98,19 +98,14 @@ class Auth{
     }
   }
 
-  Future<void> updatePassword(String newPW) async {
+  Future<String?> updatePassword(String newPW) async {
       try {
         await FirebaseAuth.instance.currentUser?.updatePassword(newPW);
-        print("비밀번호가 성공적으로 업데이트 되었습니다.");
+        return null;
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'requires-recent-login') {
-          print('비밀번호를 변경하기 전에 최근에 로그인해야 합니다.');
-          // 여기서 사용자에게 재로그인을 요청하거나 다른 처리를 할 수 있습니다.
-        } else {
-          print('비밀번호 업데이트 실패: ${e.message}');
-        }
+          return ('비밀번호 업데이트 실패: ${e.message}');
       } catch (e) {
-        print('비밀번호 업데이트 중 알 수 없는 에러가 발생했습니다: $e');
+        return ('비밀번호 업데이트 중 알 수 없는 에러가 발생했습니다: $e');
       }
     }
 

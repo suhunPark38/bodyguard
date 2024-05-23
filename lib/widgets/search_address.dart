@@ -172,6 +172,10 @@ class _SearchAddressState extends State<SearchAddress> {
 
 
   void showMapDialog(BuildContext context, dynamic coordinate) {
+    NLatLng coordin = NLatLng(
+        double.parse(coordinate['y']),
+        double.parse(coordinate['x']),
+    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -183,12 +187,21 @@ class _SearchAddressState extends State<SearchAddress> {
             child: NaverMap(
               options: NaverMapViewOptions(
                 initialCameraPosition: NCameraPosition(
-                  target: NLatLng(
-                    double.parse(coordinate['y']),
-                    double.parse(coordinate['x']),
-                  ), zoom: 16
+                  target: coordin, zoom: 16
                 )
               ),
+              onMapReady: (controller) {
+                NMarker marker = NMarker(
+                  iconTintColor: Colors.pink,
+                  id: "user",
+                  position: coordin,
+                );
+                controller.addOverlay(marker);
+                final onMarkerInfoWindow = NInfoWindow.onMarker(
+                  id: marker.info.id, text: "내 위치",
+                );
+                marker.openInfoWindow(onMarkerInfoWindow);
+              },
               ),
             ),
         );

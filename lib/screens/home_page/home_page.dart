@@ -17,16 +17,16 @@ import '../../services/store_service.dart';
 
 
 
-class HomePage extends StatelessWidget {
-
-
-  final DateTime now = DateTime.now();
-  StoreService storeService = StoreService();
-
-
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  _HomePage createState() => _HomePage();
 
+}
+class _HomePage extends State<HomePage>{
+  final DateTime now = DateTime.now();
+  StoreService storeService = StoreService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -381,12 +381,8 @@ class HomePage extends StatelessWidget {
                       ),
                       items: [
 
-                          StoreMenuWidget(storeId: 'awFDhgaAgPlvTtxr0A0H',
-                              foodId: 'o7iCM8lbFt1Vpeg1TLlm', storeService: storeService),
-
-
-                        StoreMenuWidget(storeId: 'JtxEXh1htARMYrmj8PeC',
-                            foodId: 'v2HY5F9K3SdehELEVO5f', storeService: storeService),// foodId 전달
+                        StoreMenuWidget(),
+                        //StoreMenuWidget(),// foodId 전달
 
 
 

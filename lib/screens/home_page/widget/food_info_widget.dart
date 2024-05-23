@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
@@ -7,16 +8,15 @@ import '../../../services/store_service.dart';
 class FoodInfoWidget extends StatelessWidget {
   final String storeId;
   final String foodId;
-  final StoreService storeService;
 
   final textStyle = TextStyle(
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     color: Colors.black,
   );
 
   final TtextStyle = TextStyle(
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     color: Colors.black,
   );
@@ -25,13 +25,12 @@ class FoodInfoWidget extends StatelessWidget {
     Key? key,
     required this.storeId,
     required this.foodId,
-    required this.storeService,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>?>(
-      future: storeService.getFoodInfo(storeId, foodId),
+      future: StoreService().getFoodInfo(storeId, foodId),
       builder: (context, AsyncSnapshot<Map<String, dynamic>?> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -59,19 +58,17 @@ class FoodInfoWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
                           foodInfo['image'],
-                          width: 200,
-                          height: 150,
+                          width: 180,
+                          height: 135,
                           fit: BoxFit.cover,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
+                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) {
                               return child;
                             } else {
                               return Center(
                                 child: CircularProgressIndicator(
                                   value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                      ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
                                       : null,
                                 ),
                               );
@@ -80,7 +77,7 @@ class FoodInfoWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 20),
-                      Expanded(
+                      Flexible(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -89,7 +86,14 @@ class FoodInfoWidget extends StatelessWidget {
                               children: [
                                 Icon(Icons.store, color: Colors.orange[300]),
                                 SizedBox(width: 8),
-                                Text('${foodInfo['storeName']}', style: TtextStyle),
+                                Expanded(
+                                  child: AutoSizeText(
+                                    '${foodInfo['storeName']}',
+                                    style: TtextStyle,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ],
                             ),
                             SizedBox(height: 8),
@@ -97,7 +101,14 @@ class FoodInfoWidget extends StatelessWidget {
                               children: [
                                 Icon(Icons.restaurant_menu, color: Colors.grey[400]),
                                 SizedBox(width: 8),
-                                Text('${foodInfo['menuName']}', style: TtextStyle),
+                                Expanded(
+                                  child: AutoSizeText(
+                                    '${foodInfo['menuName']}',
+                                    style: TtextStyle,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ],
                             ),
                             SizedBox(height: 8),
@@ -105,7 +116,12 @@ class FoodInfoWidget extends StatelessWidget {
                               children: [
                                 Text('₩', style: TextStyle(color: Colors.greenAccent, fontSize: 20)),
                                 SizedBox(width: 8),
-                                Text('${foodInfo['price']}', style: TtextStyle),
+                                AutoSizeText(
+                                  '${foodInfo['price']}',
+                                  style: TtextStyle,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ],
                             ),
                             SizedBox(height: 8),
@@ -115,7 +131,6 @@ class FoodInfoWidget extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -201,8 +216,6 @@ class FoodInfoWidget extends StatelessWidget {
               ),
             ),
           );
-
-
         }
       },
     );

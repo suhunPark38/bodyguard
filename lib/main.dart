@@ -3,6 +3,7 @@ import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/search_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
+import 'package:bodyguard/services/user_firebase.dart';
 import 'package:bodyguard/utils/health_util.dart';
 
 import 'package:bodyguard/providers/user_info_provider.dart';
@@ -117,6 +118,7 @@ class AuthenticationWrapper extends StatelessWidget {
         print('Data: ${snapshot.data}');
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.hasData) {
+            UserFirebase().updateLoginDate();
             return const MyHomePage(
               initialIndex: 0,
             );
