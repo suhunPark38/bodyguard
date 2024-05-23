@@ -1,3 +1,4 @@
+import 'package:bodyguard/screens/activity_page/activity_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/custom_button.dart';
@@ -5,11 +6,14 @@ import '../diet_page/diet_page.dart';
 import '../diet_search_page/diet_search_page.dart';
 
 class HealthPage extends StatelessWidget {
-  const HealthPage({super.key});
+  final int initailIndex;
+
+  const HealthPage({super.key, required this.initailIndex});
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex: initailIndex,
         length: 2,
         child: Scaffold(
             appBar: AppBar(
@@ -23,7 +27,7 @@ class HealthPage extends StatelessWidget {
             body: const TabBarView(
               children: [
                 DietPage(),
-                Center(child: Text("활동")),
+                ActivityPage(),
               ],
             ),
             persistentFooterButtons: [

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-import '../../../widgets/custom_button.dart';
 
 class CalorieWidget extends StatelessWidget {
-  final double targetCalorie;
-  final double burnedCalorie;
+  final double targetCalories;
+  final double burnedCalories;
 
-  const CalorieWidget({Key? key, required this.burnedCalorie, required this.targetCalorie})
+  const CalorieWidget({Key? key, required this.burnedCalories, required this.targetCalories})
       : super(key: key);
 
   @override
@@ -27,7 +26,7 @@ class CalorieWidget extends StatelessWidget {
                       MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "소모 칼로리",
+                          "칼로리 소모량",
                           style: TextStyle(
                               color: Colors.blueGrey,
                               fontSize: 15),
@@ -41,7 +40,7 @@ class CalorieWidget extends StatelessWidget {
                       Column(
                         children: [
                           Text(
-                            "${burnedCalorie}",
+                            "${burnedCalories.toStringAsFixed(1)}",
                             style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
@@ -49,7 +48,7 @@ class CalorieWidget extends StatelessWidget {
                             softWrap: false,
                           ),
                           Text(
-                            "/${targetCalorie}Kcal",
+                            "/${targetCalories.toStringAsFixed(1)}kcal",
                             style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold),
@@ -59,22 +58,18 @@ class CalorieWidget extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 25),
-                      _buildStepCircularChart(2000, 150)
+                      _buildStepCircularChart(targetCalories, burnedCalories)
                     ],
                   ),
-                  const SizedBox(height: 25),
-                  SizedBox(
-                      width: 150,
-                      height: 20,
-                      child: CustomButton(
-                        onPressed: () {
-
-                        },
-                        text: const Text(
-                          "칼로리 상세보기",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ))
+                  const SizedBox(height: 15,),
+                  const Text(
+                      "소모 칼로리 / 목표 칼로리",
+                      style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
 
                 ])));
   }
@@ -87,9 +82,9 @@ class CalorieWidget extends StatelessWidget {
         lineWidth: 6.0,
         animation: true,
         animationDuration: 1000,
-        percent: burnedCalories / targetCalories,
+        percent: burnedCalories / (targetCalories == 0 ? 1 : targetCalories),
         center: Text(
-          '${(burnedCalories / targetCalories * 100).toStringAsFixed(1)} %',
+          '${(burnedCalories / (targetCalories == 0 ? 1 : targetCalories) * 100).toStringAsFixed(1)} %',
           style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         circularStrokeCap: CircularStrokeCap.round,

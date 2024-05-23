@@ -4,39 +4,46 @@ import 'package:health/health.dart';
 
 class HealthDataProvider with ChangeNotifier {
 
-  AppState _state = AppState.DATA_NOT_FETCHED;
+  AppState _state = AppState.DATA_NOT_FETCHED; // 현재 health data 상태
+  DateTime _selectedDate = DateTime.now(); // 가져올 건강 데이터 시간
   int _steps = 0;
   double _height = 0;
   double _weight = 0;
-  double _totalCalorie = 0;
+  double _totalCalorieBurned = 0;
   double _water = 0;
+  double _activeCalorieBurned = 0;
 
+  DateTime get selectedDate => _selectedDate;
   int get state => state;
   int get steps => _steps;
   double get height => _height;
   double get weight => _weight;
-  double get totalCalorie => _totalCalorie;
+  double get totalCalorie => _totalCalorieBurned;
   double get water => _water;
+  double get activeCalorieBurned => _activeCalorieBurned;
 
   HealthDataProvider(){
-    fetchStepData(DateTime.now());
-    fetchData(DateTime.now());
+    fetchStepData(_selectedDate);
+    fetchData(_selectedDate);
   }
 
-  /// Fetch data points from the health plugin and show them in the app.
+  /// 기본 데이터 (신장, 몸무게 등) 가져오기
   Future<void> fetchData(DateTime date) async {
     _state = AppState.FETCHING_DATA;
 
-    // get data within the last 24 hours
     final now = date;
-    final yesterday = now.subtract(Duration(hours: 24));
+    final startTime = DateTime(now.year, now.month, now.day);
+
+    double totalCalories = 0;
+    double totalActiveCalories = 0;
+    double totalWater = 0;
 
 
     // try {
     // fetch health data
     List<HealthDataPoint> healthData = await Health().getHealthDataFromTypes(
       types: HealthUtil().types,
-      startTime: yesterday,
+      startTime: startTime,
       endTime: now,
     );
 
@@ -49,28 +56,29 @@ class HealthDataProvider with ChangeNotifier {
 
     // Iterate through healthData to populate fields
     for (var dataPoint in healthData) {
+      final value = dataPoint.value.toJson();
       switch (dataPoint.type) {
         case HealthDataType.TOTAL_CALORIES_BURNED:
-          final value = dataPoint.value.toJson();
-          _totalCalorie = value['numeric_value'] as double;
+          totalCalories += value['numeric_value'] as double;
+          break;
+        case HealthDataType.WATER:
+          totalWater += value['numeric_value'] as double;
           break;
         case HealthDataType.HEIGHT:
-          final value = dataPoint.value.toJson();
           _height = value['numeric_value'] as double;
           break;
         case HealthDataType.WEIGHT:
-          final value = dataPoint.value.toJson();
           _weight = value['numeric_value'] as double;;
           break;
-        case HealthDataType.WATER:
-          final value = dataPoint.value.toJson();
-          _water = (value['numeric_value'] as double);
-          break;
+        case HealthDataType.ACTIVE_ENERGY_BURNED:
+          totalActiveCalories += (value['numeric_value'] as double);
         default:
           break;
       }
     }
-
+    _totalCalorieBurned = totalCalories;
+    _activeCalorieBurned = totalActiveCalories;
+    _water = totalWater;
 
       _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
 
@@ -82,7 +90,6 @@ class HealthDataProvider with ChangeNotifier {
   /// Fetch steps from the health plugin and show them in the app.
   Future<void> fetchStepData(DateTime date) async {
     int? fetchedSteps;
-
 
     // get steps for today (i.e., since midnight)
     final now = date;
@@ -104,7 +111,6 @@ class HealthDataProvider with ChangeNotifier {
 
       debugPrint('Total number of steps: $steps');
 
-
         _steps = (fetchedSteps == null) ? 0 : fetchedSteps;
         _state = (fetchedSteps == null) ? AppState.NO_DATA : AppState.STEPS_READY;
 
@@ -117,7 +123,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 걸음 수 데이터 추가
   Future<void> addStepData(double add) async {
-    final now = DateTime.now();
+    final now = _selectedDate;
     final earlier = now.subtract(Duration(minutes: 20));
 
     // Add data for supported types
@@ -141,7 +147,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 신장(키) 데이터 추가
   Future<void> addHeightData(double add) async {
-    final now = DateTime.now();
+    final now = _selectedDate;
     final earlier = now.subtract(Duration(minutes: 20));
 
     // Add data for supported types
@@ -163,7 +169,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 몸무게 데이터 추가
   Future<void> addWeightData(double add) async {
-    final now = DateTime.now();
+    final now = _selectedDate;
 
     // Add data for supported types
     // NOTE: These are only the ones supported on Androids new API Health Connect.
@@ -183,31 +189,52 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 물 섭취 데이터 추가
   Future<void> addWaterData(double add) async {
-    final now = DateTime.now();
-    final earlier = now.subtract(Duration(minutes: 20));
+    final now = _selectedDate;
+    final earlier = now.subtract(Duration(seconds: 20));
 
-    _water += add;
-
-    // Add data for supported types
-    // NOTE: These are only the ones supported on Androids new API Health Connect.
-    // Both Android's Google Fit and iOS' HealthKit have more types that we support in the enum list [HealthDataType]
-    // Add more - like AUDIOGRAM, HEADACHE_SEVERE etc. to try them.
     bool success = true;
+
+    print("add water start");
 
     // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
-        value: _water,
+        value: add,
         type: HealthDataType.WATER,
         startTime: earlier,
         endTime: now);
 
     _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
 
+    print("add water end");
+
+    fetchData(_selectedDate);
     print(_state);
     notifyListeners();
   }
 
+  /// 전날로 이동
+  void previousDate() {
+    _selectedDate = _selectedDate.subtract(Duration(days: 1));
+    fetchStepData(_selectedDate);
+    fetchData(_selectedDate);
+    notifyListeners();
+  }
 
+  /// 다음날로 이동
+  void nextDate() {
+    _selectedDate = _selectedDate.add(Duration(days: 1));
+    fetchStepData(_selectedDate);
+    fetchData(_selectedDate);
+    notifyListeners();
+  }
+
+  /// 오늘로 이동
+  void todayDate() {
+    _selectedDate = DateTime.now();
+    fetchStepData(_selectedDate);
+    fetchData(_selectedDate);
+    notifyListeners();
+  }
   
 }
 
@@ -224,19 +251,5 @@ enum AppState {
   DATA_NOT_DELETED,
   STEPS_READY,
   HEALTH_CONNECT_STATUS,
-}
-
-enum ExerciseData {
-  running(1.5, 600),
-  cycling(2.0, 500),
-  swimming(1.0, 700),
-  walking(1.0, 200),
-  weightTraining(1.0, 400);
-
-  final double runningTime;
-  final double burnedCaloriePerHour;
-  const ExerciseData(this.runningTime, this.burnedCaloriePerHour);
-
-  double get totalBurnedCalories => runningTime * burnedCaloriePerHour;
 }
 

@@ -28,6 +28,7 @@ class HealthUtil {
 
   // 안드로이드에서 사용하는 dataType
   get dataTypesAndroid => [
+    HealthDataType.ACTIVE_ENERGY_BURNED,
     HealthDataType.TOTAL_CALORIES_BURNED,
     HealthDataType.STEPS,
     HealthDataType.HEIGHT,
