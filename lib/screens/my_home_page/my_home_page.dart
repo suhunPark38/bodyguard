@@ -65,10 +65,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(
-              AssetImage("assets/Bodyguard_logo.png"),
+              AssetImage("assets/body_logo_icon.png"),
               size: 50.0,
-              color: Colors.black,
-              // 아이콘 색상을 검은색으로 설정
+
             ),
             label: "",
 
