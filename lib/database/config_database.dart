@@ -120,9 +120,6 @@ class ConfigDatabase extends _$ConfigDatabase {
         .get();
   }
 
-
-
-
 }
 
 LazyDatabase _openConnection() {

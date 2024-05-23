@@ -27,6 +27,12 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage>{
   final DateTime now = DateTime.now();
   StoreService storeService = StoreService();
+  final StoreService storeService = StoreService();
+
+
+  HomePage({super.key});
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

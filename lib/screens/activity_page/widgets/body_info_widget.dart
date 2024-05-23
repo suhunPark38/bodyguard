@@ -45,7 +45,7 @@ class BodyInfoWidget extends StatelessWidget {
                           ]),
                       const SizedBox(height: 25),
                       Text(
-                        "${height}cm",
+                        "${(height * 100).toInt()}cm",
                         style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold),

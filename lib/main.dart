@@ -96,6 +96,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 //main실행 후 실행시키는 첫 위젯
 class Start extends StatelessWidget {
   @override
