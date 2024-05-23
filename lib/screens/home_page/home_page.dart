@@ -164,6 +164,7 @@ class _HomePage extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                            color: Colors.white,
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -216,6 +217,7 @@ class _HomePage extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                            color: Colors.white,
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -260,6 +262,7 @@ class _HomePage extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                            color: Colors.white,
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -310,6 +313,7 @@ class _HomePage extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                            color: Colors.white,
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(

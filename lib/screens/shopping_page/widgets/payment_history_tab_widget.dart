@@ -160,6 +160,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                       ),
                     ),
                     Card(
+                      color: Colors.white,
                       child: ListTile(
                         title: Text(
                           totalFoodCount > 1
@@ -200,6 +201,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                 );
               } else {
                 return Card(
+                  color: Colors.white,
                   child: ListTile(
                     title: Text(
                       totalFoodCount > 1
