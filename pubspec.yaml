@@ -101,6 +101,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/body_logo_icon.png
+    - assets/body_logo.png
 
 
     - assets/nutrition_icon/protein.png
