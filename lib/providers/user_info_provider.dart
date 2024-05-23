@@ -22,7 +22,7 @@ class UserInfoProvider with ChangeNotifier{
           return CircularProgressIndicator();
         } else if (snapshot.hasData) {
           return SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
+              //height: MediaQuery.of(context).size.height * 0.05,
               child: Row(
                 children: [
                   AutoSizeText(

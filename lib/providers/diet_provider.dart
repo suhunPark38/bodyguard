@@ -29,6 +29,8 @@ class DietProvider with ChangeNotifier {
 
   final double _recommendedCalories = 2000;
 
+  double _todayCalories = 0.0;
+
   List<DietData> get diets => _diets;
 
   List<DietData> get breakfast => _breakfast;
@@ -53,6 +55,8 @@ class DietProvider with ChangeNotifier {
 
   List<DietData> get dinnerForPeriod => _dinnerForPeriod;
 
+  double get todayCalories => _todayCalories;
+
   void setFocusedDay(DateTime day) {
     _focusedDay = day;
     notifyListeners();
@@ -66,6 +70,7 @@ class DietProvider with ChangeNotifier {
   DietProvider() {
     _updateDietsList(_eatingTime);
     _updateDietsListForPeriod(_eatingTime);
+    _updateTodayCalories();
   }
 
   @override
@@ -87,7 +92,8 @@ class DietProvider with ChangeNotifier {
   }
 
   double calculateCaloriesPercentage() {
-    return (_totalNutritionalInfo.calories / _recommendedCalories).clamp(0.0, 1.0);
+    return (_totalNutritionalInfo.calories / _recommendedCalories)
+        .clamp(0.0, 1.0);
   }
 
   // 식단 데이터 조회
@@ -118,7 +124,15 @@ class DietProvider with ChangeNotifier {
     _updateDietsListForPeriod(_eatingTime);
   }
 
-  void _updateDietsListForPeriod(DateTime selectedDate) async { //기한 지정함으로서 앱의 부담을 줄이기 위함
+  void _updateTodayCalories() async {
+    DateTime today = DateTime.now();
+    List<DietData> todayDiets = await database.getDietByEatingTime(today);
+    _todayCalories = CalculateUtil()
+        .getSumOfLists(todayDiets.map((diet) => diet.calories).toList());
+  }
+
+  void _updateDietsListForPeriod(DateTime selectedDate) async {
+    //기한 지정함으로서 앱의 부담을 줄이기 위함
     DateTime start;
     DateTime end;
 
@@ -138,6 +152,9 @@ class DietProvider with ChangeNotifier {
     _breakfast = _diets.where((diet) => diet.classification == 0).toList();
     _lunch = _diets.where((diet) => diet.classification == 1).toList();
     _dinner = _diets.where((diet) => diet.classification == 2).toList();
+
+    _updateTodayCalories();
+
     _totalNutritionalInfo = DietRecord(
       calories: CalculateUtil()
           .getSumOfLists(_diets.map((diet) => diet.calories).toList()),

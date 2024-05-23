@@ -10,6 +10,7 @@ import 'qna_page.dart';
 import 'settings_page.dart';
 import 'tos_page.dart';
 import 'announcement_page.dart';
+
 class IdentityPage extends StatefulWidget{
   const IdentityPage({Key? key}) : super(key: key);
 
@@ -21,10 +22,10 @@ class _IdentityPage extends State<IdentityPage> {
   List<String> identityList = [
     '내정보',
     '결제 내역',
-    '주소지 및 배송지 변경',
+    '앱 사용 도우미',
     '자주 묻는 질문',
     '약관 및 정책',
-        '설정',
+    '설정',
   ];
 
   @override
@@ -101,8 +102,6 @@ class DetailPage extends StatelessWidget {
         return MyInfoDetailPage();
       } else if (detail == '결제 내역') {
         return OrderHistoryPage();
-      } else if (detail == '주소지 및 배송지 변경') {
-        return AddressChangePage();
       } else if (detail == '자주 묻는 질문') {
         return QNAPage();
       } else if (detail == '공지사항') {

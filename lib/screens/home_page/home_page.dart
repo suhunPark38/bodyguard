@@ -1,4 +1,3 @@
-import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/utils/date_util.dart';
 import 'package:bodyguard/screens/home_page/widget/store_menu_widget.dart';
@@ -14,15 +13,18 @@ import '../body_page/body_page.dart';
 import '../my_home_page/my_home_page.dart';
 import '../../services/store_service.dart';
 
-
-
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  HomePage({super.key});
 
   final StoreService storeService = StoreService();
 
+  @override
+  _HomePage createState() => _HomePage();
+}
 
-  HomePage({super.key});
-
+class _HomePage extends State<HomePage> {
+  final DateTime now = DateTime.now();
+  StoreService storeService = StoreService();
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +68,14 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body:
-        Consumer3<HealthDataProvider, UserInfoProvider, DietProvider>(
-          builder: (context, health, userInfo, diet ,child) {
-            userInfo.initializeData();
-            return RefreshIndicator(onRefresh: () async {
-              health.todayDate();
-            }, child: Padding(
+      body: Consumer2<HealthDataProvider, UserInfoProvider>(
+        builder: (context, provider, userInfo, child) {
+          userInfo.initializeData();
+          return RefreshIndicator(
+            onRefresh: () async {
+              //provider.fetchStepData(DateTime.now());
+            },
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
@@ -122,8 +125,11 @@ class HomePage extends StatelessWidget {
                                               height: 25,
                                               child: CustomButton(
                                                 onPressed: () {
-                                                  Provider.of<ShoppingProvider>(context, listen: false)
-                                                      .setCurrentStoreTabIndex(0);
+                                                  Provider.of<ShoppingProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .setCurrentStoreTabIndex(
+                                                          0);
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -144,6 +150,7 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 10),
                     GridView(
                       shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -162,10 +169,10 @@ class HomePage extends StatelessWidget {
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              "섭취 칼로리",
+                                              "칼로리",
                                               style: TextStyle(
                                                   color: Colors.blueGrey,
                                                   fontSize: 15),
@@ -174,7 +181,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${diet.totalNutritionalInfo.calories.toStringAsFixed(1)}kcal",
+                                        "총 ${provider.totalCalorie.toStringAsFixed(1)}kcal",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -190,10 +197,11 @@ class HomePage extends StatelessWidget {
                                               Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => const MyHomePage(
-                                                      initialIndex: 2,
-                                                    )),
-                                                    (route) => false,
+                                                    builder: (context) =>
+                                                        const MyHomePage(
+                                                          initialIndex: 2,
+                                                        )),
+                                                (route) => false,
                                               );
                                             },
                                             text: const Text(
@@ -225,8 +233,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${(health
-                                            .water * 1000).toStringAsFixed(0)}ml",
+                                        "${(provider.water * 1000).toStringAsFixed(0)}ml",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -239,7 +246,7 @@ class HomePage extends StatelessWidget {
                                           height: 20,
                                           child: CustomButton(
                                             onPressed: () {
-                                              health.addWaterData(0.2);
+                                              provider.addWaterData(0.25);
                                             },
                                             text: const Text(
                                               "추가하기",
@@ -270,7 +277,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${health.weight}kg",
+                                        "${provider.weight}kg",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -320,8 +327,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${health
-                                            .steps} 걸음",
+                                        "${provider.steps} 걸음",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -337,7 +343,8 @@ class HomePage extends StatelessWidget {
                                               Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => const MyHomePage(
+                                                    builder: (context) =>
+                                                    const MyHomePage(
                                                       initialIndex: 2,
                                                       healthIndex: 1,
                                                     )),
@@ -368,30 +375,19 @@ class HomePage extends StatelessWidget {
                       height: 5,
                     ),
                     CarouselSlider(
-                      options: CarouselOptions(
-                        height: 350,
-                        aspectRatio: 16 / 9,
-                        viewportFraction: 1.1,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 4),
-                        enableInfiniteScroll: true,
-                        onPageChanged: ((index, reason) {}),
-                      ),
-                      items: [
-
-                          StoreMenuWidget(storeId: 'awFDhgaAgPlvTtxr0A0H',
-                              foodId: 'o7iCM8lbFt1Vpeg1TLlm', storeService: storeService),
-
-
-                        StoreMenuWidget(storeId: 'JtxEXh1htARMYrmj8PeC',
-                            foodId: 'v2HY5F9K3SdehELEVO5f', storeService: storeService),// foodId 전달
-
-
-
-
-
-                      ]
-                    ),
+                        options: CarouselOptions(
+                          height: 350,
+                          aspectRatio: 16 / 9,
+                          viewportFraction: 1.1,
+                          autoPlay: true,
+                          autoPlayInterval: const Duration(seconds: 4),
+                          enableInfiniteScroll: true,
+                          onPageChanged: ((index, reason) {}),
+                        ),
+                        items: [
+                          StoreMenuWidget(),
+                          //StoreMenuWidget(),// foodId 전달
+                        ]),
                   ],
                 ),
               ),
@@ -400,4 +396,5 @@ class HomePage extends StatelessWidget {
         },
       ),
     );
-  }}
+  }
+}

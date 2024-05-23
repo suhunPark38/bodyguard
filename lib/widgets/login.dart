@@ -43,7 +43,7 @@ class _LoginState extends State<Login> {
             children: [
               SizedBox(height: topPadding), // 동적 상단 패딩
               Image.asset(
-                "assets/loginImage.png",
+                "assets/body_logo_icon.png",
                 width: MediaQuery.of(context).size.width * 0.5,
                 height: MediaQuery.of(context).size.width * 0.5,
               ),

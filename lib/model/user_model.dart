@@ -1,15 +1,18 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserInfoModel {
-  final String nickName;
-  final String email;
-  final String gender;
-  final double height;
-  final double weight;
-  final int age;
-  final String roadAddress;
-  final String detailAddress;
-  final List<double> NLatLng;
+  String nickName;
+  String email;
+  String gender;
+  double height;
+  double weight;
+  int age;
+  String roadAddress;
+  String detailAddress;
+  List<double> NLatLng;
+  Timestamp time;
 
   UserInfoModel({
     required this.nickName,
@@ -21,8 +24,9 @@ class UserInfoModel {
     required this.roadAddress,
     required this.NLatLng,
     required this.detailAddress,
-
+    required this.time
   });
+
 
 
   @override
@@ -89,6 +93,7 @@ class UserInfoModel {
     final roadAddress = json['roadAddress'];
     final NLatLng = getDoubleList(json['NLatLng']);
     final detailAddress = json['DetailAddress'] ?? "";
+    final time = json['lastLogin'] ?? "";
 
 
     log("user_model의 factory UserInfo.fromJson 출력 값: "
@@ -103,7 +108,8 @@ class UserInfoModel {
       gender: gender,
       roadAddress: roadAddress,
       detailAddress: detailAddress,
-      NLatLng: NLatLng
+      NLatLng: NLatLng,
+      time: time
     );
   }
 
