@@ -9,25 +9,23 @@ import 'package:provider/provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
-import '../activity_page/activity_page.dart';
 import '../body_page/body_page.dart';
-import '../health_page/health_page.dart';
 import '../my_home_page/my_home_page.dart';
 import '../../services/store_service.dart';
 
-
-
 class HomePage extends StatefulWidget {
   HomePage({super.key});
+
   final StoreService storeService = StoreService();
 
   @override
   _HomePage createState() => _HomePage();
-
 }
-class _HomePage extends State<HomePage>{
+
+class _HomePage extends State<HomePage> {
   final DateTime now = DateTime.now();
   StoreService storeService = StoreService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,19 +63,19 @@ class _HomePage extends State<HomePage>{
           IconButton(
             icon: const Icon(Icons.notifications_none),
             onPressed: () {
-
               FlutterLocalNotification.showNotification();
             },
           ),
         ],
       ),
-      body:
-        Consumer2<HealthDataProvider, UserInfoProvider>(
-          builder: (context, provider, userInfo ,child) {
-            userInfo.initializeData();
-            return RefreshIndicator(onRefresh: () async {
+      body: Consumer2<HealthDataProvider, UserInfoProvider>(
+        builder: (context, provider, userInfo, child) {
+          userInfo.initializeData();
+          return RefreshIndicator(
+            onRefresh: () async {
               //provider.fetchStepData(DateTime.now());
-            }, child: Padding(
+            },
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
@@ -127,8 +125,11 @@ class _HomePage extends State<HomePage>{
                                               height: 25,
                                               child: CustomButton(
                                                 onPressed: () {
-                                                  Provider.of<ShoppingProvider>(context, listen: false)
-                                                      .setCurrentStoreTabIndex(0);
+                                                  Provider.of<ShoppingProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .setCurrentStoreTabIndex(
+                                                          0);
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -168,7 +169,7 @@ class _HomePage extends State<HomePage>{
                                     children: [
                                       const Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "칼로리",
@@ -180,7 +181,7 @@ class _HomePage extends State<HomePage>{
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "총 ${provider.totalCalorie}kcal",
+                                        "총 ${provider.totalCalorie.toStringAsFixed(1)}kcal",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -196,10 +197,11 @@ class _HomePage extends State<HomePage>{
                                               Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => const MyHomePage(
-                                                      initialIndex: 2,
-                                                    )),
-                                                    (route) => false,
+                                                    builder: (context) =>
+                                                        const MyHomePage(
+                                                          initialIndex: 2,
+                                                        )),
+                                                (route) => false,
                                               );
                                             },
                                             text: const Text(
@@ -231,8 +233,7 @@ class _HomePage extends State<HomePage>{
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${provider
-                                            .water * 1000}ml",
+                                        "${(provider.water * 1000).toStringAsFixed(0)}ml",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -326,8 +327,7 @@ class _HomePage extends State<HomePage>{
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${provider
-                                            .steps} 걸음",
+                                        "${provider.steps} 걸음",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -340,12 +340,15 @@ class _HomePage extends State<HomePage>{
                                           height: 20,
                                           child: CustomButton(
                                             onPressed: () {
-                                              Navigator.push(
+                                              Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const ActivityPage(),
-                                                ),
+                                                    builder: (context) =>
+                                                    const MyHomePage(
+                                                      initialIndex: 2,
+                                                      healthIndex: 1,
+                                                    )),
+                                                    (route) => false,
                                               );
                                             },
                                             text: const Text(
@@ -372,26 +375,19 @@ class _HomePage extends State<HomePage>{
                       height: 5,
                     ),
                     CarouselSlider(
-                      options: CarouselOptions(
-                        height: 350,
-                        aspectRatio: 16 / 9,
-                        viewportFraction: 1.1,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 4),
-                        enableInfiniteScroll: true,
-                        onPageChanged: ((index, reason) {}),
-                      ),
-                      items: [
-
-                        StoreMenuWidget(),
-                        //StoreMenuWidget(),// foodId 전달
-
-
-
-
-
-                      ]
-                    ),
+                        options: CarouselOptions(
+                          height: 350,
+                          aspectRatio: 16 / 9,
+                          viewportFraction: 1.1,
+                          autoPlay: true,
+                          autoPlayInterval: const Duration(seconds: 4),
+                          enableInfiniteScroll: true,
+                          onPageChanged: ((index, reason) {}),
+                        ),
+                        items: [
+                          StoreMenuWidget(),
+                          //StoreMenuWidget(),// foodId 전달
+                        ]),
                   ],
                 ),
               ),
@@ -400,4 +396,5 @@ class _HomePage extends State<HomePage>{
         },
       ),
     );
-  }}
+  }
+}
