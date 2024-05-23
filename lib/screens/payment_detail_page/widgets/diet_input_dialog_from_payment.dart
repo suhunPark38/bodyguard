@@ -135,7 +135,7 @@ class _DietInputDialogState extends State<DietInputDialogFromPayment>
               },
             ),
 
-Text('식사 시간'),
+
               TextButton(
                 onPressed: () async {
                   final selectedDate = await showDatePicker(
@@ -164,6 +164,10 @@ Text('식사 시간'),
                 },
                 child: Column(
                   children: <Widget>[
+                    const Text('식사 시간'),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Text(formatTimestamp(eatingTime)),
                   ],
                 ),

@@ -32,13 +32,13 @@ class DietInputDialogContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('값을 입력하세요'),
+      title: const Text('식단 입력'),
       content: SingleChildScrollView(
         child: SizedBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const Text("먹은 양을 입력하세요 (1회 제공량 기준)"),
+              const Text("섭취량(1회 제공량 기준)"),
               Consumer<DietDataProvider>(
                 builder: (context, provider, child) {
                   return Column(
@@ -50,8 +50,8 @@ class DietInputDialogContent extends StatelessWidget {
                       Slider(
                         value: provider.amount,
                         min: 0.0,
-                        max: 3.0,
-                        divisions: 6,
+                        max: 10.0,
+                        divisions: 100,
                         label: provider.amount.toStringAsFixed(1),
                         onChanged: (double newValue) {
                           provider.setAmount(newValue);
@@ -85,7 +85,7 @@ class DietInputDialogContent extends StatelessWidget {
                         child: Column(
                           children: <Widget>[
                             const Text(
-                              '먹은 시간 입력: ',
+                              '식사 시간',
                             ),
                             const SizedBox(
                               height: 10,
