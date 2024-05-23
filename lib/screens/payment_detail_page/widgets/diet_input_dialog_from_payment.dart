@@ -95,7 +95,7 @@ class _DietInputDialogState extends State<DietInputDialogFromPayment>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const Text("1회 제공량 기준으로 먹은 양은 얼마인가요?"),
+            const Text("섭취량(1회 제공량 기준)"),
 
             const SizedBox(height: 10),
             Text(
@@ -112,7 +112,7 @@ class _DietInputDialogState extends State<DietInputDialogFromPayment>
               },
               child: amount == 0
                   ? const Text(
-                "먹은 양은 0보다 커야해요.",
+                "섭취량은 0보다 커야해요.",
                 style: TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.w500,
@@ -134,44 +134,42 @@ class _DietInputDialogState extends State<DietInputDialogFromPayment>
                 });
               },
             ),
-            const Row(children: [
-              Text('먹은 시간은 언제인가요?'),
-            ]),
-            TextButton(
-              onPressed: () async {
-                final selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2023),
-                  lastDate: DateTime.now().add(const Duration(days: 365)),
-                );
-                if (selectedDate != null) {
-                  final selectedTime = await showTimePicker(
+
+Text('식사 시간'),
+              TextButton(
+                onPressed: () async {
+                  final selectedDate = await showDatePicker(
                     context: context,
-                    initialTime: TimeOfDay.fromDateTime(selectedDate),
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2023),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
                   );
-                  if (selectedTime != null) {
-                    setState(() {
-                      eatingTime = DateTime(
-                        selectedDate.year,
-                        selectedDate.month,
-                        selectedDate.day,
-                        selectedTime.hour,
-                        selectedTime.minute,
-                      );
-                    });
+                  if (selectedDate != null) {
+                    final selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(selectedDate),
+                    );
+                    if (selectedTime != null) {
+                      setState(() {
+                        eatingTime = DateTime(
+                          selectedDate.year,
+                          selectedDate.month,
+                          selectedDate.day,
+                          selectedTime.hour,
+                          selectedTime.minute,
+                        );
+                      });
+                    }
                   }
-                }
-              },
-              child: Column(
-                children: <Widget>[
-                  Text(formatTimestamp(eatingTime)),
-                ],
+                },
+                child: Column(
+                  children: <Widget>[
+                    Text(formatTimestamp(eatingTime)),
+                  ],
+                ),
               ),
-            ),
-            const Row(children: [
-              Text('아침, 점심, 저녁 중 골라주세요.'),
-            ]),
+
+
             const SizedBox(height: 10),
             SegmentedButton<int>(
               segments: const <ButtonSegment<int>>[

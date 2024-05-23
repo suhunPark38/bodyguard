@@ -429,11 +429,9 @@ class HomePage extends StatelessWidget {
                                 },
                                 child: SizedBox(
                                   width: double.maxFinite,
-                                  child: Card(
                                     child: Image.network(
                                       item["imageUrl"],
                                       fit: BoxFit.fill,
-                                    ),
                                   ),
                                 ),
                               );

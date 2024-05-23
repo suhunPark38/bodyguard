@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/diet_data_provider.dart';
 import '../../../providers/search_provider.dart';
+import '../../more_popular_searches_page/more_popular_searches_page.dart';
 import '../../search_results_page/search_results_page.dart';
 
 class PopularSearchesWidget extends StatelessWidget {
@@ -29,7 +30,12 @@ class PopularSearchesWidget extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                _showMorePopularSearchesDialog(context, searchProvider);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MorePopularSearchesPage(),
+                  ),
+                );
               },
               child: const Text(
                 "더보기",
@@ -144,38 +150,5 @@ class PopularSearchesWidget extends StatelessWidget {
       ),
     );
     searchProvider.addRecentSearch(search);
-  }
-
-  void _showMorePopularSearchesDialog(
-      BuildContext context, SearchProvider searchProvider) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('인기 검색어 (상위 20개)'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: searchProvider.popularSearches.map((search) {
-                return ListTile(
-                  title: Text(search),
-                  onTap: () {
-                    _handleSearchTap(context, search);
-                    Navigator.pop(context);
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('닫기'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
