@@ -24,10 +24,39 @@ class DietInputDialog extends StatelessWidget {
   }
 }
 
-class DietInputDialogContent extends StatelessWidget {
+class DietInputDialogContent extends StatefulWidget {
   final FetchedDietData selectedData;
 
   DietInputDialogContent({required this.selectedData});
+
+  @override
+  _DietInputDialogContentState createState() => _DietInputDialogContentState();
+}
+
+class _DietInputDialogContentState extends State<DietInputDialogContent>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _shakeController;
+  late Animation<double> _shakeAnimation;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _shakeController = AnimationController(
+      duration: const Duration(milliseconds: 50),
+      vsync: this,
+    );
+
+    _shakeAnimation = Tween<double>(begin: -5.0, end: 5.0).animate(
+      CurvedAnimation(parent: _shakeController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _shakeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +76,26 @@ class DietInputDialogContent extends StatelessWidget {
                         provider.amount.toStringAsFixed(1),
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      AnimatedBuilder(
+                        animation: _shakeController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(_shakeAnimation.value, 0),
+                            child: child,
+                          );
+                        },
+                        child: provider.amount == 0
+                            ? const Text(
+                          "섭취량은 0보다 커야해요.",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )
+                            : const SizedBox(), // 또는 다른 위젯으로 대체 가능합니다.
+
+                      ),
+
                       Slider(
                         value: provider.amount,
                         min: 0.0,
@@ -63,8 +112,7 @@ class DietInputDialogContent extends StatelessWidget {
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2023),
-                            lastDate:
-                            DateTime.now().add(const Duration(days: 365)),
+                            lastDate: DateTime.now().add(const Duration(days: 365)),
                           );
                           if (selectedDate != null) {
                             final selectedTime = await showTimePicker(
@@ -84,17 +132,14 @@ class DietInputDialogContent extends StatelessWidget {
                         },
                         child: Column(
                           children: <Widget>[
-                            const Text(
-                              '식사 시간',
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            const Text('식사 시간'),
+                            const SizedBox(height: 10),
                             Text(DateFormat('yyyy년 MM월 dd일 HH시 mm분')
                                 .format(provider.eatingTime)),
                           ],
                         ),
                       ),
+                      const SizedBox(height: 10),
                       SegmentedButton<int>(
                         segments: const <ButtonSegment<int>>[
                           ButtonSegment<int>(
@@ -115,6 +160,8 @@ class DietInputDialogContent extends StatelessWidget {
                           provider.setClassification(selected.first);
                         },
                       ),
+                      const SizedBox(height: 10),
+
                     ],
                   );
                 },
@@ -132,50 +179,40 @@ class DietInputDialogContent extends StatelessWidget {
         ),
         Consumer<DietDataProvider>(
           builder: (context, provider, child) {
-            return ElevatedButton(
+            return FilledButton(
               onPressed: () {
                 if (provider.amount == 0) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('경고'),
-                        content: const Text('먹은 양을 0 보다 크게 입력하세요'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('확인'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  setState(() {
+                  });
+                  _shakeController.forward(from: 0.0);
+                  _shakeController.repeat(reverse: true);
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    _shakeController.stop();
+                  });
                 } else {
                   final dietProvider = context.read<DietProvider>();
                   dietProvider.notifyInsertDiet(DietCompanion(
                     eatingTime: Value(provider.eatingTime),
-                    menuName: Value(selectedData.DESC_KOR),
+                    menuName: Value(widget.selectedData.DESC_KOR),
                     amount: Value(provider.amount),
                     classification: Value(provider.classification),
                     calories: Value(
-                        (double.tryParse(selectedData.NUTR_CONT1) ?? 0.0) *
+                        (double.tryParse(widget.selectedData.NUTR_CONT1) ?? 0.0) *
                             provider.amount),
                     carbohydrate: Value(
-                        (double.tryParse(selectedData.NUTR_CONT2) ?? 0.0) *
+                        (double.tryParse(widget.selectedData.NUTR_CONT2) ?? 0.0) *
                             provider.amount),
                     protein: Value(
-                        (double.tryParse(selectedData.NUTR_CONT3) ?? 0.0) *
+                        (double.tryParse(widget.selectedData.NUTR_CONT3) ?? 0.0) *
                             provider.amount),
                     fat: Value(
-                        (double.tryParse(selectedData.NUTR_CONT4) ?? 0.0) *
+                        (double.tryParse(widget.selectedData.NUTR_CONT4) ?? 0.0) *
                             provider.amount),
                     sodium: Value(
-                        (double.tryParse(selectedData.NUTR_CONT6) ?? 0.0) *
+                        (double.tryParse(widget.selectedData.NUTR_CONT6) ?? 0.0) *
                             provider.amount),
                     sugar: Value(
-                        (double.tryParse(selectedData.NUTR_CONT5) ?? 0.0) *
+                        (double.tryParse(widget.selectedData.NUTR_CONT5) ?? 0.0) *
                             provider.amount),
                   ));
                   Navigator.pushAndRemoveUntil(
