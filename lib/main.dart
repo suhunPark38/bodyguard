@@ -29,10 +29,10 @@ Future<void> main() async {
   );// Firebase 초기화
 
   // health connect 사용 설정
-  Health().configure(useHealthConnectIfAvailable: true);
+  //Health().configure(useHealthConnectIfAvailable: true);
 
   // google health connect 연동을 위한 권한 확인 && app 설치 여부 확인
-  HealthUtil().authorize();
+  //HealthUtil().authorize();
   //HealthUtil().installHealthConnect();
 
   initializeDateFormatting().then((_) => runApp(

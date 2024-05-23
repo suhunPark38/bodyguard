@@ -6,6 +6,7 @@ import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/diet_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
@@ -28,6 +29,7 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final dietProvider = Provider.of<DietProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text("BODYGUARD"),
@@ -181,7 +183,7 @@ class _HomePage extends State<HomePage> {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "총 ${provider.totalCalorie.toStringAsFixed(1)}kcal",
+                                        "총 ${dietProvider.todayCalories.toStringAsFixed(1)}kcal",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),

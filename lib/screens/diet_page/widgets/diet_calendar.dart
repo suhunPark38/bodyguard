@@ -18,7 +18,6 @@ class DietCalendar extends StatelessWidget {
           focusedDay: provider.focusedDay,
           calendarFormat: provider.calendarFormat,
           daysOfWeekHeight: 30,
-          locale: 'ko-KR',
           selectedDayPredicate: (day) {
             return isSameDay(provider.selectedDay, day);
           },
@@ -53,6 +52,48 @@ class DietCalendar extends StatelessWidget {
           ),
           calendarBuilders: CalendarBuilders(dowBuilder: (context, day) {
             switch (day.weekday) {
+              case 1:
+                return const Center(
+                  child: Text(
+                    '월',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                );
+              case 2:
+                return const Center(
+                  child: Text(
+                    '화',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                );
+              case 3:
+                return const Center(
+                  child: Text(
+                    '수',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                );
+              case 4:
+                return const Center(
+                  child: Text(
+                    '목',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                );
+              case 5:
+                return const Center(
+                  child: Text(
+                    '금',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                );
+              case 6:
+                return const Center(
+                  child: Text(
+                    '토',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                );
               case 6:
                 return const Center(
                   child: Text(
