@@ -10,6 +10,10 @@ class DietCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final koreanMonths = [
+      '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'
+    ];
+
     return Consumer<DietProvider>(
       builder: (context, provider, child) {
         return TableCalendar(
@@ -32,89 +36,85 @@ class DietCalendar extends StatelessWidget {
             provider.setSelectedDay(selectedDay);
             provider.setFocusedDay(focusedDay);
             provider.notifySelectDiets(selectedDay);
-
           },
-
           headerStyle: const HeaderStyle(
-            titleTextStyle:
-                TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             formatButtonVisible: true,
+            formatButtonShowsNext: false,
+            leftChevronIcon: Icon(Icons.chevron_left, size: 28),
+            rightChevronIcon: Icon(Icons.chevron_right, size: 28),
           ),
-          calendarStyle:  CalendarStyle(
+          calendarStyle: CalendarStyle(
             selectedDecoration: const BoxDecoration(
-              color: Colors.teal,
-              shape: BoxShape.circle
-            ),
+                color: Colors.teal, shape: BoxShape.circle),
             todayDecoration: BoxDecoration(
-              color: Colors.teal.shade100,
-                shape: BoxShape.circle
-            ),
+                color: Colors.teal.shade100, shape: BoxShape.circle),
           ),
-          calendarBuilders: CalendarBuilders(dowBuilder: (context, day) {
-            switch (day.weekday) {
-              case 1:
-                return const Center(
-                  child: Text(
-                    '월',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                );
-              case 2:
-                return const Center(
-                  child: Text(
-                    '화',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                );
-              case 3:
-                return const Center(
-                  child: Text(
-                    '수',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                );
-              case 4:
-                return const Center(
-                  child: Text(
-                    '목',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                );
-              case 5:
-                return const Center(
-                  child: Text(
-                    '금',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                );
-              case 6:
-                return const Center(
-                  child: Text(
-                    '토',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                );
-              case 6:
-                return const Center(
-                  child: Text(
-                    '토',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                );
-              case 7:
-                return const Center(
-                  child: Text(
-                    '일',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                );
-            }
-            return null;
-          },
+          calendarBuilders: CalendarBuilders(
+            dowBuilder: (context, day) {
+              switch (day.weekday) {
+                case 1:
+                  return const Center(
+                    child: Text(
+                      '월',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  );
+                case 2:
+                  return const Center(
+                    child: Text(
+                      '화',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  );
+                case 3:
+                  return const Center(
+                    child: Text(
+                      '수',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  );
+                case 4:
+                  return const Center(
+                    child: Text(
+                      '목',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  );
+                case 5:
+                  return const Center(
+                    child: Text(
+                      '금',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  );
+                case 6:
+                  return const Center(
+                    child: Text(
+                      '토',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  );
+                case 7:
+                  return const Center(
+                    child: Text(
+                      '일',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  );
+              }
+              return null;
+            },
             markerBuilder: (context, day, events) {
-              List<DietData> breakfastForDay = provider.breakfastForPeriod.where((diet) => isSameDay(diet.eatingTime, day)).toList();
-              List<DietData> lunchForDay = provider.lunchForPeriod.where((diet) => isSameDay(diet.eatingTime, day)).toList();
-              List<DietData> dinnerForDay = provider.dinnerForPeriod.where((diet) => isSameDay(diet.eatingTime, day)).toList();
+              List<DietData> breakfastForDay = provider.breakfastForPeriod
+                  .where((diet) => isSameDay(diet.eatingTime, day))
+                  .toList();
+              List<DietData> lunchForDay = provider.lunchForPeriod
+                  .where((diet) => isSameDay(diet.eatingTime, day))
+                  .toList();
+              List<DietData> dinnerForDay = provider.dinnerForPeriod
+                  .where((diet) => isSameDay(diet.eatingTime, day))
+                  .toList();
 
               final hasBreakfast = breakfastForDay.isNotEmpty;
               final hasLunch = lunchForDay.isNotEmpty;
@@ -153,10 +153,15 @@ class DietCalendar extends StatelessWidget {
                 ],
               );
             },
-
-
+            headerTitleBuilder: (context, day) {
+              return Center(
+                child: Text(
+                  '${day.year}년 ${koreanMonths[day.month - 1]}',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+              );
+            },
           ),
-
         );
       },
     );
