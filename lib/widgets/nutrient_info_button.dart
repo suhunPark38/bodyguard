@@ -42,7 +42,7 @@ class NutrientInfoButton extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -110,8 +110,6 @@ class NutrientInfoButton extends StatelessWidget {
     required String value,
   }) {
     return ListTile(
-      contentPadding: EdgeInsets.only(left: title == '당류' ? 16.0 : 0),
-      // 당류인 경우에만 들여쓰기
       leading: icon != null ? Icon(icon) : ImageIcon(image, size: 25.0),
       // 아이콘 또는 이미지 아이콘 사용
       title: Text(

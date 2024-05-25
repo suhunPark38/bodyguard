@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../model/fetched_diet_data.dart';
 import '../providers/diet_data_provider.dart';
-import '../screens/diet_search_page/widgets/diet_input_dialog.dart';
+import 'diet_input_sheet.dart';
 
 class DietDataListView extends StatelessWidget {
   const DietDataListView({super.key});
@@ -35,11 +35,7 @@ class DietDataListView extends StatelessWidget {
                   Icons.arrow_forward_ios,
                   size: 20,
                 ),
-                onTap: () => showDialog(
-                  context: context,
-                  builder: (context) =>
-                      DietInputDialog(selectedData: fetchedData),
-                ),
+                onTap: () => DietInputSheet.show(context, fetchedData),
               );
             },
           );
@@ -135,12 +131,10 @@ class DietDataListView extends StatelessWidget {
 
   Widget _buildNutritionInfo(
       {IconData? icon,
-      AssetImage? image,
-      required String title,
-      required String value}) {
+        AssetImage? image,
+        required String title,
+        required String value}) {
     return ListTile(
-      contentPadding: EdgeInsets.only(left: title == '당류' ? 16.0 : 0),
-      // 당류인 경우에만 들여쓰기
       leading: icon != null ? Icon(icon) : ImageIcon(image, size: 25.0),
       // 아이콘 또는 이미지 아이콘 사용
       title: Text(

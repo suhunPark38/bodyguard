@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:bodyguard/widgets/forget_password.dart';
 import 'package:bodyguard/widgets/sign_up.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';

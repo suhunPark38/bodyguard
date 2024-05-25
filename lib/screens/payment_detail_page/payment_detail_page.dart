@@ -1,4 +1,4 @@
-import 'package:bodyguard/screens/payment_detail_page/widgets/diet_input_dialog_from_payment.dart';
+import 'package:bodyguard/screens/payment_detail_page/widgets/diet_input_sheet_from_payment.dart';
 import 'package:bodyguard/widgets/nutrient_info_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -145,6 +145,19 @@ class PaymentDetailPage extends StatelessWidget {
                         .checkedMenus;
                 _showDialogsSequentially(context, checkedMenus, payment);
               }
+              else{
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('메뉴를 선택해주세요.'),
+                    action: SnackBarAction(
+                      label: '지우기',
+                      onPressed: () {
+                      },
+                    ),
+                  ),
+                );
+
+              }
             },
             text: const Text('칼로리 기록하기'),
           ),
@@ -183,9 +196,13 @@ Future<void> _showDialog(BuildContext context, List<StoreMenu> checkedMenus,
   if (index < checkedMenus.length) {
     // 다이얼로그를 보여줌
     await showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      isScrollControlled: true,
       context: context,
       builder: (BuildContext builder) {
-        return DietInputDialogFromPayment(
+        return DietInputSheetFromPayment(
             payment: payment, checkedMenuIndex: index);
       },
     );

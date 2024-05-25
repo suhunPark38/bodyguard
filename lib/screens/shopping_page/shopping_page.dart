@@ -152,13 +152,14 @@ class ShoppingPage extends StatelessWidget {
                         height: 40,
                         child: CustomButton(
                           onPressed: () {
-                            if (provider.deliveryType == null) {
+                        if (provider.selectedMenus.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('배달 또는 포장을 선택해주세요.')));
-                            } else if (provider.selectedMenus.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('음식이 텅 비었어요.')));
+                                  SnackBar(content: const Text('음식이 텅 비었어요.'),
+                              action: SnackBarAction(
+                                label: '지우기',
+                                onPressed: () {},
+                              ),
+                                  ));
                             } else {
                               provider.completePayment(context);
                               provider.refreshPayments();
