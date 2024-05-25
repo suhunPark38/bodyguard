@@ -86,152 +86,146 @@ class _DietInputDialogState extends State<DietInputDialogFromPayment>
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(menuName),
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            const Text("섭취량(1회 제공량 기준)"),
-
-            const SizedBox(height: 10),
-            Text(
-              amount.toStringAsFixed(1),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            AnimatedBuilder(
-              animation: _shakeController,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(_shakeAnimation.value, 0),
-                  child: child,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          const Text("섭취량(1회 제공량 기준)"),
+          const SizedBox(height: 10),
+          Text(
+            amount.toStringAsFixed(1),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          AnimatedBuilder(
+            animation: _shakeController,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(_shakeAnimation.value, 0),
+                child: child,
+              );
+            },
+            child: amount == 0
+                ? const Text(
+              "섭취량은 0보다 커야해요.",
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.w500,
+              ),
+            )
+                : const SizedBox(), // 또는 다른 위젯으로 대체 가능합니다.
+          ),
+          Slider(
+            value: amount,
+            min: 0.0,
+            max: 10.0,
+            divisions: 100,
+            label: amount.toStringAsFixed(1),
+            onChanged: (double newValue) {
+              setState(() {
+                amount = newValue;
+              });
+            },
+          ),
+          TextButton(
+            onPressed: () async {
+              final selectedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2023),
+                lastDate: DateTime.now().add(const Duration(days: 365)),
+              );
+              if (selectedDate != null) {
+                final selectedTime = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.fromDateTime(selectedDate),
                 );
-              },
-              child: amount == 0
-                  ? const Text(
-                "섭취량은 0보다 커야해요.",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500,
-                ),
-              )
-                  : const SizedBox(), // 또는 다른 위젯으로 대체 가능합니다.
-
-            ),
-
-            Slider(
-              value: amount,
-              min: 0.0,
-              max: 10.0,
-              divisions: 100,
-              label: amount.toStringAsFixed(1),
-              onChanged: (double newValue) {
-                setState(() {
-                  amount = newValue;
-                });
-              },
-            ),
-
-
-              TextButton(
-                onPressed: () async {
-                  final selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2023),
-                    lastDate: DateTime.now().add(const Duration(days: 365)),
-                  );
-                  if (selectedDate != null) {
-                    final selectedTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(selectedDate),
+                if (selectedTime != null) {
+                  setState(() {
+                    eatingTime = DateTime(
+                      selectedDate.year,
+                      selectedDate.month,
+                      selectedDate.day,
+                      selectedTime.hour,
+                      selectedTime.minute,
                     );
-                    if (selectedTime != null) {
-                      setState(() {
-                        eatingTime = DateTime(
-                          selectedDate.year,
-                          selectedDate.month,
-                          selectedDate.day,
-                          selectedTime.hour,
-                          selectedTime.minute,
-                        );
-                      });
-                    }
+                  });
+                }
+              }
+            },
+            child: Column(
+              children: <Widget>[
+                const Text('식사 시간'),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(formatTimestamp(eatingTime)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          SegmentedButton<int>(
+            segments: const <ButtonSegment<int>>[
+              ButtonSegment<int>(
+                value: 0,
+                label: Text('아침'),
+              ),
+              ButtonSegment<int>(
+                value: 1,
+                label: Text('점심'),
+              ),
+              ButtonSegment<int>(
+                value: 2,
+                label: Text('저녁'),
+              )
+            ],
+            selected: <int>{classification},
+            onSelectionChanged: (selected) {
+              setState(() {
+                classification = selected.first;
+              });
+            },
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (amount != 0) {
+                    final dietProvider = context.read<DietProvider>();
+                    dietProvider.notifyInsertDiet(DietCompanion(
+                      eatingTime: Value(eatingTime),
+                      menuName: Value(menuName),
+                      amount: Value(amount),
+                      classification: Value(classification),
+                      calories: Value(calories),
+                      carbohydrate: Value(carbohydrates),
+                      protein: Value(protein),
+                      fat: Value(fat),
+                      sodium: Value(sodium),
+                      sugar: Value(sugar),
+                    ));
+                    Navigator.of(context).pop();
+                  } else {
+                    _shakeController.forward(from: 0.0);
+                    _shakeController.repeat(reverse: true);
+                    Timer(const Duration(milliseconds: 500), () {
+                      _shakeController.stop();
+                    });
                   }
                 },
-                child: Column(
-                  children: <Widget>[
-                    const Text('식사 시간'),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(formatTimestamp(eatingTime)),
-                  ],
-                ),
+                child: const Text('확인'),
               ),
-
-
-            const SizedBox(height: 10),
-            SegmentedButton<int>(
-              segments: const <ButtonSegment<int>>[
-                ButtonSegment<int>(
-                  value: 0,
-                  label: Text('아침'),
-                ),
-                ButtonSegment<int>(
-                  value: 1,
-                  label: Text('점심'),
-                ),
-                ButtonSegment<int>(
-                  value: 2,
-                  label: Text('저녁'),
-                )
-              ],
-              selected: <int>{classification},
-              onSelectionChanged: (selected) {
-                setState(() {
-                  classification = selected.first;
-                });
-              },
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
-      actions: <Widget>[
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('취소'),
-        ),
-        FilledButton(
-          onPressed: () {
-            if (amount != 0) {
-              final dietProvider = context.read<DietProvider>();
-              dietProvider.notifyInsertDiet(DietCompanion(
-                eatingTime: Value(eatingTime),
-                menuName: Value(menuName),
-                amount: Value(amount),
-                classification: Value(classification),
-                calories: Value(calories),
-                carbohydrate: Value(carbohydrates),
-                protein: Value(protein),
-                fat: Value(fat),
-                sodium: Value(sodium),
-                sugar: Value(sugar),
-              ));
-              Navigator.of(context).pop();
-            } else {
-              _shakeController.forward(from: 0.0);
-              _shakeController.repeat(reverse: true);
-              Timer(const Duration(milliseconds: 500), () {
-                _shakeController.stop();
-              });
-            }
-          },
-          child: const Text('확인'),
-        ),
-      ],
     );
   }
 }

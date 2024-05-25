@@ -116,7 +116,7 @@ class HomePage extends StatelessWidget {
                                         children: [
                                           SizedBox(
                                               width: 110,
-                                              height: 25,
+                                              height: 20,
                                               child: CustomButton(
                                                 onPressed: () {
                                                   Provider.of<ShoppingProvider>(
@@ -356,14 +356,11 @@ class HomePage extends StatelessWidget {
                     const SizedBox(
                       height: 16,
                     ),
-                    const Row(
+                    Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            "이런건 어떠세요?",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
+                          userInfo.D(
+                            "님, 이런건 어떠세요?"),
                         ]),
                     const SizedBox(
                       height: 5,
@@ -379,7 +376,7 @@ class HomePage extends StatelessWidget {
                           onPageChanged: ((index, reason) {}),
                         ),
                         items: [
-                          //StoreMenuWidget(),
+                          StoreMenuWidget(),
                         ]),
                   ],
                 ),

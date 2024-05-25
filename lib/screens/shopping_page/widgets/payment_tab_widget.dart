@@ -113,15 +113,14 @@ class PaymentTabWidget extends StatelessWidget {
                                         IconButton(
                                           icon: const Icon(Icons.add),
                                           onPressed: () {
-                                            provider.updateMenuQuantity(
-                                                menu.id,
-                                                (provider.menuQuantities[
-                                                            menu] ??
-                                                        1) +
-                                                    1);
-                                            provider.calculateTotalPrice();
+                                            int currentQuantity = (provider.menuQuantities[menu] ?? 1);
+                                            if (currentQuantity < 100) {
+                                              provider.updateMenuQuantity(menu.id, currentQuantity + 1);
+                                              provider.calculateTotalPrice();
+                                            }
                                           },
                                         ),
+
                                       ],
                                     ),
                                   ],

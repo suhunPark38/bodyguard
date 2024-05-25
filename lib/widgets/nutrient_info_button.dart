@@ -17,59 +17,81 @@ class NutrientInfoButton extends StatelessWidget {
       icon: const Icon(Icons.info),
       iconSize: size,
       onPressed: () {
-        showDialog(
+        showModalBottomSheet(
           context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('영양성분표'
-                  '\n(${menu.menuName})'),
-              content: SingleChildScrollView(
-                child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text('영양소')),
-                    DataColumn(label: Text('함량')),
-                  ],
-                  rows: [
-                    DataRow(
-                      cells: [
-                        const DataCell(Text('칼로리')),
-                        DataCell(Text('${menu.calories}kcal')),
-                      ],
-                    ),
-                    DataRow(cells: [
-                      const DataCell(
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('탄수화물'),
-                            Text('당'),
-                          ],
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+          ),
+          isScrollControlled: true,
+          builder: (context) {
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          menu.menuName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
-                      DataCell(Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('${menu.carbohydrate}g'),
-                            Text('${menu.sugar}g'),
-                          ])),
-                    ]),
-                    DataRow(
-                      cells: [
-                        const DataCell(Text('단백질')),
-                        DataCell(Text('${menu.protein}g')),
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        ),
                       ],
                     ),
-                    DataRow(
-                      cells: [
-                        const DataCell(Text('지방')),
-                        DataCell(Text('${menu.fat}g')),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.business),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            '업체명: ${menu.storeName}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
                       ],
                     ),
-                    DataRow(
-                      cells: [
-                        const DataCell(Text('나트륨')),
-                        DataCell(Text('${menu.sodium}mg')),
-                      ],
+                    const SizedBox(height: 10),
+                    const Divider(),
+                    _buildNutritionInfo(
+                      icon: Icons.local_fire_department,
+                      title: '칼로리',
+                      value: '${menu.calories}kcal',
+                    ),
+                    _buildNutritionInfo(
+                      image: const AssetImage(
+                          "assets/nutrition_icon/carbohydrates.png"),
+                      title: '탄수화물',
+                      value: '${menu.carbohydrate}g',
+                    ),
+                    _buildNutritionInfo(
+                      image: const AssetImage("assets/nutrition_icon/sugar.png"),
+                      title: '당류',
+                      value: '${menu.sugar}g',
+                    ),
+                    _buildNutritionInfo(
+                      image: const AssetImage("assets/nutrition_icon/protein.png"),
+                      title: '단백질',
+                      value: '${menu.protein}g',
+                    ),
+                    _buildNutritionInfo(
+                      icon: Icons.fastfood,
+                      title: '지방',
+                      value: '${menu.fat}g',
+                    ),
+                    _buildNutritionInfo(
+                      image: const AssetImage("assets/nutrition_icon/salt.png"),
+                      title: '나트륨',
+                      value: '${menu.sodium}mg',
                     ),
                   ],
                 ),
@@ -78,6 +100,28 @@ class NutrientInfoButton extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildNutritionInfo({
+    IconData? icon,
+    AssetImage? image,
+    required String title,
+    required String value,
+  }) {
+    return ListTile(
+      contentPadding: EdgeInsets.only(left: title == '당류' ? 16.0 : 0),
+      // 당류인 경우에만 들여쓰기
+      leading: icon != null ? Icon(icon) : ImageIcon(image, size: 25.0),
+      // 아이콘 또는 이미지 아이콘 사용
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      subtitle: Text(
+        value,
+        style: const TextStyle(fontSize: 14),
+      ),
     );
   }
 }

@@ -182,7 +182,7 @@ Future<void> _showDialog(BuildContext context, List<StoreMenu> checkedMenus,
     int index, Payment payment) async {
   if (index < checkedMenus.length) {
     // 다이얼로그를 보여줌
-    await showDialog(
+    await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
         return DietInputDialogFromPayment(
