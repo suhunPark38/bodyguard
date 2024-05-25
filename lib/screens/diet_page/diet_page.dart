@@ -67,7 +67,6 @@ class DietPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -162,7 +161,6 @@ class DietPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    color: Colors.white,
                     child: const Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Column(

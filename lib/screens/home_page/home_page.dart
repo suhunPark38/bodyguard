@@ -14,18 +14,11 @@ import '../body_page/body_page.dart';
 import '../my_home_page/my_home_page.dart';
 import '../../services/store_service.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final StoreService storeService = StoreService();
-
-  @override
-  _HomePage createState() => _HomePage();
-}
-
-class _HomePage extends State<HomePage> {
   final DateTime now = DateTime.now();
-  StoreService storeService = StoreService();
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +87,6 @@ class _HomePage extends State<HomePage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          color: Colors.white,
                           child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Column(
@@ -164,7 +156,6 @@ class _HomePage extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            color: Colors.white,
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -217,7 +208,6 @@ class _HomePage extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            color: Colors.white,
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -262,7 +252,6 @@ class _HomePage extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            color: Colors.white,
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -313,7 +302,6 @@ class _HomePage extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            color: Colors.white,
                             child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -382,17 +370,16 @@ class _HomePage extends State<HomePage> {
                     ),
                     CarouselSlider(
                         options: CarouselOptions(
-                          height: 350,
+                          height: 210,
                           aspectRatio: 16 / 9,
-                          viewportFraction: 1.1,
+                          viewportFraction: 0.9,
                           autoPlay: true,
                           autoPlayInterval: const Duration(seconds: 4),
                           enableInfiniteScroll: true,
                           onPageChanged: ((index, reason) {}),
                         ),
                         items: [
-                          StoreMenuWidget(),
-                          //StoreMenuWidget(),// foodId 전달
+                          //StoreMenuWidget(),
                         ]),
                   ],
                 ),

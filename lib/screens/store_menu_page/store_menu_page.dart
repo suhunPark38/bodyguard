@@ -41,7 +41,6 @@ class StoreMenuPage extends StatelessWidget {
                   bool isSelected =
                   provider.checkedMenus.contains(menu);
                   return Card(
-                    color: Colors.white,
                     child: InkWell(
                       onTap: () {
                         if (isSelected) {

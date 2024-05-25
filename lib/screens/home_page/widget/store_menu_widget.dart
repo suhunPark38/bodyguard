@@ -7,6 +7,8 @@ import '../../store_menu_page/store_menu_page.dart';
 import 'food_info_widget.dart';
 
 class StoreMenuWidget extends StatefulWidget {
+  const StoreMenuWidget({super.key});
+
   @override
   _StoreMenuWidget createState() => _StoreMenuWidget();
 }

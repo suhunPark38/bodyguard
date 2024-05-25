@@ -36,7 +36,6 @@ class PaymentTabWidget extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          color: Colors.white,
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Row(
