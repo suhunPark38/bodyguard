@@ -1,9 +1,8 @@
 import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/screens/home_page/widget/ad_carousel.dart';
 import 'package:bodyguard/utils/date_util.dart';
-import 'package:bodyguard/screens/home_page/widget/store_menu_widget.dart';
 import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/diet_provider.dart';
@@ -13,11 +12,13 @@ import '../../widgets/custom_button.dart';
 import '../body_page/body_page.dart';
 import '../my_home_page/my_home_page.dart';
 import '../../services/store_service.dart';
+import '../../services/ad_service.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final StoreService storeService = StoreService();
+  final AdService adService = AdService(); // 추가
   final DateTime now = DateTime.now();
 
   @override
@@ -338,11 +339,11 @@ class HomePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                    const MyHomePage(
-                                                      initialIndex: 2,
-                                                      healthIndex: 1,
-                                                    )),
-                                                    (route) => false,
+                                                        const MyHomePage(
+                                                          initialIndex: 2,
+                                                          healthIndex: 1,
+                                                        )),
+                                                (route) => false,
                                               );
                                             },
                                             text: const Text(
@@ -356,28 +357,13 @@ class HomePage extends StatelessWidget {
                     const SizedBox(
                       height: 16,
                     ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          userInfo.D(
-                            "님, 이런건 어떠세요?"),
-                        ]),
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                      userInfo.D("님, 이런건 어떠세요?"),
+                    ]),
                     const SizedBox(
                       height: 5,
                     ),
-                    CarouselSlider(
-                        options: CarouselOptions(
-                          height: 210,
-                          aspectRatio: 16 / 9,
-                          viewportFraction: 0.9,
-                          autoPlay: true,
-                          autoPlayInterval: const Duration(seconds: 4),
-                          enableInfiniteScroll: true,
-                          onPageChanged: ((index, reason) {}),
-                        ),
-                        items: [
-                          StoreMenuWidget(),
-                        ]),
+                    AdCarousel(),
                   ],
                 ),
               ),
