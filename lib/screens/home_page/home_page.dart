@@ -24,7 +24,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
-  final DateTime now = DateTime.now();
   StoreService storeService = StoreService();
 
   @override
@@ -74,7 +73,7 @@ class _HomePage extends State<HomePage> {
           userInfo.initializeData();
           return RefreshIndicator(
             onRefresh: () async {
-              //provider.fetchStepData(DateTime.now());
+               healthData.todayDate();
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),

@@ -32,13 +32,7 @@ class HealthDataProvider with ChangeNotifier {
     fetchData(_selectedDate);
   }
 
-  /// Authorize, i.e. get permissions to access relevant health data.
   Future<void> authorize() async {
-    // If we are trying to read Step Count, Workout, Sleep or other data that requires
-    // the ACTIVITY_RECOGNITION permission, we need to request the permission first.
-    // This requires a special request authorization call.
-    //
-    // The location permission is requested for Workouts using the Distance information.
     await Permission.activityRecognition.request();
     await Permission.location.request();
 
@@ -74,6 +68,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 기본 데이터 (신장, 몸무게 등) 가져오기
   Future<void> fetchData(DateTime date) async {
+    setNow();
 
       _state = AppState.FETCHING_DATA;
 
@@ -137,6 +132,8 @@ class HealthDataProvider with ChangeNotifier {
 
   /// Fetch steps from the health plugin and show them in the app.
   Future<void> fetchStepData(DateTime date) async {
+    setNow();
+
     int? fetchedSteps;
 
       // get steps for today (i.e., since midnight)
@@ -172,6 +169,8 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 걸음 수 데이터 추가
   Future<void> addStepData(double add) async {
+    setNow();
+
     final now = _selectedDate;
     final earlier = now.subtract(Duration(minutes: 20));
 
@@ -196,6 +195,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 신장(키) 데이터 추가
   Future<void> addHeightData(double add) async {
+    setNow();
     final now = _selectedDate;
     final earlier = now.subtract(Duration(minutes: 20));
 
@@ -218,6 +218,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 몸무게 데이터 추가
   Future<void> addWeightData(double add) async {
+    setNow();
     final now = _selectedDate;
 
     // Add data for supported types
@@ -238,52 +239,61 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 물 섭취 데이터 추가
   Future<void> addWaterData(double add) async {
+    setNow();
     final now = _selectedDate;
-    final earlier = now.subtract(Duration(seconds: 2));
-    final end = now.subtract(Duration(seconds: 1));
+    final earlier = now.subtract(Duration(seconds: 1));
 
     bool success = true;
 
-    print("add water start");
-
-    // misc. health data examples using the writeHealthData() method
+   // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
         value: add,
         type: HealthDataType.WATER,
         startTime: earlier,
-        endTime: end);
+        endTime: now);
 
     _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
 
-    print("add water end ${_state}");
+    fetchData(now);
 
-    fetchData(_selectedDate);
     print(_state);
     notifyListeners();
   }
 
+  void setNow(){
+    final now = DateTime.now();
+    _selectedDate = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        now.hour,
+        now.minute,
+        now.second
+    );
+  }
+
   /// 전날로 이동
   void previousDate() {
+    setNow();
     _selectedDate = _selectedDate.subtract(Duration(days: 1));
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
-    notifyListeners();
   }
 
   /// 다음날로 이동
   void nextDate() {
+    setNow();
     _selectedDate = _selectedDate.add(Duration(days: 1));
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
-    notifyListeners();
   }
 
   /// 오늘로 이동
   void todayDate() {
+    setNow();
     _selectedDate = DateTime.now();
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
-    notifyListeners();
   }
 
   // 안드로이드는 google health connect, ios는 apple health를 사용하기에 dataType 분리
