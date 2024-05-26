@@ -1,5 +1,5 @@
+
 import 'package:bodyguard/screens/payment_detail_page/widgets/diet_input_sheet_from_payment.dart';
-import 'package:bodyguard/widgets/nutrient_info_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +8,7 @@ import '../../model/store_menu.dart';
 import '../../providers/shopping_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/nutrient_info_button.dart';
 import '../my_home_page/my_home_page.dart';
 
 class PaymentDetailPage extends StatelessWidget {
@@ -43,7 +44,7 @@ class PaymentDetailPage extends StatelessWidget {
                   final totalPricePerItem =
                       menuItem.menu.price * menuItem.quantity;
                   bool isSelected =
-                      provider.checkedMenus.contains(menuItem.menu);
+                  provider.checkedMenus.contains(menuItem.menu);
                   return Container(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Row(
@@ -89,7 +90,6 @@ class PaymentDetailPage extends StatelessWidget {
                             ],
                           ),
                         ),
-
                         Checkbox(
                           value: isSelected,
                           onChanged: (value) {
@@ -131,37 +131,37 @@ class PaymentDetailPage extends StatelessWidget {
         );
       }),
       persistentFooterButtons: [
-        SizedBox(
-          width: double.maxFinite,
-          height: 40,
-          child: CustomButton(
-            onPressed: () {
-              if (Provider.of<ShoppingProvider>(context, listen: false)
-                  .checkedMenus
-                  .isNotEmpty) {
-                final checkedMenus =
-                    Provider.of<ShoppingProvider>(context, listen: false)
-                        .checkedMenus;
-                _showDialogsSequentially(context, checkedMenus, payment);
-              }
-              else{
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('메뉴를 선택해주세요.'),
-                    action: SnackBarAction(
-                      label: '지우기',
-                      onPressed: () {
-                      },
-                    ),
+        Consumer<ShoppingProvider>(
+          builder: (context, provider, child) {
+            bool isButtonEnabled = provider.checkedMenus.isNotEmpty;
+            return SizedBox(
+              width: double.maxFinite,
+              height: 40,
+              child: CustomButton(
+                onPressed: isButtonEnabled
+                    ? () {
+                  if (isButtonEnabled) {
+                    final checkedMenus =
+                        Provider.of<ShoppingProvider>(context, listen: false)
+                            .checkedMenus;
+                    _showDialogsSequentially(context, checkedMenus, payment);
+                  }
+                }
+                    : null,
+                text: Text(
+                  '칼로리 기록하기',
+                  style: TextStyle(
+                    color: isButtonEnabled
+                        ? Colors.white
+                        : Colors.grey, // Change the text color when disabled
                   ),
-                );
-
-              }
-            },
-            text: const Text('칼로리 기록하기'),
-          ),
+                ),
+              ),
+            );
+          },
         ),
       ],
+
     );
   }
 }
@@ -179,9 +179,9 @@ void _showDialogsSequentially(
               context,
               MaterialPageRoute(
                   builder: (context) => const MyHomePage(
-                        initialIndex: 2,
-                      )),
-              (route) => false,
+                    initialIndex: 2,
+                  )),
+                  (route) => false,
             );
           },
         ),
@@ -205,7 +205,12 @@ Future<void> _showDialog(BuildContext context, List<StoreMenu> checkedMenus,
             payment: payment, checkedMenuIndex: index);
       },
     );
-    // 현재 다이얼로그가 닫힌 후에 다음 다이얼로그를 연다
-    await _showDialog(context, checkedMenus, index + 1, payment);
+
+    // 다이얼로그가 닫힌 후에 체크 해제
+    Provider.of<ShoppingProvider>(context, listen: false).uncheckMenu(checkedMenus[index]);
+
+    // 다음 다이얼로그를 연다
+    await _showDialog(context, checkedMenus, index, payment);
   }
 }
+

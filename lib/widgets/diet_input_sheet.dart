@@ -70,15 +70,6 @@ class DietInputSheet extends StatelessWidget {
                       provider.amount.toStringAsFixed(1),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    provider.amount == 0
-                        ? const Text(
-                            "섭취량은 0보다 커야해요.",
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          )
-                        : const SizedBox(),
                     Slider(
                       value: provider.amount,
                       min: 0.0,

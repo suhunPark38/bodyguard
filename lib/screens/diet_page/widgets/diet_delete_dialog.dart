@@ -19,7 +19,7 @@ class DietDeleteDialog extends StatelessWidget {
 
     return AlertDialog(
       title:
-          const Text('식단 정보 삭제', style: TextStyle(fontWeight: FontWeight.w500)),
+          const Text('식단 삭제', style: TextStyle(fontWeight: FontWeight.w500)),
       content: Text('정말 ${dietData.menuName}을(를) 삭제하시겠습니까?'),
       actions: [
         FilledButton(

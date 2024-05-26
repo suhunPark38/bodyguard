@@ -43,7 +43,6 @@ class DietInputSheetFromPayment extends StatelessWidget {
     dietDataProvider.setClassification(classification);
     dietDataProvider.setEatingTime(eatingTime);
 
-
     String menuName = checkedMenu.menuName;
     double calories = checkedMenu.calories;
     double carbohydrates = checkedMenu.carbohydrate;
@@ -89,16 +88,6 @@ class DietInputSheetFromPayment extends StatelessWidget {
                     provider.amount.toStringAsFixed(1),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  provider.amount == 0
-                      ? const Text(
-                          "섭취량은 0보다 커야해요.",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )
-                      : const SizedBox(), // 또는 다른 위젯으로 대체 가능합니다.
-
                   Slider(
                     value: provider.amount,
                     min: 0.0,

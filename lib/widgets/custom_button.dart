@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Text text;
 
   const CustomButton({
@@ -12,12 +12,16 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
+    return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
+        foregroundColor: onPressed != null
+            ? Colors.white
+            : Colors.grey, backgroundColor: onPressed != null
+            ? Theme.of(context).primaryColor
+            : Colors.grey, shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
-        ),
+        ), // Set the text color based on whether the button is enabled
       ),
       child: text,
     );

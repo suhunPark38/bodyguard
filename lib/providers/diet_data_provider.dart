@@ -26,7 +26,11 @@ class DietDataProvider extends ChangeNotifier {
   }
 
   void setAmount(double newAmount) {
-    _amount = newAmount;
+    if (newAmount < 0.1) {
+      _amount = 0.1;
+    } else {
+      _amount = newAmount;
+    }
     notifyListeners();
   }
 
