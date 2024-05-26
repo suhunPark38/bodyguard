@@ -58,12 +58,25 @@ class DietInputSheetFromPayment extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text(
-                menuName,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
+              Row(children: [
+                Text(
+                  menuName,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(width: 10),
+                const Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Text(
+                      "기록중",
+                      style: TextStyle(
+                          fontSize: 14, color: Colors.deepPurpleAccent),
+                    ),
+                  ),
+                )
+              ]),
               IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () => Navigator.pop(context),
