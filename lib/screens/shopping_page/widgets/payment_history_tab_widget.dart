@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../providers/shopping_provider.dart';
 import '../../../utils/format_util.dart';
 import '../../payment_detail_page/payment_detail_page.dart';
@@ -15,102 +14,108 @@ class PaymentHistoryTabWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FilterButton(
-              filterType: FilterType.all,
-              onPressed: () {
-                final first = DateTime(2024);
-                final now = DateTime.now();
-                provider.setStartDate(first);
-                provider.setEndDate(now);
-                provider.setSelectedFilter(FilterType.all);
-              },
-              isSelected: provider.selectedFilter == FilterType.all,
-              buttonText: "전체",
-            ),
-            FilterButton(
-              filterType: FilterType.oneWeek,
-              onPressed: () {
-                final now = DateTime.now();
-                final oneWeekAgo = now.subtract(const Duration(days: 7));
-                provider.setStartDate(oneWeekAgo);
-                provider.setEndDate(now);
-                provider.setSelectedFilter(FilterType.oneWeek);
-              },
-              isSelected: provider.selectedFilter == FilterType.oneWeek,
-              buttonText: "일주일 전",
-            ),
-            FilterButton(
-              filterType: FilterType.oneMonth,
-              onPressed: () {
-                final now = DateTime.now();
-                final oneMonthAgo = DateTime(now.year, now.month - 1, now.day);
-                provider.setStartDate(oneMonthAgo);
-                provider.setEndDate(now);
-                provider.setSelectedFilter(FilterType.oneMonth);
-              },
-              isSelected: provider.selectedFilter == FilterType.oneMonth,
-              buttonText: "한달 전",
-            ),
-            IconButton(
-              onPressed: () {
-                provider.toggleVisibility();
-              },
-              icon: Icon(
-                provider.isRowVisible
-                    ? Icons.keyboard_arrow_up
-                    : Icons.keyboard_arrow_down,
+        ExpansionTile(
+
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                width: 80, // Set the desired width
+                child: FilterButton(
+                  filterType: FilterType.all,
+                  onPressed: () {
+                    final first = DateTime(2024);
+                    final now = DateTime.now();
+                    provider.setStartDate(first);
+                    provider.setEndDate(now);
+                    provider.setSelectedFilter(FilterType.all);
+                  },
+                  isSelected: provider.selectedFilter == FilterType.all,
+                  buttonText: "전체",
+                ),
               ),
+              SizedBox(
+                width: 90, // Set the desired width
+                child: FilterButton(
+                  filterType: FilterType.oneWeek,
+                  onPressed: () {
+                    final now = DateTime.now();
+                    final oneWeekAgo = now.subtract(const Duration(days: 7));
+                    provider.setStartDate(oneWeekAgo);
+                    provider.setEndDate(now);
+                    provider.setSelectedFilter(FilterType.oneWeek);
+                  },
+                  isSelected: provider.selectedFilter == FilterType.oneWeek,
+                  buttonText: "일주일 전",
+                ),
+              ),
+              SizedBox(
+                width: 80, // Set the desired width
+                child: FilterButton(
+                  filterType: FilterType.oneMonth,
+                  onPressed: () {
+                    final now = DateTime.now();
+                    final oneMonthAgo = DateTime(now.year, now.month - 1, now.day);
+                    provider.setStartDate(oneMonthAgo);
+                    provider.setEndDate(now);
+                    provider.setSelectedFilter(FilterType.oneMonth);
+                  },
+                  isSelected: provider.selectedFilter == FilterType.oneMonth,
+                  buttonText: "한달 전",
+                ),
+              ),
+            ],
+          ),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                    '시작일 ${provider.selectedStartDate.year}년'
+                        ' ${provider.selectedStartDate.month}월'
+                        ' ${provider.selectedStartDate.day}일',
+                    style: const TextStyle(fontSize: 12)),
+                IconButton(
+                  iconSize: 20,
+                  icon: const Icon(Icons.calendar_today),
+                  onPressed: () async {
+                    provider.setSelectedFilter(FilterType.custom);
+                    final selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2024),
+                      lastDate: DateTime.now(),
+                    );
+                    if (selectedDate != null) {
+                      provider.setStartDate(selectedDate);
+                    }
+                  },
+                ),
+                Text(
+                    '종료일 ${provider.selectedEndDate.year}년'
+                        ' ${provider.selectedEndDate.month}월'
+                        ' ${provider.selectedEndDate.day}일',
+                    style: const TextStyle(fontSize: 12)),
+                IconButton(
+                  iconSize: 20,
+                  icon: const Icon(Icons.calendar_today),
+                  onPressed: () async {
+                    provider.setSelectedFilter(FilterType.custom);
+                    final selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2024),
+                      lastDate: DateTime.now(),
+                    );
+                    if (selectedDate != null) {
+                      provider.setEndDate(selectedDate);
+                    }
+                  },
+                ),
+              ],
             ),
           ],
         ),
-        if (provider.isRowVisible)
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(
-                '시작일 ${provider.selectedStartDate.year}년'
-                ' ${provider.selectedStartDate.month}월'
-                ' ${provider.selectedStartDate.day}일',
-                style: const TextStyle(fontSize: 12)),
-            IconButton(
-              iconSize: 20,
-              icon: const Icon(Icons.calendar_today),
-              onPressed: () async {
-                provider.setSelectedFilter(FilterType.custom);
-                final selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2024),
-                  lastDate: DateTime.now(),
-                );
-                if (selectedDate != null) {
-                  provider.setStartDate(selectedDate);
-                }
-              },
-            ),
-            Text(
-                '종료일 ${provider.selectedEndDate.year}년'
-                ' ${provider.selectedEndDate.month}월'
-                ' ${provider.selectedEndDate.day}일',
-                style: const TextStyle(fontSize: 12)),
-            IconButton(
-              iconSize: 20,
-              icon: const Icon(Icons.calendar_today),
-              onPressed: () async {
-                provider.setSelectedFilter(FilterType.custom);
-                final selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2024),
-                  lastDate: DateTime.now(),
-                );
-                if (selectedDate != null) {
-                  provider.setEndDate(selectedDate);
-                }
-              },
-            ),
-          ]),
         Expanded(
           child: ListView.builder(
             itemCount: provider.sortedAndFilteredPayments.length,
@@ -168,10 +173,10 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                         ),
                         subtitle: Text(
                           '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
-                          '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
-                          '\n결제 상태: ${getStatusString(payment.status)}'
-                          '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
-                          '\n결제 일시: $formattedTimestamp',
+                              '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
+                              '\n결제 상태: ${getStatusString(payment.status)}'
+                              '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
+                              '\n결제 일시: $formattedTimestamp',
                         ),
                         trailing: IconButton(
                           icon: const Icon(Icons.more_vert),
@@ -208,10 +213,10 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                     ),
                     subtitle: Text(
                       '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
-                      '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
-                      '\n결제 상태: ${getStatusString(payment.status)}'
-                      '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
-                      '\n결제 일시: $formattedTimestamp',
+                          '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
+                          '\n결제 상태: ${getStatusString(payment.status)}'
+                          '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
+                          '\n결제 일시: $formattedTimestamp',
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.more_vert),

@@ -81,7 +81,7 @@ class StoreMenuPage extends StatelessWidget {
                                     ],
                                   ),
                                   Text(
-                                    "가격 : ${formatNumber(menu.price)}원",
+                                    "가격 : ${formatNumber(menu.price)}원 | 칼로리: ${menu.calories}kcal",
                                     overflow: TextOverflow.fade,
                                   ),
                                 ],

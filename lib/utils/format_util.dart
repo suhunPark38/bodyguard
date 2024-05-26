@@ -30,6 +30,13 @@ String formatTimestamp(DateTime timestamp) {
   return DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(timestamp);
 }
 
+String formatTimestamp2(DateTime timestamp) {
+  return ("${timestamp.year} - ${timestamp.month} - ${timestamp.day}");
+}
+String formatTimestamp3(DateTime timestamp) {
+  return ("${timestamp.hour} : ${timestamp.minute}");
+}
+
 String formatNumber(int number) {
   final formatter = NumberFormat("#,###");
   return formatter.format(number);

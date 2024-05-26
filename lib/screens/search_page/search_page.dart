@@ -75,7 +75,6 @@ class SearchPage extends StatelessWidget {
           await searchProvider.loadPopularSearches();
         },
         child: ListView(
-          padding: const EdgeInsets.all(16.0),
           children: const [
             RecentSearchesWidget(),
             PopularSearchesWidget(),

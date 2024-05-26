@@ -5,7 +5,7 @@ import '../../providers/diet_data_provider.dart';
 import '../search_results_page/search_results_page.dart';
 
 class MorePopularSearchesPage extends StatelessWidget {
-  const MorePopularSearchesPage({super.key});
+  const MorePopularSearchesPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,35 +16,41 @@ class MorePopularSearchesPage extends StatelessWidget {
         title: const Text('인기 검색어'),
       ),
       body: searchProvider.popularSearches.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
           : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          itemCount: searchProvider.popularSearches.length,
-          itemBuilder: (context, index) {
-            final search = searchProvider.popularSearches[index];
-            return Column(
-              children: [
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.teal,
-                    child: Text(
-                      '${index + 1}',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  title: Text(search),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    _handleSearchTap(context, search);
-                  },
-                ),
-                const Divider(),
-              ],
-            );
-          },
-        ),
-      ),
+              padding: const EdgeInsets.all(16.0),
+              child: ListView.builder(
+                itemCount: searchProvider.popularSearches.length,
+                itemBuilder: (context, index) {
+                  final search = searchProvider.popularSearches[index];
+                  return Column(
+                    children: [
+                      Card(
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.teal,
+                            child: Text(
+                              '${index + 1}',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          title: Text(search),
+                          trailing:
+                              const Icon(Icons.arrow_forward_ios, size: 15),
+                          onTap: () {
+                            _handleSearchTap(context, search);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  );
+                },
+              ),
+            ),
     );
   }
 

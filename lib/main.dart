@@ -33,7 +33,7 @@ Future<void> main() async {
 
   // google health connect 연동을 위한 권한 확인 && app 설치 여부 확인
   HealthUtil().authorize();
-  //HealthUtil().installHealthConnect();
+  HealthUtil().installHealthConnect();
 
   initializeDateFormatting().then((_) => runApp(
     const MyApp()
@@ -61,16 +61,16 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
+
+
           theme: ThemeData(
             useMaterial3: true, //false로 수정시 material2
             fontFamily: "Pretendard",
             colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.white,
               brightness: Brightness.light,
-              surface: Colors.white,
             ),
           ),
-
           darkTheme: ThemeData(
             useMaterial3: true,
             fontFamily: "Pretendard",
