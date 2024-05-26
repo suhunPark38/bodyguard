@@ -1,6 +1,10 @@
----
+# 현대인들의 건강관리 필수 품 보디가드 README
 
 # ![body_logo_icon](https://github.com/suhunPark38/bodyguard/assets/118532970/4c324c8f-2e7c-4195-8cb7-cb5f1e54e182)
+
+- Test NAME : 관리자
+- Test ID :  admin@hs.com
+- Test PW : 123456
 
 ## 목차
 1. [프로젝트 목적](#프로젝트-목적)
@@ -102,15 +106,23 @@
 <img src="https://github.com/suhunPark38/bodyguard/assets/118532970/571d26f6-2f4d-49f3-94f0-f16aa48b62cd" width="50%" height="50%">
 
 ### 주요 적용 기술 및 구조
-- **개발 환경**: Android Studio
-- **개발 도구**: Flutter
-- **개발 언어**: Dart
-- **관련 기술**: Health Connect, Firebase
+
+
+
+
+
+- **개발 환경**: <img src="https://img.shields.io/badge/Android_Studio-3DDC84?style=for-the-badge&logo=android-studio&logoColor=white" height="30%">
+
+- **개발 도구**: <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" height="30%">
+
+- **개발 언어**: <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white" height="30%">
+
+- **관련 기술**: <img src="https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white" width="15%" height="15%"><img src="https://github.com/suhunPark38/bodyguard/assets/118532970/ef56b6fa-8c6f-4dff-aed3-da477626d62d" width="5%" height="5%">(**Health Connect**)
+
+  
 
 ## 기대 효과
 - 식단 관리에 익숙하지 않은 사람도 음식을 더 의식적으로 선택하도록 유도하여 건강한 식습관을 유지하고 발전할 수 있도록 돕습니다.
 - 사용자가 섭취한 칼로리를 추적함으로써 식이 습관을 분석하고 조절할 수 있습니다. 이를 통해 체중을 관리하거나 다이어트 목표를 달성하는 데 도움을 줄 수 있습니다.
 - 이 앱을 사용하여 섭취한 음식의 영양 정보를 기록하면 영양 균형을 유지하고 필요한 영양소를 충족시키는 데 도움이 됩니다.
-
----
 
