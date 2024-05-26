@@ -30,8 +30,6 @@ class HealthDataProvider with ChangeNotifier {
   int get todayStep => _todayStep;
 
   HealthDataProvider() {
-    Health().configure(useHealthConnectIfAvailable: true);
-
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
   }

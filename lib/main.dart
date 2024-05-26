@@ -10,6 +10,7 @@ import 'package:bodyguard/widgets/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:health/health.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -17,10 +18,13 @@ import 'firebase_options.dart';
 import 'map.dart';
 import 'utils/notification.dart';
 import 'screens/my_home_page/my_home_page.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   mapInitialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -30,6 +34,8 @@ Future<void> main() async {
   initializeDateFormatting().then((_) => runApp(
     const MyApp()
   ));
+
+  Health().configure(useHealthConnectIfAvailable: true);
 
 
   FlutterLocalNotification.init(); // 로컬 알림 초기화
