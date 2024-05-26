@@ -4,14 +4,12 @@ import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/search_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
-import 'package:bodyguard/utils/health_util.dart';
 
 import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:bodyguard/widgets/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:health/health.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -28,12 +26,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );// Firebase 초기화
 
-  // health connect 사용 설정
-  Health().configure(useHealthConnectIfAvailable: true);
-
-  // google health connect 연동을 위한 권한 확인 && app 설치 여부 확인
-  HealthUtil().authorize();
-  //HealthUtil().installHealthConnect();
 
   initializeDateFormatting().then((_) => runApp(
     const MyApp()

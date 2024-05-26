@@ -1,6 +1,8 @@
-import 'package:bodyguard/utils/health_util.dart';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:health/health.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HealthDataProvider with ChangeNotifier {
 
@@ -14,7 +16,7 @@ class HealthDataProvider with ChangeNotifier {
   double _activeCalorieBurned = 0;
 
   DateTime get selectedDate => _selectedDate;
-  int get state => state;
+  AppState get state => _state;
   int get steps => _steps;
   double get height => _height;
   double get weight => _weight;
@@ -22,68 +24,114 @@ class HealthDataProvider with ChangeNotifier {
   double get water => _water;
   double get activeCalorieBurned => _activeCalorieBurned;
 
-  HealthDataProvider(){
+  HealthDataProvider() {
+    Health().configure(useHealthConnectIfAvailable: true);
+    authorize();
+
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
   }
 
-  /// 기본 데이터 (신장, 몸무게 등) 가져오기
-  Future<void> fetchData(DateTime date) async {
-    _state = AppState.FETCHING_DATA;
+  /// Authorize, i.e. get permissions to access relevant health data.
+  Future<void> authorize() async {
+    // If we are trying to read Step Count, Workout, Sleep or other data that requires
+    // the ACTIVITY_RECOGNITION permission, we need to request the permission first.
+    // This requires a special request authorization call.
+    //
+    // The location permission is requested for Workouts using the Distance information.
+    await Permission.activityRecognition.request();
+    await Permission.location.request();
 
-    final now = date;
-    final startTime = DateTime(now.year, now.month, now.day);
+    // Check if we have health permissions
+    bool? hasPermissions =
+    await Health().hasPermissions(types, permissions: permissions);
 
-    double totalCalories = 0;
-    double totalActiveCalories = 0;
-    double totalWater = 0;
+    // hasPermissions = false because the hasPermission cannot disclose if WRITE access exists.
+    // Hence, we have to request with WRITE as well.
+    hasPermissions = false;
 
-
-    // try {
-    // fetch health data
-    List<HealthDataPoint> healthData = await Health().getHealthDataFromTypes(
-      types: HealthUtil().types,
-      startTime: startTime,
-      endTime: now,
-    );
-
-    debugPrint('Total number of data points: ${healthData.length}. '
-        '${healthData.length > 100 ? 'Only showing the first 100.' : ''}');
-
-
-    // filter out duplicates
-    healthData = Health().removeDuplicates(healthData);
-
-    // Iterate through healthData to populate fields
-    for (var dataPoint in healthData) {
-      final value = dataPoint.value.toJson();
-      switch (dataPoint.type) {
-        case HealthDataType.TOTAL_CALORIES_BURNED:
-          totalCalories += value['numeric_value'] as double;
-          break;
-        case HealthDataType.WATER:
-          totalWater += value['numeric_value'] as double;
-          break;
-        case HealthDataType.HEIGHT:
-          _height = value['numeric_value'] as double;
-          break;
-        case HealthDataType.WEIGHT:
-          _weight = value['numeric_value'] as double;;
-          break;
-        case HealthDataType.ACTIVE_ENERGY_BURNED:
-          totalActiveCalories += (value['numeric_value'] as double);
-        default:
-          break;
+    if (!hasPermissions) {
+      // requesting access to the data types before reading them
+      try {
+        await Health()
+            .requestAuthorization(types, permissions: permissions);
+      } catch (error) {
+        debugPrint("Exception in authorize: $error");
       }
     }
-    _totalCalorieBurned = totalCalories;
-    _activeCalorieBurned = totalActiveCalories;
-    _water = totalWater;
+
+  }
+
+  /// google health connect 설치
+  Future<void> installHealthConnect() async {
+    bool isAvailable = Health().useHealthConnectIfAvailable;
+
+    //health connect를 사용할 수 없다면 (설치 되지 않았다면) 설치한다.
+    if(!isAvailable && Platform.isAndroid){
+      await Health().installHealthConnect();
+    }
+  }
+
+  /// 기본 데이터 (신장, 몸무게 등) 가져오기
+  Future<void> fetchData(DateTime date) async {
+
+      _state = AppState.FETCHING_DATA;
+
+      final startTime = DateTime(date.year, date.month, date.day);
+      final endTime = startTime.add(const Duration(hours: 23, minutes: 59));
+
+      double totalCalories = 0;
+      double totalActiveCalories = 0;
+      double totalWater = 0;
+
+
+      // try {
+      // fetch health data
+      List<HealthDataPoint> healthData = await Health().getHealthDataFromTypes(
+        types: types,
+        startTime: startTime,
+        endTime: endTime,
+      );
+
+      debugPrint('Total number of data points: ${healthData.length}. '
+          '${healthData.length > 100 ? 'Only showing the first 100.' : ''}');
+
+
+      // filter out duplicates
+      healthData = Health().removeDuplicates(healthData);
+
+      // Iterate through healthData to populate fields
+      for (var dataPoint in healthData) {
+        final value = dataPoint.value.toJson();
+        switch (dataPoint.type) {
+          case HealthDataType.TOTAL_CALORIES_BURNED:
+            totalCalories += value['numeric_value'] as double;
+            break;
+          case HealthDataType.WATER:
+            print(value);
+            totalWater += value['numeric_value'] as double;
+            break;
+          case HealthDataType.HEIGHT:
+            _height = value['numeric_value'] as double;
+            break;
+          case HealthDataType.WEIGHT:
+            _weight = value['numeric_value'] as double;;
+            break;
+          case HealthDataType.ACTIVE_ENERGY_BURNED:
+            totalActiveCalories += (value['numeric_value'] as double);
+          default:
+            break;
+        }
+      }
+      _totalCalorieBurned = totalCalories;
+      _activeCalorieBurned = totalActiveCalories;
+      _water = totalWater;
 
       _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
 
-    print(_state);
-    notifyListeners();
+      print(_state);
+      notifyListeners();
+
   }
 
 
@@ -91,34 +139,35 @@ class HealthDataProvider with ChangeNotifier {
   Future<void> fetchStepData(DateTime date) async {
     int? fetchedSteps;
 
-    // get steps for today (i.e., since midnight)
-    final now = date;
-    final midnight = DateTime(now.year, now.month, now.day);
+      // get steps for today (i.e., since midnight)
+      final midnight = DateTime(date.year, date.month, date.day);
+      final end = midnight.add(Duration(hours: 23, minutes: 59));
 
-    bool stepsPermission =
-        await Health().hasPermissions([HealthDataType.STEPS]) ?? false;
-    if (!stepsPermission) {
-      stepsPermission =
-      await Health().requestAuthorization([HealthDataType.STEPS]);
-    }
-
-    if (stepsPermission) {
-      try {
-        fetchedSteps = await Health().getTotalStepsInInterval(midnight, now);
-      } catch (error) {
-        debugPrint("Exception in getTotalStepsInInterval: $error");
+      bool stepsPermission =
+          await Health().hasPermissions([HealthDataType.STEPS]) ?? false;
+      if (!stepsPermission) {
+        stepsPermission =
+        await Health().requestAuthorization([HealthDataType.STEPS]);
       }
 
-      debugPrint('Total number of steps: $steps');
+      if (stepsPermission) {
+        try {
+          fetchedSteps = await Health().getTotalStepsInInterval(midnight, end);
+        } catch (error) {
+          debugPrint("Exception in getTotalStepsInInterval: $error");
+        }
+
+        debugPrint('Total number of steps: $steps');
 
         _steps = (fetchedSteps == null) ? 0 : fetchedSteps;
         _state = (fetchedSteps == null) ? AppState.NO_DATA : AppState.STEPS_READY;
 
-    } else {
-      debugPrint("Authorization not granted - error in authorization");
-      _state = AppState.DATA_NOT_FETCHED;
-    }
-    notifyListeners();
+      } else {
+        debugPrint("Authorization not granted - error in authorization");
+        _state = AppState.DATA_NOT_FETCHED;
+      }
+      notifyListeners();
+
   }
 
   /// 걸음 수 데이터 추가
@@ -190,7 +239,8 @@ class HealthDataProvider with ChangeNotifier {
   /// 물 섭취 데이터 추가
   Future<void> addWaterData(double add) async {
     final now = _selectedDate;
-    final earlier = now.subtract(Duration(seconds: 20));
+    final earlier = now.subtract(Duration(seconds: 2));
+    final end = now.subtract(Duration(seconds: 1));
 
     bool success = true;
 
@@ -201,11 +251,11 @@ class HealthDataProvider with ChangeNotifier {
         value: add,
         type: HealthDataType.WATER,
         startTime: earlier,
-        endTime: now);
+        endTime: end);
 
     _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
 
-    print("add water end");
+    print("add water end ${_state}");
 
     fetchData(_selectedDate);
     print(_state);
@@ -235,8 +285,43 @@ class HealthDataProvider with ChangeNotifier {
     fetchData(_selectedDate);
     notifyListeners();
   }
-  
+
+  // 안드로이드는 google health connect, ios는 apple health를 사용하기에 dataType 분리
+  List<HealthDataType> get types => (Platform.isAndroid)
+      ? dataTypesAndroid
+      : (Platform.isIOS)
+      ? dataTypesIOS
+      : [];
+
+  // Set up corresponding permissions
+  // READ only
+  List<HealthDataAccess> get permissions =>
+      types.map((e) => HealthDataAccess.READ_WRITE).toList();
+
+
+  // 안드로이드에서 사용하는 dataType
+  get dataTypesAndroid => [
+    HealthDataType.ACTIVE_ENERGY_BURNED,
+    HealthDataType.TOTAL_CALORIES_BURNED,
+    HealthDataType.STEPS,
+    HealthDataType.HEIGHT,
+    HealthDataType.WEIGHT,
+    HealthDataType.WATER
+  ];
+
+  // IOS에서 사용하는 dataType
+  get dataTypesIOS => [
+    HealthDataType.ACTIVE_ENERGY_BURNED,
+    HealthDataType.TOTAL_CALORIES_BURNED,
+    HealthDataType.STEPS,
+    HealthDataType.HEIGHT,
+    HealthDataType.WEIGHT,
+    HealthDataType.WATER
+  ];
+
+
 }
+
 
 enum AppState {
   DATA_NOT_FETCHED,

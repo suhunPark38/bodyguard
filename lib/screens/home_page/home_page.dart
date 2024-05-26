@@ -1,3 +1,4 @@
+import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/utils/date_util.dart';
 import 'package:bodyguard/screens/home_page/widget/store_menu_widget.dart';
@@ -68,8 +69,8 @@ class _HomePage extends State<HomePage> {
           ),
         ],
       ),
-      body: Consumer2<HealthDataProvider, UserInfoProvider>(
-        builder: (context, provider, userInfo, child) {
+      body: Consumer3<HealthDataProvider, DietProvider,UserInfoProvider>(
+        builder: (context, healthData, diet, userInfo, child) {
           userInfo.initializeData();
           return RefreshIndicator(
             onRefresh: () async {
@@ -181,7 +182,7 @@ class _HomePage extends State<HomePage> {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "총 ${provider.totalCalorie.toStringAsFixed(1)}kcal",
+                                        "총 ${diet.totalNutritionalInfo.calories.toStringAsFixed(0)}kcal",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -233,7 +234,7 @@ class _HomePage extends State<HomePage> {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${(provider.water * 1000).toStringAsFixed(0)}ml",
+                                        "${(healthData.water * 1000).toStringAsFixed(0)}ml",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -246,7 +247,7 @@ class _HomePage extends State<HomePage> {
                                           height: 20,
                                           child: CustomButton(
                                             onPressed: () {
-                                              provider.addWaterData(0.25);
+                                              healthData.addWaterData(0.25);
                                             },
                                             text: const Text(
                                               "추가하기",
@@ -277,7 +278,7 @@ class _HomePage extends State<HomePage> {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${provider.weight}kg",
+                                        "${healthData.weight}kg",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -327,7 +328,7 @@ class _HomePage extends State<HomePage> {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${provider.steps} 걸음",
+                                        "${healthData.steps} 걸음",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
