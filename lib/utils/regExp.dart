@@ -24,7 +24,7 @@ class CheckValidate {
       RegExp regexp = getPattern(regExp);
       if (!regexp.hasMatch(value)) {
         focusNode.requestFocus();
-        return "${lasttext}에 맞게 작성해주세요" ?? "형식에 맞지 않습니다. 형식에 맞게 작성해주세요";
+        return lasttext ?? "형식에 맞게 작성해주세요";
       } else {
         return null;
       }

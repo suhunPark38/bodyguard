@@ -15,7 +15,9 @@ class PopularSearchesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
 
-    return Column(
+    return     Padding(
+        padding: const EdgeInsets.all(16.0),
+    child:Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -135,6 +137,7 @@ class PopularSearchesWidget extends StatelessWidget {
           height: 20,
         )
       ],
+    ),
     );
   }
 

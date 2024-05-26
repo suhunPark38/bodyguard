@@ -1,10 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import '../../../map.dart';
 import '../../../model/store_model.dart';
 import '../../../services/store_service.dart';
 import '../../../widgets/store_card.dart';
-import '../../store_menu_page/store_menu_page.dart';
 
 class StoreListWidget extends StatelessWidget {
   final String cuisineType; // 가게 종류

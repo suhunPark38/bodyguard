@@ -308,12 +308,14 @@ Future<String> calDist(double lat, double lon) async {
 
 
 // Fetch coordinates from address using Naver API
-Future<List<Map<String, dynamic>>> fetchCoordinates(String address) async {
+Future<List<Map<String, dynamic>>> fetchCoordinates(
+    { required String address, bool iskor = true}) async {
   var uri = Uri.https(
     "naveropenapi.apigw.ntruss.com",
     "/map-geocode/v2/geocode",
     {
       "query": address,
+      "language": iskor == true ? "kor" : "eng"
     },
   );
   var response = await http.get(uri, headers: _headers);

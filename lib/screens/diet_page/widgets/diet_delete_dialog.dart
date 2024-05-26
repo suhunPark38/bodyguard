@@ -18,20 +18,32 @@ class DietDeleteDialog extends StatelessWidget {
     DietProvider dietProvider = context.read<DietProvider>();
 
     return AlertDialog(
-      title: Text('삭제 확인'),
-      content: Text('정말 이 식단 정보를 삭제하시겠습니까?'),
+      title:
+          const Text('식단 삭제', style: TextStyle(fontWeight: FontWeight.w500)),
+      content: Text('정말 ${dietData.menuName}을(를) 삭제하시겠습니까?'),
       actions: [
-        TextButton(
+        FilledButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey.shade300,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           onPressed: () => Navigator.pop(context),
-          child: Text('아니요'),
+          child: const Text('취소하기', style: TextStyle(color: Colors.black)),
         ),
-        TextButton(
+        FilledButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           onPressed: () {
             dietProvider.notifyDeleteDiet(dietData.dietId);
-            Navigator.pop(context); // 다이얼로그 닫기
-            Navigator.pop(context); // 이전 화면으로 돌아가기
+            Navigator.pop(context);
           },
-          child: Text('예'),
+          child: const Text('삭제하기'),
         ),
       ],
     );

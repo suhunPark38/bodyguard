@@ -4,7 +4,7 @@ import 'package:bodyguard/utils/diet_util.dart';
 
 class DietDataProvider extends ChangeNotifier {
   List<FetchedDietData> _dietDataList = [];
-  double _amount = 0.0;
+  double _amount = 1.0;
   DateTime _eatingTime = DateTime.now();
   int _classification = 0;
 
@@ -18,9 +18,19 @@ class DietDataProvider extends ChangeNotifier {
     _dietDataList = await DietUtil().Fetchinfo(searchTerm);
     notifyListeners();
   }
+  void resetData(){
+    _amount = 1.0;
+   _eatingTime = DateTime.now();
+    _classification = 0;
+    notifyListeners();
+  }
 
   void setAmount(double newAmount) {
-    _amount = newAmount;
+    if (newAmount < 0.1) {
+      _amount = 0.1;
+    } else {
+      _amount = newAmount;
+    }
     notifyListeners();
   }
 

@@ -59,16 +59,16 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
+
+
           theme: ThemeData(
             useMaterial3: true, //false로 수정시 material2
             fontFamily: "Pretendard",
             colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.white,
               brightness: Brightness.light,
-              surface: Colors.white,
             ),
           ),
-
           darkTheme: ThemeData(
             useMaterial3: true,
             fontFamily: "Pretendard",

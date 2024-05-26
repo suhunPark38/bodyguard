@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:bodyguard/model/user_model.dart';
+import 'package:bodyguard/services/user_firebase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:health/health.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -28,6 +30,15 @@ class HealthDataProvider with ChangeNotifier {
   double get activeCalorieBurned => _activeCalorieBurned;
   double get todayWater => _todayWater;
   int get todayStep => _todayStep;
+
+  set weight(double value) {
+    _weight = value;
+    notifyListeners();
+  }
+  set height(double value){
+    _height = value;
+    notifyListeners();
+  }
 
   HealthDataProvider() {
     fetchStepData(_selectedDate);
@@ -162,8 +173,8 @@ class HealthDataProvider with ChangeNotifier {
 
         debugPrint('Total number of steps: $steps');
 
-        _steps = (fetchedSteps == null) ? 0 : fetchedSteps;
-        _state = (fetchedSteps == null) ? AppState.NO_DATA : AppState.STEPS_READY;
+      _steps = (fetchedSteps == null) ? 0 : fetchedSteps;
+      _state = (fetchedSteps == null) ? AppState.NO_DATA : AppState.STEPS_READY;
 
         if (selectedDate.day == DateTime.now().day){
           _todayStep = _steps;
@@ -197,10 +208,10 @@ class HealthDataProvider with ChangeNotifier {
         startTime: earlier,
         endTime: now);
 
-      _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
+    _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
 
-      print(_state);
-      notifyListeners();
+    print(_state);
+    notifyListeners();
   }
 
   /// 신장(키) 데이터 추가
@@ -208,7 +219,7 @@ class HealthDataProvider with ChangeNotifier {
     _setNow();
     final now = _selectedDate;
     final earlier = now.subtract(Duration(minutes: 20));
-
+    _height = add;
     // Add data for supported types
     // NOTE: These are only the ones supported on Androids new API Health Connect.
     // Both Android's Google Fit and iOS' HealthKit have more types that we support in the enum list [HealthDataType]
@@ -219,10 +230,16 @@ class HealthDataProvider with ChangeNotifier {
     success &= await Health().writeHealthData(
         value: add,
         type: HealthDataType.HEIGHT,
-        startTime: earlier,
-        endTime: now);
+        startTime: now);
 
-    _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
+    if(success){
+      _state = AppState.DATA_ADDED;
+      UserFirebase().setHeight(_height);
+    }
+    else{
+      AppState.DATA_NOT_ADDED;
+    }
+
     notifyListeners();
   }
 
@@ -230,7 +247,7 @@ class HealthDataProvider with ChangeNotifier {
   Future<void> addWeightData(double add) async {
     _setNow();
     final now = _selectedDate;
-
+    _weight = add;
     // Add data for supported types
     // NOTE: These are only the ones supported on Androids new API Health Connect.
     // Both Android's Google Fit and iOS' HealthKit have more types that we support in the enum list [HealthDataType]
@@ -243,7 +260,14 @@ class HealthDataProvider with ChangeNotifier {
         type: HealthDataType.WEIGHT,
         startTime: now);
 
-    _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
+    if(success){
+      _state = AppState.DATA_ADDED;
+      UserFirebase().setWeight(_weight);
+    }
+    else{
+      AppState.DATA_NOT_ADDED;
+    }
+
     notifyListeners();
   }
 

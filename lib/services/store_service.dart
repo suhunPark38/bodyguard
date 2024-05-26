@@ -121,6 +121,24 @@ class StoreService {
       return null; // 에러 발생 시 null 반환
     }
   }
+  Future<Store?> getStoreByName(String storeName) async {
+    try {
+      QuerySnapshot querySnapshot = await _storeCollection
+          .where('storeName', isEqualTo: storeName)
+          .limit(1)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot doc = querySnapshot.docs.first;
+        return Store.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      } else {
+        return null; // 해당 이름의 가게가 존재하지 않을 경우 null 반환
+      }
+    } catch (e) {
+      print("Error getting store by name: $e");
+      return null; // 에러 발생 시 null 반환
+    }
+  }
+
 
   Future<Map<String, dynamic>?> getFoodInfo(String storeId, String foodId) async {
     try {

@@ -24,7 +24,7 @@ class ShoppingPage extends StatelessWidget {
               title: const Text('쇼핑'),
               centerTitle: true,
               actions: [
-                if (provider.currentShoppingTabIndex == 0) //결제하기 탭일때
+                if (provider.currentShoppingTabIndex == 0) // 결제하기 탭일 때
                   TextButton(
                     onPressed: provider.handleReset,
                     child: const Text("모두 지우기"),
@@ -50,7 +50,7 @@ class ShoppingPage extends StatelessWidget {
               ),
             ),
             persistentFooterButtons: [
-              if (provider.currentShoppingTabIndex == 0) //결제하기 탭일때
+              if (provider.currentShoppingTabIndex == 0) // 결제하기 탭일 때
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
@@ -67,7 +67,7 @@ class ShoppingPage extends StatelessWidget {
                                     value: 'delivery',
                                     groupValue: provider.deliveryType,
                                     onChanged:
-                                        provider.handleDeliveryTypeChange,
+                                    provider.handleDeliveryTypeChange,
                                   ),
                                   const Text("배달"),
                                 ],
@@ -78,7 +78,7 @@ class ShoppingPage extends StatelessWidget {
                                     value: 'takeaway',
                                     groupValue: provider.deliveryType,
                                     onChanged:
-                                        provider.handleDeliveryTypeChange,
+                                    provider.handleDeliveryTypeChange,
                                   ),
                                   const Text("포장"),
                                 ],
@@ -151,22 +151,21 @@ class ShoppingPage extends StatelessWidget {
                         width: double.maxFinite,
                         height: 40,
                         child: CustomButton(
-                          onPressed: () {
-                            if (provider.deliveryType == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('배달 또는 포장을 선택해주세요.')));
-                            } else if (provider.selectedMenus.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('음식이 텅 비었어요.')));
-                            } else {
-                              provider.completePayment(context);
-                              provider.refreshPayments();
-                              provider.handleReset(); //결제를 완료 후 장바구니 데이터 클리어
-                            }
-                          },
+                          onPressed: provider.selectedMenus.isNotEmpty
+                              ? () {
+                            provider.completePayment(context);
+                            provider.refreshPayments();
+                            provider.handleReset(); // 결제를 완료 후 장바구니 데이터 클리어
+                          }
+                              : null,
                           text: Text(
-                              '${formatNumber(provider.totalPrice)}원 결제하기'),
+                            '${formatNumber(provider.totalPrice)}원 결제하기',
+                            style: TextStyle(
+                              color: provider.selectedMenus.isNotEmpty
+                                  ? Colors.white
+                                  : Colors.grey, // Change the text color when disabled
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 5),

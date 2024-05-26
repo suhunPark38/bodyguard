@@ -1,33 +1,30 @@
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/screens/home_page/widget/ad_carousel.dart';
 import 'package:bodyguard/utils/date_util.dart';
-import 'package:bodyguard/screens/home_page/widget/store_menu_widget.dart';
 import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/diet_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../body_page/body_page.dart';
 import '../my_home_page/my_home_page.dart';
 import '../../services/store_service.dart';
+import '../../services/ad_service.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final StoreService storeService = StoreService();
-
-  @override
-  _HomePage createState() => _HomePage();
-}
-
-class _HomePage extends State<HomePage> {
-  StoreService storeService = StoreService();
+  final AdService adService = AdService(); // 추가
+  final DateTime now = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+    final dietProvider = Provider.of<DietProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text("BODYGUARD"),
@@ -92,7 +89,6 @@ class _HomePage extends State<HomePage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          color: Colors.white,
                           child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Column(
@@ -122,7 +118,7 @@ class _HomePage extends State<HomePage> {
                                         children: [
                                           SizedBox(
                                               width: 110,
-                                              height: 25,
+                                              height: 20,
                                               child: CustomButton(
                                                 onPressed: () {
                                                   Provider.of<ShoppingProvider>(
@@ -181,7 +177,7 @@ class _HomePage extends State<HomePage> {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "총 ${diet.totalNutritionalInfo.calories.toStringAsFixed(0)}kcal",
+                                        "총 ${dietProvider.todayCalories.toStringAsFixed(1)}kcal",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -344,11 +340,11 @@ class _HomePage extends State<HomePage> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                    const MyHomePage(
-                                                      initialIndex: 2,
-                                                      healthIndex: 1,
-                                                    )),
-                                                    (route) => false,
+                                                        const MyHomePage(
+                                                          initialIndex: 2,
+                                                          healthIndex: 1,
+                                                        )),
+                                                (route) => false,
                                               );
                                             },
                                             text: const Text(
@@ -362,32 +358,13 @@ class _HomePage extends State<HomePage> {
                     const SizedBox(
                       height: 16,
                     ),
-                    const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "이런건 어떠세요?",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ]),
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                      userInfo.D("님, 이런건 어떠세요?"),
+                    ]),
                     const SizedBox(
                       height: 5,
                     ),
-                    CarouselSlider(
-                        options: CarouselOptions(
-                          height: 350,
-                          aspectRatio: 16 / 9,
-                          viewportFraction: 1.1,
-                          autoPlay: true,
-                          autoPlayInterval: const Duration(seconds: 4),
-                          enableInfiniteScroll: true,
-                          onPageChanged: ((index, reason) {}),
-                        ),
-                        items: [
-                          StoreMenuWidget(),
-                          //StoreMenuWidget(),// foodId 전달
-                        ]),
+                    AdCarousel(),
                   ],
                 ),
               ),

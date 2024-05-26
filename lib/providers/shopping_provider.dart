@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bodyguard/model/store_menu.dart';
 import 'package:bodyguard/database/shopping_database.dart';
-import 'package:uuid/uuid.dart';
 import '../model/menu_item.dart';
 import '../model/payment.dart';
 import '../screens/shopping_page/widgets/filter_button.dart';
@@ -26,7 +25,6 @@ class ShoppingProvider extends ChangeNotifier {
   DateTime _selectedEndDate = DateTime.now();
 
   FilterType _selectedFilter = FilterType.all;
-  bool _isRowVisible = false;
 
   List<StoreMenu> get checkedMenus => _checkedMenus;
 
@@ -51,8 +49,6 @@ class ShoppingProvider extends ChangeNotifier {
   DateTime get selectedEndDate => _selectedEndDate;
 
   FilterType get selectedFilter => _selectedFilter;
-
-  bool get isRowVisible=> _isRowVisible;
 
   ShoppingProvider() {
     _initializeData();
@@ -91,11 +87,6 @@ class ShoppingProvider extends ChangeNotifier {
 
   void setSelectedFilter(FilterType filter) {
     _selectedFilter = filter;
-    notifyListeners();
-  }
-
-  void toggleVisibility(){
-    _isRowVisible = !_isRowVisible;
     notifyListeners();
   }
 
