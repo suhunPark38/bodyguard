@@ -82,11 +82,11 @@ class UserFirebase {
     String? uid = await Auth().getUiD();
 
     await _firebase
-          .collection('users')
-          .doc(uid)
-          .update(user.toJson())
-          .then((value) => print("User Updated"))
-          .catchError((error) => print("Failed to update user: $error"));
+        .collection('users')
+        .doc(uid)
+        .update(user.toJson())
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
 
   }
 
@@ -143,6 +143,53 @@ class UserFirebase {
     })
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> getWeight() async {
+    String? uid = await Auth().getUiD();
+
+    await _firebase
+        .collection('users')
+        .doc(uid)
+        .update({"lastLogin": DateTime.now()
+    })
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> setWeight(double weight) async {
+    String? uid = await Auth().getUiD();
+    await _firebase
+        .collection('users')
+        .doc(uid)
+        .update({"weight": weight
+    })
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> setHeight(double height) async {
+    try {
+      String? uid = await Auth().getUiD();
+      if (uid == null) {
+        print("Failed to get user ID: User not authenticated");
+        return;
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({"height": height});
+      print("User Updated");
+    } catch (e) {
+      if (e is FirebaseException && e.code == 'unavailable') {
+        // 네트워크 연결 문제
+        print("Failed to update user: Network connection error");
+      } else {
+        // 기타 오류
+        print("Failed to update user: $e");
+      }
+    }
   }
 
 }

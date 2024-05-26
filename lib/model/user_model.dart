@@ -93,7 +93,7 @@ class UserInfoModel {
     final roadAddress = json['roadAddress'];
     final NLatLng = getDoubleList(json['NLatLng']);
     final detailAddress = json['DetailAddress'] ?? "";
-    final time = json['lastLogin'] ?? "";
+    final time = json['lastLogin'] ?? Timestamp.fromDate(DateTime.now());
 
 
     log("user_model의 factory UserInfo.fromJson 출력 값: "

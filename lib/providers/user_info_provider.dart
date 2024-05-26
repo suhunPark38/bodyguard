@@ -6,12 +6,17 @@ import '../services/user_firebase.dart';
 import '../services/auth_service.dart';
 
 class UserInfoProvider with ChangeNotifier{
-  late Stream<UserInfoModel> user;
+  UserInfoModel? _user;
 
+  UserInfoModel? get user => _user;
 
-  Stream<UserInfoModel> initializeData() {
-    user = UserFirebase().getUserInfo(uid: Auth().getCurrentUid());
-      return user;
+  void initializeData() {
+    UserFirebase()
+        .getUserInfo(uid: Auth().getCurrentUid())
+        .listen((UserInfoModel userInfo) {
+      _user = userInfo;
+      notifyListeners();
+    });
   }
 
   Widget D(String text){

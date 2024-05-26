@@ -66,7 +66,6 @@ class HomePage extends StatelessWidget {
       ),
       body: Consumer2<HealthDataProvider, UserInfoProvider>(
         builder: (context, provider, userInfo, child) {
-          userInfo.initializeData();
           return RefreshIndicator(
             onRefresh: () async {
               //provider.fetchStepData(DateTime.now());

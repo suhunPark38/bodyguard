@@ -18,16 +18,13 @@ class _SearchAddressState extends State<SearchAddress> {
 
   List<Map<String, dynamic>> coordinates = [];
 
-  final String _naverclientid = 'YOUR_CLIENT_ID';
-  final String _naversecret = 'YOUR_CLIENT_SECRET';
-
   @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("주소 검색"),
+        title: Text("도로명 검색"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -55,12 +52,14 @@ class _SearchAddressState extends State<SearchAddress> {
                 ),
                 SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: isLoading ? null : () {
-                    setState(() {
-                      currentPage = 1;
-                    });
-                    fetchAddresses(1);
-                  },
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          setState(() {
+                            currentPage = 1;
+                          });
+                          fetchAddresses(1);
+                        },
                   child: Text("검색"),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Theme.of(context).primaryColor,
@@ -79,12 +78,16 @@ class _SearchAddressState extends State<SearchAddress> {
               children: [
                 IconButton(
                   icon: Icon(Icons.arrow_back),
-                  onPressed: currentPage > 1 && !isLoading ? () => fetchAddresses(currentPage - 1) : null,
+                  onPressed: currentPage > 1 && !isLoading
+                      ? () => fetchAddresses(currentPage - 1)
+                      : null,
                 ),
                 Text('페이지 $currentPage'),
                 IconButton(
                   icon: Icon(Icons.arrow_forward),
-                  onPressed: (list.length == 10 && !isLoading) ? () => fetchAddresses(currentPage + 1) : null,
+                  onPressed: (list.length == 10 && !isLoading)
+                      ? () => fetchAddresses(currentPage + 1)
+                      : null,
                 ),
               ],
             ),
@@ -93,7 +96,6 @@ class _SearchAddressState extends State<SearchAddress> {
       ),
     );
   }
-
 
   void fetchAddresses(int page) {
     if (!isLoading) {
@@ -107,6 +109,7 @@ class _SearchAddressState extends State<SearchAddress> {
         "countPerPage": "10",
         "keyword": controller.text,
         'resultType': "json",
+        'addInfoYn': "Y"
       };
       http
           .post(
@@ -120,8 +123,7 @@ class _SearchAddressState extends State<SearchAddress> {
           currentPage = page;
           isLoading = false;
         });
-      })
-          .catchError((error) {
+      }).catchError((error) {
         setState(() {
           isLoading = false;
         });
@@ -134,47 +136,73 @@ class _SearchAddressState extends State<SearchAddress> {
       child: isLoading
           ? Center(child: CircularProgressIndicator())
           : list.isNotEmpty
-          ? ListView.separated(
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('${list[index]['roadAddrPart1']} ${list[index]['roadAddrPart2']}'),
-            subtitle: Text('[우편번호: ${list[index]['zipNo']}]'),
-            leading: IconButton(
-              icon: Icon(Icons.location_on),
-              onPressed: () async {
-                coordinates = await fetchCoordinates(list[index]['roadAddrPart1']);
-                if (coordinates is List) {
-                  showMapDialog(context, coordinates[0]);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('좌표를 가져오지 못했습니다.')));
-                }
-              },
-            ),
-            onTap: () async {  // ListTile 전체에 클릭 이벤트 추가
-              coordinates = await fetchCoordinates(list[index]['roadAddrPart1']);
-              if(coordinates.isNotEmpty){
-                print(coordinates[0]['x']);
-                Navigator.pop(context, coordinates[0]);
-                }
-            },
-          );
-        },
-        separatorBuilder: (context, index) => Divider(),
-        itemCount: list.length,
-      )
-          : Center(
-        child: Text('검색 결과가 없습니다.'),
-      ),
+              ? ListView.separated(
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                          '${list[index]['roadAddrPart1']} ${list[index]['roadAddrPart2']}'),
+                      subtitle: Text('[우편번호: ${list[index]['zipNo']}]'),
+                      leading: IconButton(
+                        icon: Icon(Icons.location_on),
+                        onPressed: () async {
+                          coordinates = await fetchCoordinates(
+                              address: list[index]['roadAddrPart1']);
+                          if (coordinates is List && coordinates.isNotEmpty) {
+                            showMapDialog(context, coordinates[0]);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content:
+                                    Text('좌표를 가져오지 못했습니다.\n 좀 더 자세히 검색해주세요'),
+                                duration: Duration(seconds: 1)));
+                          }
+                        },
+                      ),
+                      onTap: () async {
+                        // ListTile 전체에 클릭 이벤트 추가
+                        coordinates = await fetchCoordinates(
+                            address: list[index]['roadAddrPart1']);
+                        if (coordinates.isNotEmpty) {
+                          print(coordinates[0]['x']);
+                          Navigator.pop(context, coordinates[0]);
+                        } else {
+                          print("지번검색 시작");
+                          coordinates = await fetchCoordinates(
+                              address: list[index]['jibunAddr']);
+                          if (coordinates.isNotEmpty) {
+                            print(coordinates[0]['x']);
+                            Navigator.pop(context, coordinates[0]);
+                          } else {
+                            coordinates = await fetchCoordinates(
+                                address: list[index]['engAddr'], iskor: false);
+                            if (coordinates.isNotEmpty) {
+                              print(coordinates[0]['x']);
+                              Navigator.pop(context, coordinates[0]);
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                    '해당 위치를 지도에 저장할 수 없습니다.\n 좀 더 자세히 검색해주세요'),
+                                duration: Duration(seconds: 1),
+                              ));
+                            }
+                          }
+                        }
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) => Divider(),
+                  itemCount: list.length,
+                )
+              : Center(
+                  child: Text('검색 결과가 없습니다.'),
+                ),
     );
   }
 
-
-
-
   void showMapDialog(BuildContext context, dynamic coordinate) {
     NLatLng coordin = NLatLng(
-        double.parse(coordinate['y']),
-        double.parse(coordinate['x']),
+      double.parse(coordinate['y']),
+      double.parse(coordinate['x']),
     );
     showDialog(
       context: context,
@@ -186,10 +214,8 @@ class _SearchAddressState extends State<SearchAddress> {
             width: 300, // 지도의 너비를 조절
             child: NaverMap(
               options: NaverMapViewOptions(
-                initialCameraPosition: NCameraPosition(
-                  target: coordin, zoom: 16
-                )
-              ),
+                  initialCameraPosition:
+                      NCameraPosition(target: coordin, zoom: 16)),
               onMapReady: (controller) {
                 NMarker marker = NMarker(
                   iconTintColor: Colors.pink,
@@ -198,12 +224,13 @@ class _SearchAddressState extends State<SearchAddress> {
                 );
                 controller.addOverlay(marker);
                 final onMarkerInfoWindow = NInfoWindow.onMarker(
-                  id: marker.info.id, text: "내 위치",
+                  id: marker.info.id,
+                  text: "내 위치",
                 );
                 marker.openInfoWindow(onMarkerInfoWindow);
               },
-              ),
             ),
+          ),
         );
       },
     );
