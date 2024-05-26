@@ -233,7 +233,7 @@ class _HomePage extends State<HomePage> {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${(healthData.water * 1000).toStringAsFixed(0)}ml",
+                                        "${(healthData.todayWater * 1000).toStringAsFixed(0)}ml",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -327,7 +327,7 @@ class _HomePage extends State<HomePage> {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${healthData.steps} 걸음",
+                                        "${healthData.todayStep} 걸음",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),

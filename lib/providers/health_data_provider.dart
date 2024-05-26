@@ -15,6 +15,9 @@ class HealthDataProvider with ChangeNotifier {
   double _water = 0;
   double _activeCalorieBurned = 0;
 
+  double _todayWater = 0;
+  int _todayStep = 0;
+
   DateTime get selectedDate => _selectedDate;
   AppState get state => _state;
   int get steps => _steps;
@@ -23,10 +26,11 @@ class HealthDataProvider with ChangeNotifier {
   double get totalCalorie => _totalCalorieBurned;
   double get water => _water;
   double get activeCalorieBurned => _activeCalorieBurned;
+  double get todayWater => _todayWater;
+  int get todayStep => _todayStep;
 
   HealthDataProvider() {
     Health().configure(useHealthConnectIfAvailable: true);
-    authorize();
 
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
@@ -68,7 +72,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 기본 데이터 (신장, 몸무게 등) 가져오기
   Future<void> fetchData(DateTime date) async {
-    setNow();
+    _setNow();
 
       _state = AppState.FETCHING_DATA;
 
@@ -122,6 +126,10 @@ class HealthDataProvider with ChangeNotifier {
       _activeCalorieBurned = totalActiveCalories;
       _water = totalWater;
 
+    if (selectedDate.day == DateTime.now().day){
+      _todayWater = _water;
+    }
+
       _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
 
       print(_state);
@@ -132,7 +140,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// Fetch steps from the health plugin and show them in the app.
   Future<void> fetchStepData(DateTime date) async {
-    setNow();
+    _setNow();
 
     int? fetchedSteps;
 
@@ -159,6 +167,10 @@ class HealthDataProvider with ChangeNotifier {
         _steps = (fetchedSteps == null) ? 0 : fetchedSteps;
         _state = (fetchedSteps == null) ? AppState.NO_DATA : AppState.STEPS_READY;
 
+        if (selectedDate.day == DateTime.now().day){
+          _todayStep = _steps;
+        }
+
       } else {
         debugPrint("Authorization not granted - error in authorization");
         _state = AppState.DATA_NOT_FETCHED;
@@ -169,7 +181,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 걸음 수 데이터 추가
   Future<void> addStepData(double add) async {
-    setNow();
+    _setNow();
 
     final now = _selectedDate;
     final earlier = now.subtract(Duration(minutes: 20));
@@ -195,7 +207,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 신장(키) 데이터 추가
   Future<void> addHeightData(double add) async {
-    setNow();
+    _setNow();
     final now = _selectedDate;
     final earlier = now.subtract(Duration(minutes: 20));
 
@@ -218,7 +230,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 몸무게 데이터 추가
   Future<void> addWeightData(double add) async {
-    setNow();
+    _setNow();
     final now = _selectedDate;
 
     // Add data for supported types
@@ -239,7 +251,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 물 섭취 데이터 추가
   Future<void> addWaterData(double add) async {
-    setNow();
+    _setNow();
     final now = _selectedDate;
     final earlier = now.subtract(Duration(seconds: 1));
 
@@ -260,7 +272,8 @@ class HealthDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setNow(){
+  /// selectedDate의 시, 분, 초 값을 현재 시간에 맞게 동기화
+  void _setNow(){
     final now = DateTime.now();
     _selectedDate = DateTime(
         _selectedDate.year,
@@ -268,13 +281,13 @@ class HealthDataProvider with ChangeNotifier {
         _selectedDate.day,
         now.hour,
         now.minute,
-        now.second
+        now.second,
     );
   }
 
   /// 전날로 이동
   void previousDate() {
-    setNow();
+    _setNow();
     _selectedDate = _selectedDate.subtract(Duration(days: 1));
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
@@ -282,7 +295,7 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 다음날로 이동
   void nextDate() {
-    setNow();
+    _setNow();
     _selectedDate = _selectedDate.add(Duration(days: 1));
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
@@ -290,7 +303,6 @@ class HealthDataProvider with ChangeNotifier {
 
   /// 오늘로 이동
   void todayDate() {
-    setNow();
     _selectedDate = DateTime.now();
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
