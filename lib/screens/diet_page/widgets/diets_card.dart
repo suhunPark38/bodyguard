@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../database/config_database.dart';
 import '../../../providers/diet_provider.dart';
 import '../../../utils/calculate_util.dart';
-import 'diet_info_dialog.dart';
+import 'diet_info_sheet.dart';
 
 class DietsCard extends StatelessWidget {
   final int classification;
@@ -80,48 +80,42 @@ class DietsCard extends StatelessWidget {
                         border: Border.all(color: Colors.white, width: 1),
                       ),
                       child: InkWell(
-                        onTap: () =>
-                            showDialog(
-                              context: context,
-                              builder: (context) =>
-                                  DietInfoDialog(
-                                    parentContext: context,
-                                    diet: diet,
-                                  ),
-                            ),
+                        onTap: () => DietInfoSheet.show(
+                          context,
+                          diet,
+                        ),
                         child: Padding(
-                          padding:
-                          const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Expanded(child:
-                            Text(
-                            diet.menuName,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
+                              Expanded(
+                                child: Text(
+                                  diet.menuName,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
                               ),
-                        const Icon(Icons.arrow_forward_ios,
-                            size: 12, color: Colors.white),
-                        ],
+                              const Icon(Icons.arrow_forward_ios,
+                                  size: 12, color: Colors.white),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),)
-                  ,
                   );
                 },
               ),
             ),
             Text(
               '${CalculateUtil().getSumOfLists(
-                diets.map((diet) => diet.calories).toList(),
-              ).toStringAsFixed(1)} kcal',
+                    diets.map((diet) => diet.calories).toList(),
+                  ).toStringAsFixed(1)} kcal',
               style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,

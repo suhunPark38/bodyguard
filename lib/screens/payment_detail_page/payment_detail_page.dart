@@ -49,7 +49,6 @@ class PaymentDetailPage extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Leading widget (이미지)
                         ClipRRect(
                           borderRadius: BorderRadius.circular(30),
                           child: SizedBox(

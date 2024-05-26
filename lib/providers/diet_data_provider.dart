@@ -19,7 +19,6 @@ class DietDataProvider extends ChangeNotifier {
     notifyListeners();
   }
   void resetData(){
-    _dietDataList = [];
     _amount = 1.0;
    _eatingTime = DateTime.now();
     _classification = 0;

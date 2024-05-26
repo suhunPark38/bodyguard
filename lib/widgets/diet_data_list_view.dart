@@ -82,7 +82,7 @@ class DietDataListView extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        '업체명: ${selectedData.MAKER_NAME}',
+                        selectedData.MAKER_NAME,
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),
@@ -131,9 +131,9 @@ class DietDataListView extends StatelessWidget {
 
   Widget _buildNutritionInfo(
       {IconData? icon,
-        AssetImage? image,
-        required String title,
-        required String value}) {
+      AssetImage? image,
+      required String title,
+      required String value}) {
     return ListTile(
       leading: icon != null ? Icon(icon) : ImageIcon(image, size: 25.0),
       // 아이콘 또는 이미지 아이콘 사용

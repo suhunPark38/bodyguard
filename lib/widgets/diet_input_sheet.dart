@@ -19,51 +19,15 @@ class DietInputSheet extends StatelessWidget {
   static Future<void> show(BuildContext context, FetchedDietData selectedData) {
     return showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
       isScrollControlled: true,
       builder: (context) => ChangeNotifierProvider(
         create: (_) => DietDataProvider(),
         child: DietInputSheet(selectedData: selectedData),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DietInputSheetContent(selectedData: selectedData);
-  }
-}
-
-class DietInputSheetContent extends StatefulWidget {
-  final FetchedDietData selectedData;
-
-  const DietInputSheetContent({super.key, required this.selectedData});
-
-  @override
-  _DietInputSheetContentState createState() => _DietInputSheetContentState();
-}
-
-class _DietInputSheetContentState extends State<DietInputSheetContent>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _shakeController;
-  late Animation<double> _shakeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _shakeController = AnimationController(
-      duration: const Duration(milliseconds: 50),
-      vsync: this,
-    );
-
-    _shakeAnimation = Tween<double>(begin: -5.0, end: 5.0).animate(
-      CurvedAnimation(parent: _shakeController, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _shakeController.dispose();
-    super.dispose();
   }
 
   @override
@@ -76,9 +40,10 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
           children: <Widget>[
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Text(
-                widget.selectedData.DESC_KOR,
+                selectedData.DESC_KOR,
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
               ),
               IconButton(
                 icon: const Icon(Icons.close),
@@ -86,13 +51,13 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
               ),
             ]),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Row(children: [
               const Text("섭취량",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(
-                width: 10,
+                width: 5,
               ),
               Text("1회 제공량 기준",
                   style: TextStyle(fontSize: 14, color: Colors.grey.shade600))
@@ -105,24 +70,15 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                       provider.amount.toStringAsFixed(1),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    AnimatedBuilder(
-                      animation: _shakeController,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: Offset(_shakeAnimation.value, 0),
-                          child: child,
-                        );
-                      },
-                      child: provider.amount == 0
-                          ? const Text(
-                              "섭취량은 0보다 커야해요.",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            )
-                          : const SizedBox(), // 또는 다른 위젯으로 대체 가능합니다.
-                    ),
+                    provider.amount == 0
+                        ? const Text(
+                            "섭취량은 0보다 커야해요.",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        : const SizedBox(),
                     Slider(
                       value: provider.amount,
                       min: 0.0,
@@ -139,7 +95,7 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                     ]),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
                     SegmentedButton<int>(
                       segments: const <ButtonSegment<int>>[
                         ButtonSegment<int>(
@@ -239,7 +195,7 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                       const SizedBox(
                         width: 10,
                       ),
-                      Text("섭취량 비례",
+                      Text("섭취량 반영",
                           style: TextStyle(
                               fontSize: 14, color: Colors.grey.shade600))
                     ]),
@@ -258,7 +214,7 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                             width: 10,
                           ),
                           Text(
-                              "${((double.tryParse(widget.selectedData.NUTR_CONT1) ?? 0.0) * provider.amount).toStringAsFixed(1)}kcal",
+                              "${((double.tryParse(selectedData.NUTR_CONT1) ?? 0.0) * provider.amount).toStringAsFixed(1)}kcal",
                               style: const TextStyle(
                                 fontSize: 12,
                               )),
@@ -277,7 +233,7 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                             width: 10,
                           ),
                           Text(
-                              "${((double.tryParse(widget.selectedData.NUTR_CONT2) ?? 0.0) * provider.amount).toStringAsFixed(1)}g",
+                              "${((double.tryParse(selectedData.NUTR_CONT2) ?? 0.0) * provider.amount).toStringAsFixed(1)}g",
                               style: const TextStyle(
                                 fontSize: 12,
                               )),
@@ -296,7 +252,7 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                             width: 10,
                           ),
                           Text(
-                              "${((double.tryParse(widget.selectedData.NUTR_CONT5) ?? 0.0) * provider.amount).toStringAsFixed(1)}g",
+                              "${((double.tryParse(selectedData.NUTR_CONT5) ?? 0.0) * provider.amount).toStringAsFixed(1)}g",
                               style: const TextStyle(
                                 fontSize: 12,
                               )),
@@ -315,7 +271,7 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                             width: 10,
                           ),
                           Text(
-                              "${((double.tryParse(widget.selectedData.NUTR_CONT3) ?? 0.0) * provider.amount).toStringAsFixed(1)}g",
+                              "${((double.tryParse(selectedData.NUTR_CONT3) ?? 0.0) * provider.amount).toStringAsFixed(1)}g",
                               style: const TextStyle(
                                 fontSize: 12,
                               )),
@@ -334,7 +290,7 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                             width: 10,
                           ),
                           Text(
-                              "${((double.tryParse(widget.selectedData.NUTR_CONT4) ?? 0.0) * provider.amount).toStringAsFixed(1)}g",
+                              "${((double.tryParse(selectedData.NUTR_CONT4) ?? 0.0) * provider.amount).toStringAsFixed(1)}g",
                               style: const TextStyle(
                                 fontSize: 12,
                               )),
@@ -353,14 +309,14 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                             width: 10,
                           ),
                           Text(
-                              "${((double.tryParse(widget.selectedData.NUTR_CONT6) ?? 0.0) * provider.amount).toStringAsFixed(1)}mg",
+                              "${((double.tryParse(selectedData.NUTR_CONT6) ?? 0.0) * provider.amount).toStringAsFixed(1)}mg",
                               style: const TextStyle(
                                 fontSize: 12,
                               )),
                         ],
                       ),
                     ]),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
                     ButtonBar(
                       mainAxisSize: MainAxisSize.max,
                       alignment: MainAxisAlignment.spaceEvenly,
@@ -388,44 +344,37 @@ class _DietInputSheetContentState extends State<DietInputSheetContent>
                           child: CustomButton(
                             onPressed: () {
                               if (provider.amount == 0) {
-                                setState(() {});
-                                _shakeController.forward(from: 0.0);
-                                _shakeController.repeat(reverse: true);
-                                Future.delayed(
-                                    const Duration(milliseconds: 500), () {
-                                  _shakeController.stop();
-                                });
                               } else {
                                 final dietProvider =
                                     context.read<DietProvider>();
                                 dietProvider.notifyInsertDiet(DietCompanion(
                                   eatingTime: Value(provider.eatingTime),
-                                  menuName: Value(widget.selectedData.DESC_KOR),
+                                  menuName: Value(selectedData.DESC_KOR),
                                   amount: Value(provider.amount),
                                   classification:
                                       Value(provider.classification),
                                   calories: Value((double.tryParse(
-                                              widget.selectedData.NUTR_CONT1) ??
+                                              selectedData.NUTR_CONT1) ??
                                           0.0) *
                                       provider.amount),
                                   carbohydrate: Value((double.tryParse(
-                                              widget.selectedData.NUTR_CONT2) ??
+                                              selectedData.NUTR_CONT2) ??
                                           0.0) *
                                       provider.amount),
                                   protein: Value((double.tryParse(
-                                              widget.selectedData.NUTR_CONT3) ??
+                                              selectedData.NUTR_CONT3) ??
                                           0.0) *
                                       provider.amount),
                                   fat: Value((double.tryParse(
-                                              widget.selectedData.NUTR_CONT4) ??
+                                              selectedData.NUTR_CONT4) ??
                                           0.0) *
                                       provider.amount),
                                   sodium: Value((double.tryParse(
-                                              widget.selectedData.NUTR_CONT6) ??
+                                              selectedData.NUTR_CONT6) ??
                                           0.0) *
                                       provider.amount),
                                   sugar: Value((double.tryParse(
-                                              widget.selectedData.NUTR_CONT5) ??
+                                              selectedData.NUTR_CONT5) ??
                                           0.0) *
                                       provider.amount),
                                 ));
