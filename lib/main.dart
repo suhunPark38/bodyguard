@@ -4,7 +4,6 @@ import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/search_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
-import 'package:bodyguard/utils/health_util.dart';
 
 import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:bodyguard/widgets/login.dart';
@@ -19,25 +18,24 @@ import 'firebase_options.dart';
 import 'map.dart';
 import 'utils/notification.dart';
 import 'screens/my_home_page/my_home_page.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   mapInitialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );// Firebase 초기화
 
-  // health connect 사용 설정
-  Health().configure(useHealthConnectIfAvailable: true);
-
-  // google health connect 연동을 위한 권한 확인 && app 설치 여부 확인
-  HealthUtil().authorize();
-  HealthUtil().installHealthConnect();
 
   initializeDateFormatting().then((_) => runApp(
     const MyApp()
   ));
+
+  Health().configure(useHealthConnectIfAvailable: true);
 
 
   FlutterLocalNotification.init(); // 로컬 알림 초기화

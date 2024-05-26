@@ -82,7 +82,7 @@ class CalorieWidget extends StatelessWidget {
         lineWidth: 6.0,
         animation: true,
         animationDuration: 1000,
-        percent: burnedCalories / (targetCalories == 0 ? 1 : targetCalories),
+        percent: (burnedCalories / targetCalories) >= 1 ? 1 : (burnedCalories / targetCalories),
         center: Text(
           '${(burnedCalories / (targetCalories == 0 ? 1 : targetCalories) * 100).toStringAsFixed(1)} %',
           style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),

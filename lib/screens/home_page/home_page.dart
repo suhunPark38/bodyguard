@@ -1,3 +1,4 @@
+import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/screens/home_page/widget/ad_carousel.dart';
 import 'package:bodyguard/utils/date_util.dart';
@@ -64,11 +65,12 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer2<HealthDataProvider, UserInfoProvider>(
-        builder: (context, provider, userInfo, child) {
+      body: Consumer3<HealthDataProvider, DietProvider,UserInfoProvider>(
+        builder: (context, healthData, diet, userInfo, child) {
+          userInfo.initializeData();
           return RefreshIndicator(
             onRefresh: () async {
-              //provider.fetchStepData(DateTime.now());
+               healthData.todayDate();
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -227,7 +229,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${(provider.water * 1000).toStringAsFixed(0)}ml",
+                                        "${(healthData.todayWater * 1000).toStringAsFixed(0)}ml",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -240,7 +242,7 @@ class HomePage extends StatelessWidget {
                                           height: 20,
                                           child: CustomButton(
                                             onPressed: () {
-                                              provider.addWaterData(0.25);
+                                              healthData.addWaterData(0.25);
                                             },
                                             text: const Text(
                                               "추가하기",
@@ -271,7 +273,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${provider.weight}kg",
+                                        "${healthData.weight}kg",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
@@ -321,7 +323,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "${provider.steps} 걸음",
+                                        "${healthData.todayStep} 걸음",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
