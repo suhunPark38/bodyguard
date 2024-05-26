@@ -37,12 +37,6 @@ class DietInputSheetFromPayment extends StatelessWidget {
     DateTime eatingTime = payment.timestamp;
     int classification = _calculateClassification(eatingTime.hour);
 
-    var dietDataProvider =
-        Provider.of<DietDataProvider>(context, listen: false);
-    dietDataProvider.setAmount(1);
-    dietDataProvider.setClassification(classification);
-    dietDataProvider.setEatingTime(eatingTime);
-
     String menuName = checkedMenu.menuName;
     double calories = checkedMenu.calories;
     double carbohydrates = checkedMenu.carbohydrate;

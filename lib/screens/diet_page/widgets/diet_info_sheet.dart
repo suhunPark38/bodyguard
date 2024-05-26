@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../database/config_database.dart';
 import '../../../widgets/custom_button.dart';
 import 'diet_delete_dialog.dart';
-import 'diet_edit_dialog.dart';
+import 'diet_edit_sheet.dart';
 
 class DietInfoSheet extends StatelessWidget {
   final BuildContext parentContext;
@@ -166,7 +166,7 @@ class DietInfoSheet extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
 
-                      DietEditDialog.show(context, diet);
+                      DietEditSheet.show(context, diet);
                     },
                     text: const Text('수정하기'),
                   ),

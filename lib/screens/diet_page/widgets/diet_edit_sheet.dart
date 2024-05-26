@@ -8,7 +8,7 @@ import '../../../providers/diet_provider.dart';
 import '../../../utils/format_util.dart';
 import '../../../widgets/custom_button.dart';
 
-class DietEditDialog extends StatelessWidget {
+class DietEditSheet extends StatelessWidget {
   final DietData diet;
 
   static Future<void> show(BuildContext context, DietData diet) {
@@ -18,20 +18,14 @@ class DietEditDialog extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
       isScrollControlled: true,
-      builder: (context) => DietEditDialog(diet: diet),
+      builder: (context) => DietEditSheet(diet: diet),
     );
   }
 
-  const DietEditDialog({Key? key, required this.diet}) : super(key: key);
+  const DietEditSheet({Key? key, required this.diet}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<DietDataProvider>(context, listen: false)
-        .setAmount(diet.amount);
-    Provider.of<DietDataProvider>(context, listen: false)
-        .setClassification(diet.classification);
-    Provider.of<DietDataProvider>(context, listen: false)
-        .setEatingTime(diet.eatingTime);
 
     double divide = diet.amount;
     double calories = diet.calories / divide;
