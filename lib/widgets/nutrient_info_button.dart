@@ -54,7 +54,7 @@ class NutrientInfoButton extends StatelessWidget {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            '업체명: ${menu.storeName}',
+                            menu.storeName,
                             style: const TextStyle(fontSize: 16),
                           ),
                         ),
