@@ -24,7 +24,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dietProvider = Provider.of<DietProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text("BODYGUARD"),
@@ -67,7 +66,6 @@ class HomePage extends StatelessWidget {
       ),
       body: Consumer3<HealthDataProvider, DietProvider,UserInfoProvider>(
         builder: (context, healthData, diet, userInfo, child) {
-          userInfo.initializeData();
           return RefreshIndicator(
             onRefresh: () async {
                healthData.todayDate();
@@ -177,7 +175,7 @@ class HomePage extends StatelessWidget {
                                           ]),
                                       const SizedBox(height: 25),
                                       Text(
-                                        "총 ${dietProvider.todayCalories.toStringAsFixed(1)}kcal",
+                                        "총 ${diet.todayCalories.toStringAsFixed(1)}kcal",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
