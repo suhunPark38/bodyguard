@@ -135,6 +135,8 @@ class StoreMenuPage extends StatelessWidget {
                             provider.addMenu(store.id, i, 1);
                           }
                           provider.checkedMenus.clear();
+                          Provider.of<ShoppingProvider>(context, listen: false)
+                              .setCurrentShoppingTabIndex(0);
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
