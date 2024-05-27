@@ -47,9 +47,6 @@ class HealthUtil {
 
   /// Authorize, i.e. get permissions to access relevant health data.
   Future<void> authorize() async {
-    // If we are trying to read Step Count, Workout, Sleep or other data that requires
-    // the ACTIVITY_RECOGNITION permission, we need to request the permission first.
-    // This requires a special request authorization call.
     //
     // The location permission is requested for Workouts using the Distance information.
     await Permission.activityRecognition.request();
@@ -78,6 +75,7 @@ class HealthUtil {
   /// google health connect 설치
   Future<void> installHealthConnect() async {
     bool isAvailable = Health().useHealthConnectIfAvailable;
+    print("isAvailable => ${isAvailable}");
 
     //health connect를 사용할 수 없다면 (설치 되지 않았다면) 설치한다.
     if(!isAvailable && Platform.isAndroid){

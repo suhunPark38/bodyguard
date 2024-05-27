@@ -6,6 +6,7 @@ import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
 
 import 'package:bodyguard/providers/user_info_provider.dart';
+import 'package:bodyguard/utils/health_util.dart';
 import 'package:bodyguard/widgets/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,17 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  // splash screen 시작
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  // health connect 사용 여부 확인 (ios:android / 설치 여부) -> 앱 필수 권한 확인 -> health connect 설치 (미설치 시)
+  await Health().configure(useHealthConnectIfAvailable: true);
+  await HealthUtil().authorize();
+  await HealthUtil().installHealthConnect();
+
+  // splash screen 끝
+  FlutterNativeSplash.remove();
 
   mapInitialize();
   await Firebase.initializeApp(
@@ -35,7 +46,7 @@ Future<void> main() async {
     const MyApp()
   ));
 
-  Health().configure(useHealthConnectIfAvailable: true);
+
 
 
   FlutterLocalNotification.init(); // 로컬 알림 초기화

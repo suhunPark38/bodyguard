@@ -6,7 +6,6 @@ import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/diet_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
@@ -64,7 +63,7 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer3<HealthDataProvider, DietProvider,UserInfoProvider>(
+      body: Consumer3<HealthDataProvider, DietProvider, UserInfoProvider>(
         builder: (context, healthData, diet, userInfo, child) {
           return RefreshIndicator(
             onRefresh: () async {
