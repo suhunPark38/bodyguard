@@ -30,7 +30,7 @@ class _ActivityPageState extends State<ActivityPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   DateWidget(),
-                  StepsWidget(currentSteps: provider.steps, targetSteps: 6000),
+                  StepsWidget(currentSteps: provider.steps),
                   WaterWidget(water: provider.water),
                   CalorieWidget(targetCalories: 2000, burnedCalories: provider.totalCalorie),
                   BodyInfoWidget(height: provider.height, weight: provider.weight),
