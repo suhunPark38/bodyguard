@@ -240,7 +240,7 @@ class ShoppingProvider extends ChangeNotifier {
             duration: const Duration(seconds: 2), // 스낵바 표시 시간 설정
           ),
         );
-        FlutterLocalNotification.showNotification("주문완료", "성공적으로 주문이 완료되었습니다.");
+        FlutterLocalNotification.showNotification(storeName, " 주문이 완료되었습니다.");
       } catch (e) {
         print('가게별 결제 중 오류가 발생했습니다: $e');
         // 결제가 실패했을 때 스낵바 표시

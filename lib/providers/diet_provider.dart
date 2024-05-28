@@ -176,7 +176,6 @@ class DietProvider with ChangeNotifier {
 
   void checkCalorieIntake() {
     if (totalNutritionalInfo.calories > recommendedCalories) {
-      // 섭취한 칼로리가 권장 칼로리를 초과할 경우 알림을 표시하도록 설정
       FlutterLocalNotification.showNotification("칼로리 경고", "섭취 칼로리가 권장 칼로리를 초과하였습니다.");
     }
   }
