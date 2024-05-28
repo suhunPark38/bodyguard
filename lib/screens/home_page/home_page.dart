@@ -59,7 +59,7 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications_none),
             onPressed: () {
-              FlutterLocalNotification.showNotification();
+              //FlutterLocalNotification.showNotification();
             },
           ),
         ],

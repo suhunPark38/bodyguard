@@ -390,6 +390,7 @@ class DietInputSheet extends StatelessWidget {
                                           )),
                                   (route) => false,
                                 );
+                                dietProvider.checkCalorieIntake();
                               }
                             },
                             text: const Text('기록하기'),

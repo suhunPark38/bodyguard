@@ -373,6 +373,7 @@ class DietInputSheetFromPayment extends StatelessWidget {
                                 sugar: Value(sugar * provider.amount),
                               ));
                               Navigator.of(context).pop();
+                              dietProvider.checkCalorieIntake();
                             } else {}
                           },
                           text: const Text('기록하기'),

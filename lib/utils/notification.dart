@@ -1,14 +1,21 @@
+import 'dart:io' show Platform;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class FlutterLocalNotification{
+class FlutterLocalNotification {
+  // private constructor to prevent instantiation
   FlutterLocalNotification._();
-  
-  static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  
-  static init() async{
-    AndroidInitializationSettings androidInitializationSettings = const AndroidInitializationSettings(('mipmap/ic_launcher'));
 
-    DarwinInitializationSettings iosInitializationSettings = const DarwinInitializationSettings(
+  // instance of the FlutterLocalNotificationsPlugin
+  static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  // Initialize the notification plugin
+  static Future<void> init() async {
+    AndroidInitializationSettings androidInitializationSettings =
+    const AndroidInitializationSettings('mipmap/ic_launcher');
+
+    DarwinInitializationSettings iosInitializationSettings =
+    const DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
@@ -22,26 +29,27 @@ class FlutterLocalNotification{
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-
-  static requestNotificationPermission(){
-
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-    ?.requestNotificationsPermission();
-
-    //ios일 경우
-    // flutterLocalNotificationsPlugin
-    //     .resolvePlatformSpecificImplementation<
-    //     IOSFlutterLocalNotificationsPlugin>()
-    //     ?.requestPermissions(
-    //   alert: true,
-    //   badge: true,
-    //   sound: true,
-    // );
+  // Request permission for receiving notifications based on the platform
+  static void requestNotificationPermission() {
+    if (Platform.isAndroid) {
+      flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission();
+    } else if (Platform.isIOS) {
+      flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
   }
-  
-  static Future<void> showNotification() async{
+
+  // Show a test notification
+  static Future<void> showNotification(String title, String body) async {
     const AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails('channel id', 'channel name',
         channelDescription: 'channel description',
@@ -50,11 +58,10 @@ class FlutterLocalNotification{
         showWhen: false);
 
     const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails,
-      iOS: DarwinNotificationDetails(badgeNumber: 1)
-    );
+        android: androidNotificationDetails,
+        iOS: DarwinNotificationDetails(badgeNumber: 1));
 
-    await flutterLocalNotificationsPlugin.show(0, 'test title', 'test body', notificationDetails);
+    await flutterLocalNotificationsPlugin.show(
+        0, title, body, notificationDetails);
   }
-  
 }
