@@ -28,6 +28,8 @@ class DietDeleteDialog extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             ),
             onPressed: () => Navigator.pop(context),
             child: const Text('취소하기', style: TextStyle(color: Colors.black)),
@@ -38,6 +40,8 @@ class DietDeleteDialog extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             ),
             onPressed: () {
               dietProvider.notifyDeleteDiet(dietData.dietId);

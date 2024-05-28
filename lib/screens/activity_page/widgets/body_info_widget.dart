@@ -12,12 +12,12 @@ class BodyInfoWidget extends StatelessWidget {
   const BodyInfoWidget({Key? key, required this.height, required this.weight})
       : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Consumer<HealthDataProvider>(builder: (context, provider, child) {
       return GridView(
         shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: 10,
@@ -53,7 +53,7 @@ class BodyInfoWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 25),
                   SizedBox(
-                    width: 120,
+                    width: 110,
                     height: 20,
                     child: CustomButton(
                       onPressed: () {
@@ -69,7 +69,7 @@ class BodyInfoWidget extends StatelessWidget {
                       },
                       text: const Text(
                         "수정하기",
-                        style: TextStyle(fontSize: 14),
+                        style: TextStyle(fontSize: 10),
                       ),
                     ),
                   ),
@@ -106,7 +106,7 @@ class BodyInfoWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 25),
                   SizedBox(
-                    width: 120,
+                    width: 110,
                     height: 20,
                     child: CustomButton(
                       onPressed: () {
@@ -122,7 +122,7 @@ class BodyInfoWidget extends StatelessWidget {
                       },
                       text: const Text(
                         "수정하기",
-                        style: TextStyle(fontSize: 14),
+                        style: TextStyle(fontSize: 10),
                       ),
                     ),
                   ),
@@ -167,7 +167,6 @@ class BodyInfoWidget extends StatelessWidget {
               keyboardType: TextInputType.number,
               regExp: REGEXP.number,
             ),
-
           ),
           actions: [
             Row(
@@ -183,13 +182,12 @@ class BodyInfoWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     padding:
-                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   ),
-                  child: Text(
+                  child: const Text(
                     '취소하기',
                     style: TextStyle(
                       color: Colors.black,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -206,13 +204,10 @@ class BodyInfoWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   ),
-                  child: Text(
+                  child: const Text(
                     '수정하기',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
                   ),
                 ),
               ],

@@ -34,6 +34,7 @@ class ShoppingPage extends StatelessWidget {
                 onTap: (index) {
                   provider.setCurrentShoppingTabIndex(index);
                 },
+                physics: const NeverScrollableScrollPhysics(),
                 tabs: const [
                   Tab(text: '결제하기'),
                   Tab(text: '결제 내역'),
@@ -49,8 +50,8 @@ class ShoppingPage extends StatelessWidget {
                 ],
               ),
             ),
-            persistentFooterButtons: [
-              if (provider.currentShoppingTabIndex == 0) // 결제하기 탭일 때
+            persistentFooterButtons:(provider.currentShoppingTabIndex == 0) ? [
+
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
@@ -172,7 +173,7 @@ class ShoppingPage extends StatelessWidget {
                     ],
                   ),
                 ),
-            ],
+            ] :null,
           ),
         );
       });

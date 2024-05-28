@@ -31,9 +31,13 @@ class _ActivityPageState extends State<ActivityPage> {
                 children: [
                   DateWidget(),
                   StepsWidget(currentSteps: provider.steps, targetSteps: 6000),
+                  const SizedBox(height: 10),
                   WaterWidget(water: provider.water),
+                  const SizedBox(height: 10),
                   CalorieWidget(targetCalories: 2000, burnedCalories: provider.totalCalorie),
+                  const SizedBox(height: 10),
                   BodyInfoWidget(height: provider.height, weight: provider.weight),
+                  const SizedBox(height: 10),
                   CustomButton(
                     onPressed: () {  Navigator.push(
                       context,
