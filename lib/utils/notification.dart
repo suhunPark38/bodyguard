@@ -7,15 +7,15 @@ class FlutterLocalNotification {
 
   // instance of the FlutterLocalNotificationsPlugin
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   // Initialize the notification plugin
   static Future<void> init() async {
     AndroidInitializationSettings androidInitializationSettings =
-    const AndroidInitializationSettings('mipmap/ic_launcher');
+        const AndroidInitializationSettings('mipmap/ic_launcher');
 
     DarwinInitializationSettings iosInitializationSettings =
-    const DarwinInitializationSettings(
+        const DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
@@ -34,34 +34,67 @@ class FlutterLocalNotification {
     if (Platform.isAndroid) {
       flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+              AndroidFlutterLocalNotificationsPlugin>()
           ?.requestNotificationsPermission();
     } else if (Platform.isIOS) {
       flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>()
+              IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
+            alert: true,
+            badge: true,
+            sound: true,
+          );
     }
   }
 
   // Show a test notification
-  static Future<void> showNotification(String title, String body) async {
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('channel id', 'channel name',
-        channelDescription: 'channel description',
-        importance: Importance.max,
-        priority: Priority.max,
-        showWhen: false);
+  static Future<void> showNotification(
+      int id, String channelName, String title, String body) async {
+    final AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      '', // 채널 ID
+      channelName, // 채널 이름
+      channelDescription: '',
+      // 채널 설명
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: true,
+      groupKey: channelName,
+      setAsGroupSummary: false, // 그룹 요약 알림을 생성하지 않음
+    );
 
-    const NotificationDetails notificationDetails = NotificationDetails(
-        android: androidNotificationDetails,
-        iOS: DarwinNotificationDetails(badgeNumber: 1));
+    final NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: DarwinNotificationDetails(badgeNumber: 1),
+    );
 
     await flutterLocalNotificationsPlugin.show(
-        0, title, body, notificationDetails);
+        id, title, body, notificationDetails);
+  }
+
+  // Show a grouped summary notification
+  static Future<void> showGroupSummaryNotification(String channelName) async {
+    final AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+            '', // 채널 ID
+            channelName, // 채널 이름
+            channelDescription: '',
+            // 채널 설명
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: true,
+            groupKey: channelName,
+            setAsGroupSummary: true,
+            // 그룹 요약 알림 생성
+            onlyAlertOnce: true);
+
+    final NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: DarwinNotificationDetails(badgeNumber: 1),
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+        0, '', '', notificationDetails);
   }
 }

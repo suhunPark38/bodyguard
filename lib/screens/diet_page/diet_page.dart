@@ -22,7 +22,6 @@ class DietPage extends StatelessWidget {
             provider.calculateCaloriesPercentage();
         final bool isOverRecommended = provider.totalNutritionalInfo.calories >
             provider.recommendedCalories;
-
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Center(

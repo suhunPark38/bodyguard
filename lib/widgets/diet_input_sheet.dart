@@ -390,9 +390,9 @@ class DietInputSheet extends StatelessWidget {
                                           )),
                                   (route) => false,
                                 );
-                                dietProvider.setSelectedDay(provider.eatingTime);
+                                dietProvider
+                                    .setSelectedDay(provider.eatingTime);
                                 dietProvider.setFocusedDay(provider.eatingTime);
-                                dietProvider.checkCalorieIntake();
                               }
                             },
                             text: const Text('기록하기'),

@@ -26,7 +26,6 @@ class DietEditSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     double divide = diet.amount;
     double calories = diet.calories / divide;
     double carbohydrates = diet.carbohydrate / divide;
@@ -368,8 +367,6 @@ class DietEditSheet extends StatelessWidget {
                               Navigator.pop(context);
                               dietProvider.setSelectedDay(provider.eatingTime);
                               dietProvider.setFocusedDay(provider.eatingTime);
-                              dietProvider.checkCalorieIntake();
-
                             }
                           },
                           text: const Text('수정 완료하기'),

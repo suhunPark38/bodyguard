@@ -368,10 +368,9 @@ class DietInputSheetFromPayment extends StatelessWidget {
                                 sodium: Value(sodium * provider.amount),
                                 sugar: Value(sugar * provider.amount),
                               ));
-                              Navigator.of(context).pop();
+                              Navigator.pop(context);
                               dietProvider.setSelectedDay(provider.eatingTime);
                               dietProvider.setFocusedDay(provider.eatingTime);
-                              dietProvider.checkCalorieIntake();
                             } else {}
                           },
                           text: const Text('기록하기'),
