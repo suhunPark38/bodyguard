@@ -75,10 +75,12 @@ class PaymentDetailPage extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
+                                  Flexible(child:
                                   Text(
                                     menuItem.menu.menuName,
-                                    overflow: TextOverflow.fade,
+                                    overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(fontSize: 18),
+                                  ),
                                   ),
                                   NutrientInfoButton(
                                       size: 15, menu: menuItem.menu),

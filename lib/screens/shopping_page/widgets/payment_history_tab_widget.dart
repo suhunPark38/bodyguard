@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../providers/shopping_provider.dart';
 import '../../../utils/format_util.dart';
@@ -15,12 +16,11 @@ class PaymentHistoryTabWidget extends StatelessWidget {
     return Column(
       children: [
         ExpansionTile(
-
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SizedBox(
-                width: 80, // Set the desired width
+                width: 80,
                 child: FilterButton(
                   filterType: FilterType.all,
                   onPressed: () {
@@ -35,7 +35,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 90, // Set the desired width
+                width: 90,
                 child: FilterButton(
                   filterType: FilterType.oneWeek,
                   onPressed: () {
@@ -50,12 +50,13 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 80, // Set the desired width
+                width: 80,
                 child: FilterButton(
                   filterType: FilterType.oneMonth,
                   onPressed: () {
                     final now = DateTime.now();
-                    final oneMonthAgo = DateTime(now.year, now.month - 1, now.day);
+                    final oneMonthAgo =
+                    DateTime(now.year, now.month - 1, now.day);
                     provider.setStartDate(oneMonthAgo);
                     provider.setEndDate(now);
                     provider.setSelectedFilter(FilterType.oneMonth);
@@ -67,52 +68,39 @@ class PaymentHistoryTabWidget extends StatelessWidget {
             ],
           ),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                    '시작일 ${provider.selectedStartDate.year}년'
-                        ' ${provider.selectedStartDate.month}월'
-                        ' ${provider.selectedStartDate.day}일',
-                    style: const TextStyle(fontSize: 12)),
-                IconButton(
-                  iconSize: 20,
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: () async {
-                    provider.setSelectedFilter(FilterType.custom);
-                    final selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2024),
-                      lastDate: DateTime.now(),
-                    );
-                    if (selectedDate != null) {
-                      provider.setStartDate(selectedDate);
-                    }
-                  },
-                ),
-                Text(
-                    '종료일 ${provider.selectedEndDate.year}년'
-                        ' ${provider.selectedEndDate.month}월'
-                        ' ${provider.selectedEndDate.day}일',
-                    style: const TextStyle(fontSize: 12)),
-                IconButton(
-                  iconSize: 20,
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: () async {
-                    provider.setSelectedFilter(FilterType.custom);
-                    final selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2024),
-                      lastDate: DateTime.now(),
-                    );
-                    if (selectedDate != null) {
-                      provider.setEndDate(selectedDate);
-                    }
-                  },
-                ),
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      '시작일 ${provider.selectedStartDate.year}년'
+                          ' ${provider.selectedStartDate.month}월'
+                          ' ${provider.selectedStartDate.day}일',
+                      style: const TextStyle(fontSize: 12)),
+                  IconButton(
+                    iconSize: 20,
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      provider.setSelectedFilter(FilterType.custom);
+                      await _showDatePicker(context, true);
+                    },
+                  ),
+                  Text(
+                      '종료일 ${provider.selectedEndDate.year}년'
+                          ' ${provider.selectedEndDate.month}월'
+                          ' ${provider.selectedEndDate.day}일',
+                      style: const TextStyle(fontSize: 12)),
+                  IconButton(
+                    iconSize: 20,
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      provider.setSelectedFilter(FilterType.custom);
+                      await _showDatePicker(context, false);
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -128,24 +116,16 @@ class PaymentHistoryTabWidget extends StatelessWidget {
               }
               final firstMenu = payment.menuItems.first.menu.menuName;
 
-              // 현재 카드의 날짜
               final currentDate = DateTime(payment.timestamp.year,
                   payment.timestamp.month, payment.timestamp.day);
-
-              // 오늘 날짜
               final today = DateTime.now();
-
-              // 날짜가 오늘인지 확인
               final isToday = currentDate.year == today.year &&
                   currentDate.month == today.month &&
                   currentDate.day == today.day;
-
-              // 날짜가 오늘인 경우 "Today" 문자열, 아닌 경우 날짜 표시
               final dateText = isToday
                   ? '오늘'
                   : '${currentDate.year}. ${currentDate.month}. ${currentDate.day}.';
 
-              // 날짜가 변경되었을 경우 새로운 ListTile 추가
               if (index == 0 ||
                   currentDate !=
                       DateTime(
@@ -246,6 +226,45 @@ class PaymentHistoryTabWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _showDatePicker(BuildContext context, bool isStartDate) async {
+    final DateTime initialDate = isStartDate
+        ? provider.selectedStartDate
+        : provider.selectedEndDate;
+    final DateTime? selectedDate = await (Theme.of(context).platform ==
+        TargetPlatform.iOS // 플랫폼 체크
+        ? showCupertinoModalPopup<DateTime>(
+      context: context,
+      builder: (context) => _buildDatePickerCupertino(context, initialDate),
+    )
+        : showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2024),
+      lastDate: DateTime.now(),
+    ));
+
+    if (selectedDate != null) {
+      if (isStartDate) {
+        provider.setStartDate(selectedDate);
+      } else {
+        provider.setEndDate(selectedDate);
+      }
+    }
+  }
+
+  Widget _buildDatePickerCupertino(BuildContext context, DateTime initialDate) {
+    return CupertinoDatePicker(
+      mode: CupertinoDatePickerMode.date,
+      initialDateTime: initialDate,
+      minimumDate: DateTime(2024),
+      maximumDate: DateTime.now(),
+      onDateTimeChanged: (DateTime newDateTime) {
+        // CupertinoDatePicker에서 날짜가 변경될 때마다 실행될 콜백
+        // 여기서 선택한 날짜를 저장하거나 처리할 수 있음
+      },
     );
   }
 }

@@ -38,8 +38,7 @@ class StoreMenuPage extends StatelessWidget {
               StoreMenu menu = menuList[index];
               return Consumer<ShoppingProvider>(
                 builder: (context, provider, _) {
-                  bool isSelected =
-                  provider.checkedMenus.contains(menu);
+                  bool isSelected = provider.checkedMenus.contains(menu);
                   return Card(
                     child: InkWell(
                       onTap: () {
@@ -66,23 +65,25 @@ class StoreMenuPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 16),
-                            Expanded(
+                            Flexible(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
                                     children: [
-                                      Text(
-                                        menu.menuName,
-                                        overflow: TextOverflow.fade,
-                                        style: const TextStyle(fontSize: 15),
+                                      Flexible(
+                                        child: Text(
+                                          menu.menuName,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 15),
+                                        ),
                                       ),
                                       NutrientInfoButton(size: 15, menu: menu),
                                     ],
                                   ),
                                   Text(
                                     "가격 : ${formatNumber(menu.price)}원 | 칼로리: ${menu.calories}kcal",
-                                    overflow: TextOverflow.fade,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
@@ -90,7 +91,6 @@ class StoreMenuPage extends StatelessWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.end,
-                              // 오른쪽 끝에 정렬
                               children: [
                                 Checkbox(
                                   value: isSelected,

@@ -34,12 +34,16 @@ class NutrientInfoButton extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        Expanded(
+                          child:
+                          Text(
                           menu.menuName,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
+                            overflow: TextOverflow.ellipsis,
                           ),
+                        ),
                         ),
                         IconButton(
                           icon: const Icon(Icons.close),

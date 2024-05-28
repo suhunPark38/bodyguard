@@ -168,7 +168,7 @@ class DietInfoSheet extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: 235,
+                  width: 200,
                   child: CustomButton(
                     onPressed: () {
                       Navigator.pop(context);

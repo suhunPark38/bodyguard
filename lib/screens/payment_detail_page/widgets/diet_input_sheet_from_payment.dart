@@ -356,7 +356,7 @@ class DietInputSheetFromPayment extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 235,
+                        width: 200,
                         child: CustomButton(
                           onPressed: () {
                             if (provider.amount != 0) {
