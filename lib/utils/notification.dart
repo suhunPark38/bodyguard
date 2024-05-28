@@ -53,7 +53,7 @@ class FlutterLocalNotification {
       int id, String channelName, String title, String body) async {
     final AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-      '', // 채널 ID
+      channelName, // 채널 ID
       channelName, // 채널 이름
       channelDescription: '',
       // 채널 설명
@@ -63,10 +63,13 @@ class FlutterLocalNotification {
       groupKey: channelName,
       setAsGroupSummary: false, // 그룹 요약 알림을 생성하지 않음
     );
-
+    final DarwinNotificationDetails iosNotificationDetails =
+        DarwinNotificationDetails(
+            threadIdentifier: channelName, // 스레드 ID를 사용하여 그룹화
+            badgeNumber: 1);
     final NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails,
-      iOS: DarwinNotificationDetails(badgeNumber: 1),
+      iOS: iosNotificationDetails,
     );
 
     await flutterLocalNotificationsPlugin.show(
@@ -77,7 +80,7 @@ class FlutterLocalNotification {
   static Future<void> showGroupSummaryNotification(String channelName) async {
     final AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-            '', // 채널 ID
+            channelName, // 채널 ID
             channelName, // 채널 이름
             channelDescription: '',
             // 채널 설명
@@ -91,10 +94,8 @@ class FlutterLocalNotification {
 
     final NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails,
-      iOS: DarwinNotificationDetails(badgeNumber: 1),
     );
 
-    await flutterLocalNotificationsPlugin.show(
-        0, '', '', notificationDetails);
+    await flutterLocalNotificationsPlugin.show(0, '', '', notificationDetails);
   }
 }
