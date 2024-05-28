@@ -366,7 +366,10 @@ class DietEditSheet extends StatelessWidget {
                                 sugar: Value(sugar * provider.amount),
                               ));
                               Navigator.pop(context);
+                              dietProvider.setSelectedDay(provider.eatingTime);
+                              dietProvider.setFocusedDay(provider.eatingTime);
                               dietProvider.checkCalorieIntake();
+
                             }
                           },
                           text: const Text('수정 완료하기'),

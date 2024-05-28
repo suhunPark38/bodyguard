@@ -390,6 +390,8 @@ class DietInputSheet extends StatelessWidget {
                                           )),
                                   (route) => false,
                                 );
+                                dietProvider.setSelectedDay(provider.eatingTime);
+                                dietProvider.setFocusedDay(provider.eatingTime);
                                 dietProvider.checkCalorieIntake();
                               }
                             },

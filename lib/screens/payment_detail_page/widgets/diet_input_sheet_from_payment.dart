@@ -7,6 +7,7 @@ import '../../../model/payment.dart';
 import '../../../providers/diet_data_provider.dart';
 import '../../../providers/diet_provider.dart';
 import '../../../providers/shopping_provider.dart';
+import '../../../utils/calculate_util.dart';
 import '../../../utils/format_util.dart';
 import '../../../widgets/custom_button.dart';
 
@@ -18,24 +19,19 @@ class DietInputSheetFromPayment extends StatelessWidget {
       {Key? key, required this.payment, required this.checkedMenuIndex})
       : super(key: key);
 
-  int _calculateClassification(int hour) {
-    if (hour >= 6 && hour < 12) {
-      return 0;
-    } else if (hour >= 12 && hour < 17) {
-      return 1;
-    } else {
-      return 2;
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
+
+    CalculateUtil calculator = CalculateUtil();
+
     var shoppingProvider =
         Provider.of<ShoppingProvider>(context, listen: false);
     var checkedMenu = shoppingProvider.checkedMenus[checkedMenuIndex];
 
     DateTime eatingTime = payment.timestamp;
-    int classification = _calculateClassification(eatingTime.hour);
+    int classification = calculator.calculateClassification(eatingTime.hour);
 
     String menuName = checkedMenu.menuName;
     double calories = checkedMenu.calories;
@@ -373,6 +369,8 @@ class DietInputSheetFromPayment extends StatelessWidget {
                                 sugar: Value(sugar * provider.amount),
                               ));
                               Navigator.of(context).pop();
+                              dietProvider.setSelectedDay(provider.eatingTime);
+                              dietProvider.setFocusedDay(provider.eatingTime);
                               dietProvider.checkCalorieIntake();
                             } else {}
                           },

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../database/config_database.dart';
+import '../../../providers/diet_data_provider.dart';
 import '../../../widgets/custom_button.dart';
 import 'diet_delete_dialog.dart';
 import 'diet_edit_sheet.dart';
@@ -165,7 +167,9 @@ class DietInfoSheet extends StatelessWidget {
                   child: CustomButton(
                     onPressed: () {
                       Navigator.pop(context);
-
+                      Provider.of<DietDataProvider>(context, listen: false).setAmount(diet.amount);
+                      Provider.of<DietDataProvider>(context, listen: false).setClassification(diet.classification);
+                      Provider.of<DietDataProvider>(context, listen: false).setEatingTime(diet.eatingTime);
                       DietEditSheet.show(context, diet);
                     },
                     text: const Text('수정하기'),
