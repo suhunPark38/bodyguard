@@ -155,7 +155,6 @@ class BodyInfoWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.blueAccent,
             ),
           ),
           content: Form(
@@ -174,7 +173,27 @@ class BodyInfoWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
+                FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.grey.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  ),
+                  child: Text(
+                    '취소하기',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                FilledButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       onSave(controller.text);
@@ -183,7 +202,6 @@ class BodyInfoWidget extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.blueAccent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -191,30 +209,8 @@ class BodyInfoWidget extends StatelessWidget {
                         EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   ),
                   child: Text(
-                    '저장',
+                    '수정하기',
                     style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.redAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  ),
-                  child: Text(
-                    '취소',
-                    style: TextStyle(
-                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

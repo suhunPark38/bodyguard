@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../providers/shopping_provider.dart';
 import '../../../utils/format_util.dart';
@@ -20,7 +19,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SizedBox(
-                width: 80,
+                width: 80, // Set the desired width
                 child: FilterButton(
                   filterType: FilterType.all,
                   onPressed: () {
@@ -35,7 +34,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 90,
+                width: 90, // Set the desired width
                 child: FilterButton(
                   filterType: FilterType.oneWeek,
                   onPressed: () {
@@ -50,7 +49,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 80,
+                width: 80, // Set the desired width
                 child: FilterButton(
                   filterType: FilterType.oneMonth,
                   onPressed: () {
@@ -69,7 +68,8 @@ class PaymentHistoryTabWidget extends StatelessWidget {
           ),
           children: [
             SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              // Row를 SingleChildScrollView로 감싸기
+              scrollDirection: Axis.horizontal, // 가로로 스크롤되도록 설정
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -83,7 +83,15 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                     icon: const Icon(Icons.calendar_today),
                     onPressed: () async {
                       provider.setSelectedFilter(FilterType.custom);
-                      await _showDatePicker(context, true);
+                      final selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2024),
+                        lastDate: DateTime.now(),
+                      );
+                      if (selectedDate != null) {
+                        provider.setStartDate(selectedDate);
+                      }
                     },
                   ),
                   Text(
@@ -96,7 +104,15 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                     icon: const Icon(Icons.calendar_today),
                     onPressed: () async {
                       provider.setSelectedFilter(FilterType.custom);
-                      await _showDatePicker(context, false);
+                      final selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2024),
+                        lastDate: DateTime.now(),
+                      );
+                      if (selectedDate != null) {
+                        provider.setEndDate(selectedDate);
+                      }
                     },
                   ),
                 ],
@@ -116,16 +132,24 @@ class PaymentHistoryTabWidget extends StatelessWidget {
               }
               final firstMenu = payment.menuItems.first.menu.menuName;
 
+              // 현재 카드의 날짜
               final currentDate = DateTime(payment.timestamp.year,
                   payment.timestamp.month, payment.timestamp.day);
+
+              // 오늘 날짜
               final today = DateTime.now();
+
+              // 날짜가 오늘인지 확인
               final isToday = currentDate.year == today.year &&
                   currentDate.month == today.month &&
                   currentDate.day == today.day;
+
+              // 날짜가 오늘인 경우 "Today" 문자열, 아닌 경우 날짜 표시
               final dateText = isToday
                   ? '오늘'
                   : '${currentDate.year}. ${currentDate.month}. ${currentDate.day}.';
 
+              // 날짜가 변경되었을 경우 새로운 ListTile 추가
               if (index == 0 ||
                   currentDate !=
                       DateTime(
@@ -226,45 +250,6 @@ class PaymentHistoryTabWidget extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Future<void> _showDatePicker(BuildContext context, bool isStartDate) async {
-    final DateTime initialDate = isStartDate
-        ? provider.selectedStartDate
-        : provider.selectedEndDate;
-    final DateTime? selectedDate = await (Theme.of(context).platform ==
-        TargetPlatform.iOS // 플랫폼 체크
-        ? showCupertinoModalPopup<DateTime>(
-      context: context,
-      builder: (context) => _buildDatePickerCupertino(context, initialDate),
-    )
-        : showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: DateTime(2024),
-      lastDate: DateTime.now(),
-    ));
-
-    if (selectedDate != null) {
-      if (isStartDate) {
-        provider.setStartDate(selectedDate);
-      } else {
-        provider.setEndDate(selectedDate);
-      }
-    }
-  }
-
-  Widget _buildDatePickerCupertino(BuildContext context, DateTime initialDate) {
-    return CupertinoDatePicker(
-      mode: CupertinoDatePickerMode.date,
-      initialDateTime: initialDate,
-      minimumDate: DateTime(2024),
-      maximumDate: DateTime.now(),
-      onDateTimeChanged: (DateTime newDateTime) {
-        // CupertinoDatePicker에서 날짜가 변경될 때마다 실행될 콜백
-        // 여기서 선택한 날짜를 저장하거나 처리할 수 있음
-      },
     );
   }
 }
