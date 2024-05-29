@@ -15,7 +15,6 @@ class PaymentHistoryTabWidget extends StatelessWidget {
     return Column(
       children: [
         ExpansionTile(
-
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -55,7 +54,8 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                   filterType: FilterType.oneMonth,
                   onPressed: () {
                     final now = DateTime.now();
-                    final oneMonthAgo = DateTime(now.year, now.month - 1, now.day);
+                    final oneMonthAgo =
+                    DateTime(now.year, now.month - 1, now.day);
                     provider.setStartDate(oneMonthAgo);
                     provider.setEndDate(now);
                     provider.setSelectedFilter(FilterType.oneMonth);
@@ -67,52 +67,56 @@ class PaymentHistoryTabWidget extends StatelessWidget {
             ],
           ),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                    '시작일 ${provider.selectedStartDate.year}년'
-                        ' ${provider.selectedStartDate.month}월'
-                        ' ${provider.selectedStartDate.day}일',
-                    style: const TextStyle(fontSize: 12)),
-                IconButton(
-                  iconSize: 20,
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: () async {
-                    provider.setSelectedFilter(FilterType.custom);
-                    final selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2024),
-                      lastDate: DateTime.now(),
-                    );
-                    if (selectedDate != null) {
-                      provider.setStartDate(selectedDate);
-                    }
-                  },
-                ),
-                Text(
-                    '종료일 ${provider.selectedEndDate.year}년'
-                        ' ${provider.selectedEndDate.month}월'
-                        ' ${provider.selectedEndDate.day}일',
-                    style: const TextStyle(fontSize: 12)),
-                IconButton(
-                  iconSize: 20,
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: () async {
-                    provider.setSelectedFilter(FilterType.custom);
-                    final selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2024),
-                      lastDate: DateTime.now(),
-                    );
-                    if (selectedDate != null) {
-                      provider.setEndDate(selectedDate);
-                    }
-                  },
-                ),
-              ],
+            SingleChildScrollView(
+              // Row를 SingleChildScrollView로 감싸기
+              scrollDirection: Axis.horizontal, // 가로로 스크롤되도록 설정
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      '시작일 ${provider.selectedStartDate.year}년'
+                          ' ${provider.selectedStartDate.month}월'
+                          ' ${provider.selectedStartDate.day}일',
+                      style: const TextStyle(fontSize: 12)),
+                  IconButton(
+                    iconSize: 20,
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      provider.setSelectedFilter(FilterType.custom);
+                      final selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2024),
+                        lastDate: DateTime.now(),
+                      );
+                      if (selectedDate != null) {
+                        provider.setStartDate(selectedDate);
+                      }
+                    },
+                  ),
+                  Text(
+                      '종료일 ${provider.selectedEndDate.year}년'
+                          ' ${provider.selectedEndDate.month}월'
+                          ' ${provider.selectedEndDate.day}일',
+                      style: const TextStyle(fontSize: 12)),
+                  IconButton(
+                    iconSize: 20,
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      provider.setSelectedFilter(FilterType.custom);
+                      final selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2024),
+                        lastDate: DateTime.now(),
+                      );
+                      if (selectedDate != null) {
+                        provider.setEndDate(selectedDate);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),

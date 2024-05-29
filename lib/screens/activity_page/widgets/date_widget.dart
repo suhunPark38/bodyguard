@@ -20,7 +20,7 @@ class DateWidgetState extends State<DateWidget> {
           children: <Widget>[
             Expanded( // 이전 버튼 왼쪽 끝으로 밀어냄
               child: IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: Icon(Icons.chevron_left, size: 28),
                 onPressed: provider.previousDate,
               ),
             ),
@@ -30,7 +30,7 @@ class DateWidgetState extends State<DateWidget> {
             ),
             Expanded( // 다음 버튼 오른쪽 끝으로 밀어냄
               child: IconButton(
-                icon: Icon(Icons.arrow_forward),
+                icon: Icon(Icons.chevron_right, size: 28),
                 onPressed: provider.nextDate,
               ),
             ),

@@ -26,7 +26,6 @@ class DietEditSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     double divide = diet.amount;
     double calories = diet.calories / divide;
     double carbohydrates = diet.carbohydrate / divide;
@@ -39,32 +38,42 @@ class DietEditSheet extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Row(children: [
-                Text(
-                  diet.menuName,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(width: 10),
-                const Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Text(
-                      "수정중",
-                      style: TextStyle(fontSize: 14, color: Colors.pinkAccent),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          diet.menuName,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Text(
+                            "수정중",
+                            style: TextStyle(fontSize: 14, color: Colors.pinkAccent),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ]),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ]),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -345,7 +354,7 @@ class DietEditSheet extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 235,
+                        width: 200,
                         child: CustomButton(
                           onPressed: () {
                             if (provider.amount == 0) {
@@ -366,6 +375,8 @@ class DietEditSheet extends StatelessWidget {
                                 sugar: Value(sugar * provider.amount),
                               ));
                               Navigator.pop(context);
+                              dietProvider.setSelectedDay(provider.eatingTime);
+                              dietProvider.setFocusedDay(provider.eatingTime);
                             }
                           },
                           text: const Text('수정 완료하기'),

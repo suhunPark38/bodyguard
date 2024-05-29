@@ -34,12 +34,16 @@ class NutrientInfoButton extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        Expanded(
+                          child:
+                          Text(
                           menu.menuName,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
+                            overflow: TextOverflow.ellipsis,
                           ),
+                        ),
                         ),
                         IconButton(
                           icon: const Icon(Icons.close),
@@ -54,7 +58,7 @@ class NutrientInfoButton extends StatelessWidget {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            '업체명: ${menu.storeName}',
+                            menu.storeName,
                             style: const TextStyle(fontSize: 16),
                           ),
                         ),

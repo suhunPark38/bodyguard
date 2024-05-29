@@ -7,6 +7,7 @@ import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/diet_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
@@ -56,12 +57,36 @@ class HomePage extends StatelessWidget {
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            onPressed: () {
-              FlutterLocalNotification.showNotification();
+          Consumer<NotificationProvider>(
+            builder: (context, notificationProvider, child) {
+              return IconButton(
+                icon: Icon(notificationProvider.notificationIcon),
+                onPressed: () {
+                  notificationProvider.setNotificationPreference(
+                      !notificationProvider.enableNotifications);
+
+                  // 알림이 켜졌을 때 스낵바 표시
+                  if (notificationProvider.enableNotifications) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('알림이 활성화되었습니다.'),
+                      ),
+                    );
+                  }
+                  // 알림이 꺼졌을 때 스낵바 표시
+                  else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('알림이 비활성화되었습니다.'),
+                      ),
+                    );
+                  }
+                },
+              );
             },
           ),
+
+
         ],
       ),
       body: Consumer3<HealthDataProvider, DietProvider,UserInfoProvider>(

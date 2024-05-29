@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../database/config_database.dart';
 import '../model/diet_record.dart';
 import '../utils/calculate_util.dart';
+import '../utils/notification.dart';
 
 class DietProvider with ChangeNotifier {
   List<DietData> _diets = [];
@@ -15,6 +16,8 @@ class DietProvider with ChangeNotifier {
   DateTime _eatingTime = DateTime.now();
 
   bool _disposed = false;
+
+  bool _notificationSent = false; //앱 실행 동안 한 번만 알림 판별 변수
 
   final database = ConfigDatabase.instance;
 
@@ -127,8 +130,16 @@ class DietProvider with ChangeNotifier {
   void _updateTodayCalories() async {
     DateTime today = DateTime.now();
     List<DietData> todayDiets = await database.getDietByEatingTime(today);
-    _todayCalories = CalculateUtil()
+    double todayCalories = CalculateUtil()
         .getSumOfLists(todayDiets.map((diet) => diet.calories).toList());
+
+    if (todayCalories > _recommendedCalories && !_notificationSent) {
+      _notificationSent = true;
+      FlutterLocalNotification.showNotification(
+          1, "칼로리 알림", "칼로리 경고", "오늘의 섭취 칼로리가 권장 칼로리를 초과하였습니다.");
+    }
+
+    _todayCalories = todayCalories;
   }
 
   void _updateDietsListForPeriod(DateTime selectedDate) async {
@@ -169,7 +180,6 @@ class DietProvider with ChangeNotifier {
       sugar: CalculateUtil()
           .getSumOfLists(_diets.map((diet) => diet.sugar).toList()),
     );
-
     notifyListeners();
   }
 }

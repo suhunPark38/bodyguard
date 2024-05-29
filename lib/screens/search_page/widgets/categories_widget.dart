@@ -26,7 +26,6 @@ class CategoriesWidget extends StatelessWidget {
           ),
         ),
       ]),
-      initiallyExpanded: searchProvider.isListViewVisible,
       onExpansionChanged: (bool expanded) {
         searchProvider.toggleListViewVisibility();
       },

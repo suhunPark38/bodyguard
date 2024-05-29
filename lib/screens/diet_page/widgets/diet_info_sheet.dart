@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../database/config_database.dart';
+import '../../../providers/diet_data_provider.dart';
 import '../../../widgets/custom_button.dart';
 import 'diet_delete_dialog.dart';
 import 'diet_edit_sheet.dart';
@@ -58,37 +60,42 @@ class DietInfoSheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Row(
-                children: [
-                  Text(
-                    diet.menuName,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text(
-                        _getClassificationText(diet.classification),
-                        style: TextStyle(
-                            fontSize: 14,
-                            color:
-                                _getClassificationColor(diet.classification)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          diet.menuName,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ]),
+                      const SizedBox(width: 10),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text(
+                            _getClassificationText(diet.classification),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color:
+                                _getClassificationColor(diet.classification)),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -161,11 +168,13 @@ class DietInfoSheet extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: 235,
+                  width: 200,
                   child: CustomButton(
                     onPressed: () {
                       Navigator.pop(context);
-
+                      Provider.of<DietDataProvider>(context, listen: false).setAmount(diet.amount);
+                      Provider.of<DietDataProvider>(context, listen: false).setClassification(diet.classification);
+                      Provider.of<DietDataProvider>(context, listen: false).setEatingTime(diet.eatingTime);
                       DietEditSheet.show(context, diet);
                     },
                     text: const Text('수정하기'),

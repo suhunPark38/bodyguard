@@ -7,6 +7,7 @@ import '../../../model/payment.dart';
 import '../../../providers/diet_data_provider.dart';
 import '../../../providers/diet_provider.dart';
 import '../../../providers/shopping_provider.dart';
+import '../../../utils/calculate_util.dart';
 import '../../../utils/format_util.dart';
 import '../../../widgets/custom_button.dart';
 
@@ -18,24 +19,16 @@ class DietInputSheetFromPayment extends StatelessWidget {
       {Key? key, required this.payment, required this.checkedMenuIndex})
       : super(key: key);
 
-  int _calculateClassification(int hour) {
-    if (hour >= 6 && hour < 12) {
-      return 0;
-    } else if (hour >= 12 && hour < 17) {
-      return 1;
-    } else {
-      return 2;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    CalculateUtil calculator = CalculateUtil();
+
     var shoppingProvider =
         Provider.of<ShoppingProvider>(context, listen: false);
     var checkedMenu = shoppingProvider.checkedMenus[checkedMenuIndex];
 
     DateTime eatingTime = payment.timestamp;
-    int classification = _calculateClassification(eatingTime.hour);
+    int classification = calculator.calculateClassification(eatingTime.hour);
 
     String menuName = checkedMenu.menuName;
     double calories = checkedMenu.calories;
@@ -51,31 +44,40 @@ class DietInputSheetFromPayment extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Row(children: [
-                Text(
-                  menuName,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(width: 10),
-                const Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Text(
-                      "기록중",
-                      style: TextStyle(
-                          fontSize: 14, color: Colors.deepPurpleAccent),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          menuName,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Text(
+                            "기록중",
+                            style: TextStyle(
+                                fontSize: 14, color: Colors.deepPurpleAccent),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ]),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ]),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -354,7 +356,7 @@ class DietInputSheetFromPayment extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 235,
+                        width: 200,
                         child: CustomButton(
                           onPressed: () {
                             if (provider.amount != 0) {
@@ -372,7 +374,9 @@ class DietInputSheetFromPayment extends StatelessWidget {
                                 sodium: Value(sodium * provider.amount),
                                 sugar: Value(sugar * provider.amount),
                               ));
-                              Navigator.of(context).pop();
+                              Navigator.pop(context);
+                              dietProvider.setSelectedDay(provider.eatingTime);
+                              dietProvider.setFocusedDay(provider.eatingTime);
                             } else {}
                           },
                           text: const Text('기록하기'),
