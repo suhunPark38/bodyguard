@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../database/notification_database.dart';
 
 class FlutterLocalNotification {
   // private constructor to prevent instantiation
@@ -7,15 +8,15 @@ class FlutterLocalNotification {
 
   // instance of the FlutterLocalNotificationsPlugin
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
 
   // Initialize the notification plugin
   static Future<void> init() async {
     AndroidInitializationSettings androidInitializationSettings =
-        const AndroidInitializationSettings('mipmap/ic_launcher');
+    const AndroidInitializationSettings('mipmap/ic_launcher');
 
     DarwinInitializationSettings iosInitializationSettings =
-        const DarwinInitializationSettings(
+    const DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
@@ -34,25 +35,27 @@ class FlutterLocalNotification {
     if (Platform.isAndroid) {
       flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
           ?.requestNotificationsPermission();
     } else if (Platform.isIOS) {
       flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
+          IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
+        alert: true,
+        badge: true,
+        sound: true,
+      );
     }
   }
 
   // Show a test notification
   static Future<void> showNotification(
       int id, String channelName, String title, String body) async {
+    if (!await _areNotificationsEnabled()) return;
+
     final AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
+    AndroidNotificationDetails(
       channelName, // 채널 ID
       channelName, // 채널 이름
       channelDescription: '',
@@ -64,9 +67,9 @@ class FlutterLocalNotification {
       setAsGroupSummary: false, // 그룹 요약 알림을 생성하지 않음
     );
     final DarwinNotificationDetails iosNotificationDetails =
-        DarwinNotificationDetails(
-            threadIdentifier: channelName, // 스레드 ID를 사용하여 그룹화
-            badgeNumber: 1);
+    DarwinNotificationDetails(
+        threadIdentifier: channelName, // 스레드 ID를 사용하여 그룹화
+        badgeNumber: 1);
     final NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails,
       iOS: iosNotificationDetails,
@@ -78,24 +81,41 @@ class FlutterLocalNotification {
 
   // Show a grouped summary notification
   static Future<void> showGroupSummaryNotification(String channelName) async {
+    if (!await _areNotificationsEnabled()) return;
+
     final AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-            channelName, // 채널 ID
-            channelName, // 채널 이름
-            channelDescription: '',
-            // 채널 설명
-            importance: Importance.max,
-            priority: Priority.high,
-            showWhen: true,
-            groupKey: channelName,
-            setAsGroupSummary: true,
-            // 그룹 요약 알림 생성
-            onlyAlertOnce: true);
+    AndroidNotificationDetails(
+        channelName, // 채널 ID
+        channelName, // 채널 이름
+        channelDescription: '',
+        // 채널 설명
+        importance: Importance.max,
+        priority: Priority.high,
+        showWhen: true,
+        groupKey: channelName,
+        setAsGroupSummary: true,
+        // 그룹 요약 알림 생성
+        onlyAlertOnce: true);
 
     final NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails,
     );
 
     await flutterLocalNotificationsPlugin.show(0, '', '', notificationDetails);
+  }
+
+  // Enable notifications
+  static Future<void> enableNotifications() async {
+    await NotificationDatabase().setNotificationEnabled(true);
+  }
+
+  // Disable notifications
+  static Future<void> disableNotifications() async {
+    await NotificationDatabase().setNotificationEnabled(false);
+  }
+
+  // Check if notifications are enabled
+  static Future<bool> _areNotificationsEnabled() async {
+    return await NotificationDatabase().isNotificationEnabled();
   }
 }

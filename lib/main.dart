@@ -1,6 +1,7 @@
 import 'package:bodyguard/providers/diet_data_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/providers/notification_provider.dart';
 import 'package:bodyguard/providers/search_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => SearchProvider()),
           ChangeNotifierProvider(create: (context) => UserInfoProvider()),
           ChangeNotifierProvider(create: (context) => DietDataProvider()),
+          ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
