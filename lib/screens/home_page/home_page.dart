@@ -2,15 +2,12 @@ import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/screens/home_page/widget/ad_carousel.dart';
 import 'package:bodyguard/utils/date_util.dart';
-import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
 import 'package:bodyguard/widgets/user_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/diet_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/shopping_provider.dart';
-import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../body_page/body_page.dart';
 import '../my_home_page/my_home_page.dart';
@@ -20,12 +17,18 @@ import '../../services/ad_service.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
+
+
   final StoreService storeService = StoreService();
   final AdService adService = AdService(); // 추가
   final DateTime now = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+    // MediaQuery를 통해 화면의 크기 정보를 얻음
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("BODYGUARD"),
@@ -208,8 +211,8 @@ class HomePage extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 25),
                                       SizedBox(
-                                          width: 110,
-                                          height: 20,
+                                          width: screenWidth * 0.3,
+                                          height: screenHeight * 0.025,
                                           child: CustomButton(
                                             onPressed: () {
                                               Navigator.pushAndRemoveUntil(
@@ -260,8 +263,8 @@ class HomePage extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 25),
                                       SizedBox(
-                                          width: 110,
-                                          height: 20,
+                                          width: screenWidth * 0.3,
+                                          height: screenHeight * 0.025,
                                           child: CustomButton(
                                             onPressed: () {
                                               healthData.addWaterData(0.25);
@@ -304,8 +307,8 @@ class HomePage extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 25),
                                       SizedBox(
-                                          width: 110,
-                                          height: 20,
+                                          width: screenWidth * 0.3,
+                                          height: screenHeight * 0.025,
                                           child: CustomButton(
                                             onPressed: () {
                                               Navigator.push(
@@ -354,8 +357,8 @@ class HomePage extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 25),
                                       SizedBox(
-                                          width: 110,
-                                          height: 20,
+                                          width: screenWidth * 0.3,
+                                          height: screenHeight * 0.025,
                                           child: CustomButton(
                                             onPressed: () {
                                               Navigator.pushAndRemoveUntil(
