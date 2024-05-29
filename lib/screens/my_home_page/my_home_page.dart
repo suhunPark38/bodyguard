@@ -19,6 +19,7 @@ class MyHomePage extends StatelessWidget {
       child: Scaffold(
         appBar: null,
         body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             HomePage(),
             const SearchPage(),
