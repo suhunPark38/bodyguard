@@ -12,12 +12,17 @@ class DietDataListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DietDataProvider>(
       builder: (context, provider, _) {
+        // 리스트 길이 확인
         if (provider.dietDataList.isEmpty) {
           return const Center(child: Text("해당하는 음식이 없어요."));
         } else {
           return ListView.builder(
             itemCount: provider.dietDataList.length,
             itemBuilder: (context, index) {
+              // 리스트 길이 범위 내에서 안전하게 요소 접근
+              if (index < 0 || index >= provider.dietDataList.length) {
+                return const SizedBox.shrink(); // 빈 위젯 반환
+              }
               final fetchedData = provider.dietDataList[index];
               return ListTile(
                 title: Text(fetchedData.DESC_KOR),
@@ -134,9 +139,9 @@ class DietDataListView extends StatelessWidget {
 
   Widget _buildNutritionInfo(
       {IconData? icon,
-      AssetImage? image,
-      required String title,
-      required String value}) {
+        AssetImage? image,
+        required String title,
+        required String value}) {
     return ListTile(
       leading: icon != null ? Icon(icon) : ImageIcon(image, size: 25.0),
       // 아이콘 또는 이미지 아이콘 사용
@@ -151,3 +156,4 @@ class DietDataListView extends StatelessWidget {
     );
   }
 }
+

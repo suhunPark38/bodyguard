@@ -19,10 +19,11 @@ class MyHomePage extends StatelessWidget {
       child: Scaffold(
         appBar: null,
         body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             HomePage(),
             const SearchPage(),
-            HealthPage(initailIndex: healthIndex ?? 0,),
+            HealthPage(initialIndex: healthIndex ?? 0,),
             const ShoppingPage(),
             IdentityPage(),
           ],
