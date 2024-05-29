@@ -53,8 +53,15 @@ class WaterWidget extends StatelessWidget {
                                       content: TextField(
                                         autofocus: true,
                                         keyboardType: TextInputType.number,
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           hintText: 'ml 입력',
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          contentPadding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                            horizontal: 20,
+                                          ),
                                         ),
                                         onChanged: (value) {
                                           inputValue = int.tryParse(value) ?? 0;
@@ -63,9 +70,27 @@ class WaterWidget extends StatelessWidget {
                                       actions: [
                                         TextButton(
                                           onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: Colors.grey.shade300,
+                                          ),
+                                          child: const Text(
+                                            '취소',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
                                             Navigator.of(context).pop(inputValue);
                                           },
-                                          child: const Text('추가'),
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: Theme.of(context).primaryColor
+                                          ),
+                                          child: const Text(
+                                            '추가',
+                                            style: TextStyle(color: Colors.white),
+                                          ),
                                         ),
                                       ],
                                     );
