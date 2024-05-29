@@ -22,7 +22,7 @@ class MyHomePage extends StatelessWidget {
           children: [
             HomePage(),
             const SearchPage(),
-            HealthPage(initailIndex: healthIndex ?? 0,),
+            HealthPage(initialIndex: healthIndex ?? 0,),
             const ShoppingPage(),
             IdentityPage(),
           ],

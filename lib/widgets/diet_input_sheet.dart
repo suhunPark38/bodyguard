@@ -141,8 +141,7 @@ class DietInputSheet extends StatelessWidget {
                           context: context,
                           initialDate: provider.eatingTime,
                           firstDate: DateTime(2023),
-                          lastDate: provider.eatingTime
-                              .add(const Duration(days: 365)),
+                          lastDate: DateTime.now(),
                         );
 
                         if (selectedDate != null) {

@@ -145,8 +145,8 @@ class DietInputSheetFromPayment extends StatelessWidget {
                       final selectedDate = await showDatePicker(
                         context: context,
                         initialDate: provider.eatingTime,
-                        firstDate: DateTime(2023),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
+                        firstDate: provider.eatingTime,
+                        lastDate: DateTime.now(),
                       );
                       if (selectedDate != null) {
                         provider.setEatingTime(DateTime(
