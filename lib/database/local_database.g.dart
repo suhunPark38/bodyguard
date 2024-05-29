@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'config_database.dart';
+part of 'local_database.dart';
 
 // ignore_for_file: type=lint
 class $DietTable extends Diet with TableInfo<$DietTable, DietData> {
@@ -1536,8 +1536,431 @@ class DailyActivityDetailCompanion
   }
 }
 
-abstract class _$ConfigDatabase extends GeneratedDatabase {
-  _$ConfigDatabase(QueryExecutor e) : super(e);
+class $SearchHistoryTable extends SearchHistory
+    with TableInfo<$SearchHistoryTable, SearchHistoryData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SearchHistoryTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _searchMeta = const VerificationMeta('search');
+  @override
+  late final GeneratedColumn<String> search = GeneratedColumn<String>(
+      'search', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, search];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'search_history';
+  @override
+  VerificationContext validateIntegrity(Insertable<SearchHistoryData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('search')) {
+      context.handle(_searchMeta,
+          search.isAcceptableOrUnknown(data['search']!, _searchMeta));
+    } else if (isInserting) {
+      context.missing(_searchMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SearchHistoryData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SearchHistoryData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      search: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}search'])!,
+    );
+  }
+
+  @override
+  $SearchHistoryTable createAlias(String alias) {
+    return $SearchHistoryTable(attachedDatabase, alias);
+  }
+}
+
+class SearchHistoryData extends DataClass
+    implements Insertable<SearchHistoryData> {
+  final int id;
+  final String search;
+  const SearchHistoryData({required this.id, required this.search});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['search'] = Variable<String>(search);
+    return map;
+  }
+
+  SearchHistoryCompanion toCompanion(bool nullToAbsent) {
+    return SearchHistoryCompanion(
+      id: Value(id),
+      search: Value(search),
+    );
+  }
+
+  factory SearchHistoryData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SearchHistoryData(
+      id: serializer.fromJson<int>(json['id']),
+      search: serializer.fromJson<String>(json['search']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'search': serializer.toJson<String>(search),
+    };
+  }
+
+  SearchHistoryData copyWith({int? id, String? search}) => SearchHistoryData(
+        id: id ?? this.id,
+        search: search ?? this.search,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SearchHistoryData(')
+          ..write('id: $id, ')
+          ..write('search: $search')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, search);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SearchHistoryData &&
+          other.id == this.id &&
+          other.search == this.search);
+}
+
+class SearchHistoryCompanion extends UpdateCompanion<SearchHistoryData> {
+  final Value<int> id;
+  final Value<String> search;
+  const SearchHistoryCompanion({
+    this.id = const Value.absent(),
+    this.search = const Value.absent(),
+  });
+  SearchHistoryCompanion.insert({
+    this.id = const Value.absent(),
+    required String search,
+  }) : search = Value(search);
+  static Insertable<SearchHistoryData> custom({
+    Expression<int>? id,
+    Expression<String>? search,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (search != null) 'search': search,
+    });
+  }
+
+  SearchHistoryCompanion copyWith({Value<int>? id, Value<String>? search}) {
+    return SearchHistoryCompanion(
+      id: id ?? this.id,
+      search: search ?? this.search,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (search.present) {
+      map['search'] = Variable<String>(search.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SearchHistoryCompanion(')
+          ..write('id: $id, ')
+          ..write('search: $search')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SelectedMenuTable extends SelectedMenu
+    with TableInfo<$SelectedMenuTable, SelectedMenuData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SelectedMenuTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _storeIdMeta =
+      const VerificationMeta('storeId');
+  @override
+  late final GeneratedColumn<String> storeId = GeneratedColumn<String>(
+      'store_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _menuIdMeta = const VerificationMeta('menuId');
+  @override
+  late final GeneratedColumn<String> menuId = GeneratedColumn<String>(
+      'menu_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _quantityMeta =
+      const VerificationMeta('quantity');
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+      'quantity', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, storeId, menuId, quantity];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'selected_menu';
+  @override
+  VerificationContext validateIntegrity(Insertable<SelectedMenuData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('store_id')) {
+      context.handle(_storeIdMeta,
+          storeId.isAcceptableOrUnknown(data['store_id']!, _storeIdMeta));
+    } else if (isInserting) {
+      context.missing(_storeIdMeta);
+    }
+    if (data.containsKey('menu_id')) {
+      context.handle(_menuIdMeta,
+          menuId.isAcceptableOrUnknown(data['menu_id']!, _menuIdMeta));
+    } else if (isInserting) {
+      context.missing(_menuIdMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(_quantityMeta,
+          quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta));
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SelectedMenuData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SelectedMenuData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      storeId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}store_id'])!,
+      menuId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}menu_id'])!,
+      quantity: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}quantity'])!,
+    );
+  }
+
+  @override
+  $SelectedMenuTable createAlias(String alias) {
+    return $SelectedMenuTable(attachedDatabase, alias);
+  }
+}
+
+class SelectedMenuData extends DataClass
+    implements Insertable<SelectedMenuData> {
+  final int id;
+  final String storeId;
+  final String menuId;
+  final int quantity;
+  const SelectedMenuData(
+      {required this.id,
+      required this.storeId,
+      required this.menuId,
+      required this.quantity});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['store_id'] = Variable<String>(storeId);
+    map['menu_id'] = Variable<String>(menuId);
+    map['quantity'] = Variable<int>(quantity);
+    return map;
+  }
+
+  SelectedMenuCompanion toCompanion(bool nullToAbsent) {
+    return SelectedMenuCompanion(
+      id: Value(id),
+      storeId: Value(storeId),
+      menuId: Value(menuId),
+      quantity: Value(quantity),
+    );
+  }
+
+  factory SelectedMenuData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SelectedMenuData(
+      id: serializer.fromJson<int>(json['id']),
+      storeId: serializer.fromJson<String>(json['storeId']),
+      menuId: serializer.fromJson<String>(json['menuId']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'storeId': serializer.toJson<String>(storeId),
+      'menuId': serializer.toJson<String>(menuId),
+      'quantity': serializer.toJson<int>(quantity),
+    };
+  }
+
+  SelectedMenuData copyWith(
+          {int? id, String? storeId, String? menuId, int? quantity}) =>
+      SelectedMenuData(
+        id: id ?? this.id,
+        storeId: storeId ?? this.storeId,
+        menuId: menuId ?? this.menuId,
+        quantity: quantity ?? this.quantity,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SelectedMenuData(')
+          ..write('id: $id, ')
+          ..write('storeId: $storeId, ')
+          ..write('menuId: $menuId, ')
+          ..write('quantity: $quantity')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, storeId, menuId, quantity);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SelectedMenuData &&
+          other.id == this.id &&
+          other.storeId == this.storeId &&
+          other.menuId == this.menuId &&
+          other.quantity == this.quantity);
+}
+
+class SelectedMenuCompanion extends UpdateCompanion<SelectedMenuData> {
+  final Value<int> id;
+  final Value<String> storeId;
+  final Value<String> menuId;
+  final Value<int> quantity;
+  const SelectedMenuCompanion({
+    this.id = const Value.absent(),
+    this.storeId = const Value.absent(),
+    this.menuId = const Value.absent(),
+    this.quantity = const Value.absent(),
+  });
+  SelectedMenuCompanion.insert({
+    this.id = const Value.absent(),
+    required String storeId,
+    required String menuId,
+    required int quantity,
+  })  : storeId = Value(storeId),
+        menuId = Value(menuId),
+        quantity = Value(quantity);
+  static Insertable<SelectedMenuData> custom({
+    Expression<int>? id,
+    Expression<String>? storeId,
+    Expression<String>? menuId,
+    Expression<int>? quantity,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (storeId != null) 'store_id': storeId,
+      if (menuId != null) 'menu_id': menuId,
+      if (quantity != null) 'quantity': quantity,
+    });
+  }
+
+  SelectedMenuCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? storeId,
+      Value<String>? menuId,
+      Value<int>? quantity}) {
+    return SelectedMenuCompanion(
+      id: id ?? this.id,
+      storeId: storeId ?? this.storeId,
+      menuId: menuId ?? this.menuId,
+      quantity: quantity ?? this.quantity,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (storeId.present) {
+      map['store_id'] = Variable<String>(storeId.value);
+    }
+    if (menuId.present) {
+      map['menu_id'] = Variable<String>(menuId.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SelectedMenuCompanion(')
+          ..write('id: $id, ')
+          ..write('storeId: $storeId, ')
+          ..write('menuId: $menuId, ')
+          ..write('quantity: $quantity')
+          ..write(')'))
+        .toString();
+  }
+}
+
+abstract class _$LocalDatabase extends GeneratedDatabase {
+  _$LocalDatabase(QueryExecutor e) : super(e);
+  _$LocalDatabaseManager get managers => _$LocalDatabaseManager(this);
   late final $DietTable diet = $DietTable(this);
   late final $PersonalSettingsTable personalSettings =
       $PersonalSettingsTable(this);
@@ -1545,10 +1968,942 @@ abstract class _$ConfigDatabase extends GeneratedDatabase {
       $DailyActivityInfoTable(this);
   late final $DailyActivityDetailTable dailyActivityDetail =
       $DailyActivityDetailTable(this);
+  late final $SearchHistoryTable searchHistory = $SearchHistoryTable(this);
+  late final $SelectedMenuTable selectedMenu = $SelectedMenuTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [diet, personalSettings, dailyActivityInfo, dailyActivityDetail];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        diet,
+        personalSettings,
+        dailyActivityInfo,
+        dailyActivityDetail,
+        searchHistory,
+        selectedMenu
+      ];
+}
+
+typedef $$DietTableInsertCompanionBuilder = DietCompanion Function({
+  Value<int> dietId,
+  required DateTime eatingTime,
+  required String menuName,
+  required double amount,
+  required int classification,
+  required double calories,
+  required double carbohydrate,
+  required double protein,
+  required double fat,
+  required double sodium,
+  required double sugar,
+});
+typedef $$DietTableUpdateCompanionBuilder = DietCompanion Function({
+  Value<int> dietId,
+  Value<DateTime> eatingTime,
+  Value<String> menuName,
+  Value<double> amount,
+  Value<int> classification,
+  Value<double> calories,
+  Value<double> carbohydrate,
+  Value<double> protein,
+  Value<double> fat,
+  Value<double> sodium,
+  Value<double> sugar,
+});
+
+class $$DietTableTableManager extends RootTableManager<
+    _$LocalDatabase,
+    $DietTable,
+    DietData,
+    $$DietTableFilterComposer,
+    $$DietTableOrderingComposer,
+    $$DietTableProcessedTableManager,
+    $$DietTableInsertCompanionBuilder,
+    $$DietTableUpdateCompanionBuilder> {
+  $$DietTableTableManager(_$LocalDatabase db, $DietTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$DietTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$DietTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $$DietTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> dietId = const Value.absent(),
+            Value<DateTime> eatingTime = const Value.absent(),
+            Value<String> menuName = const Value.absent(),
+            Value<double> amount = const Value.absent(),
+            Value<int> classification = const Value.absent(),
+            Value<double> calories = const Value.absent(),
+            Value<double> carbohydrate = const Value.absent(),
+            Value<double> protein = const Value.absent(),
+            Value<double> fat = const Value.absent(),
+            Value<double> sodium = const Value.absent(),
+            Value<double> sugar = const Value.absent(),
+          }) =>
+              DietCompanion(
+            dietId: dietId,
+            eatingTime: eatingTime,
+            menuName: menuName,
+            amount: amount,
+            classification: classification,
+            calories: calories,
+            carbohydrate: carbohydrate,
+            protein: protein,
+            fat: fat,
+            sodium: sodium,
+            sugar: sugar,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> dietId = const Value.absent(),
+            required DateTime eatingTime,
+            required String menuName,
+            required double amount,
+            required int classification,
+            required double calories,
+            required double carbohydrate,
+            required double protein,
+            required double fat,
+            required double sodium,
+            required double sugar,
+          }) =>
+              DietCompanion.insert(
+            dietId: dietId,
+            eatingTime: eatingTime,
+            menuName: menuName,
+            amount: amount,
+            classification: classification,
+            calories: calories,
+            carbohydrate: carbohydrate,
+            protein: protein,
+            fat: fat,
+            sodium: sodium,
+            sugar: sugar,
+          ),
+        ));
+}
+
+class $$DietTableProcessedTableManager extends ProcessedTableManager<
+    _$LocalDatabase,
+    $DietTable,
+    DietData,
+    $$DietTableFilterComposer,
+    $$DietTableOrderingComposer,
+    $$DietTableProcessedTableManager,
+    $$DietTableInsertCompanionBuilder,
+    $$DietTableUpdateCompanionBuilder> {
+  $$DietTableProcessedTableManager(super.$state);
+}
+
+class $$DietTableFilterComposer
+    extends FilterComposer<_$LocalDatabase, $DietTable> {
+  $$DietTableFilterComposer(super.$state);
+  ColumnFilters<int> get dietId => $state.composableBuilder(
+      column: $state.table.dietId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get eatingTime => $state.composableBuilder(
+      column: $state.table.eatingTime,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get menuName => $state.composableBuilder(
+      column: $state.table.menuName,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get amount => $state.composableBuilder(
+      column: $state.table.amount,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get classification => $state.composableBuilder(
+      column: $state.table.classification,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get calories => $state.composableBuilder(
+      column: $state.table.calories,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get carbohydrate => $state.composableBuilder(
+      column: $state.table.carbohydrate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get protein => $state.composableBuilder(
+      column: $state.table.protein,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get fat => $state.composableBuilder(
+      column: $state.table.fat,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get sodium => $state.composableBuilder(
+      column: $state.table.sodium,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get sugar => $state.composableBuilder(
+      column: $state.table.sugar,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$DietTableOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, $DietTable> {
+  $$DietTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get dietId => $state.composableBuilder(
+      column: $state.table.dietId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get eatingTime => $state.composableBuilder(
+      column: $state.table.eatingTime,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get menuName => $state.composableBuilder(
+      column: $state.table.menuName,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get amount => $state.composableBuilder(
+      column: $state.table.amount,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get classification => $state.composableBuilder(
+      column: $state.table.classification,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get calories => $state.composableBuilder(
+      column: $state.table.calories,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get carbohydrate => $state.composableBuilder(
+      column: $state.table.carbohydrate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get protein => $state.composableBuilder(
+      column: $state.table.protein,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get fat => $state.composableBuilder(
+      column: $state.table.fat,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get sodium => $state.composableBuilder(
+      column: $state.table.sodium,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get sugar => $state.composableBuilder(
+      column: $state.table.sugar,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$PersonalSettingsTableInsertCompanionBuilder
+    = PersonalSettingsCompanion Function({
+  required String userId,
+  required String nickname,
+  required double height,
+  required double weight,
+  required int age,
+  required double recommenedCalories,
+  required double targetCalories,
+  required double targetWaterIntake,
+  Value<int> rowid,
+});
+typedef $$PersonalSettingsTableUpdateCompanionBuilder
+    = PersonalSettingsCompanion Function({
+  Value<String> userId,
+  Value<String> nickname,
+  Value<double> height,
+  Value<double> weight,
+  Value<int> age,
+  Value<double> recommenedCalories,
+  Value<double> targetCalories,
+  Value<double> targetWaterIntake,
+  Value<int> rowid,
+});
+
+class $$PersonalSettingsTableTableManager extends RootTableManager<
+    _$LocalDatabase,
+    $PersonalSettingsTable,
+    PersonalSetting,
+    $$PersonalSettingsTableFilterComposer,
+    $$PersonalSettingsTableOrderingComposer,
+    $$PersonalSettingsTableProcessedTableManager,
+    $$PersonalSettingsTableInsertCompanionBuilder,
+    $$PersonalSettingsTableUpdateCompanionBuilder> {
+  $$PersonalSettingsTableTableManager(
+      _$LocalDatabase db, $PersonalSettingsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$PersonalSettingsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$PersonalSettingsTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$PersonalSettingsTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<String> userId = const Value.absent(),
+            Value<String> nickname = const Value.absent(),
+            Value<double> height = const Value.absent(),
+            Value<double> weight = const Value.absent(),
+            Value<int> age = const Value.absent(),
+            Value<double> recommenedCalories = const Value.absent(),
+            Value<double> targetCalories = const Value.absent(),
+            Value<double> targetWaterIntake = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              PersonalSettingsCompanion(
+            userId: userId,
+            nickname: nickname,
+            height: height,
+            weight: weight,
+            age: age,
+            recommenedCalories: recommenedCalories,
+            targetCalories: targetCalories,
+            targetWaterIntake: targetWaterIntake,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required String userId,
+            required String nickname,
+            required double height,
+            required double weight,
+            required int age,
+            required double recommenedCalories,
+            required double targetCalories,
+            required double targetWaterIntake,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              PersonalSettingsCompanion.insert(
+            userId: userId,
+            nickname: nickname,
+            height: height,
+            weight: weight,
+            age: age,
+            recommenedCalories: recommenedCalories,
+            targetCalories: targetCalories,
+            targetWaterIntake: targetWaterIntake,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$PersonalSettingsTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$LocalDatabase,
+        $PersonalSettingsTable,
+        PersonalSetting,
+        $$PersonalSettingsTableFilterComposer,
+        $$PersonalSettingsTableOrderingComposer,
+        $$PersonalSettingsTableProcessedTableManager,
+        $$PersonalSettingsTableInsertCompanionBuilder,
+        $$PersonalSettingsTableUpdateCompanionBuilder> {
+  $$PersonalSettingsTableProcessedTableManager(super.$state);
+}
+
+class $$PersonalSettingsTableFilterComposer
+    extends FilterComposer<_$LocalDatabase, $PersonalSettingsTable> {
+  $$PersonalSettingsTableFilterComposer(super.$state);
+  ColumnFilters<String> get userId => $state.composableBuilder(
+      column: $state.table.userId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get nickname => $state.composableBuilder(
+      column: $state.table.nickname,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get height => $state.composableBuilder(
+      column: $state.table.height,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get weight => $state.composableBuilder(
+      column: $state.table.weight,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get age => $state.composableBuilder(
+      column: $state.table.age,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get recommenedCalories => $state.composableBuilder(
+      column: $state.table.recommenedCalories,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get targetCalories => $state.composableBuilder(
+      column: $state.table.targetCalories,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get targetWaterIntake => $state.composableBuilder(
+      column: $state.table.targetWaterIntake,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$PersonalSettingsTableOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, $PersonalSettingsTable> {
+  $$PersonalSettingsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get userId => $state.composableBuilder(
+      column: $state.table.userId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get nickname => $state.composableBuilder(
+      column: $state.table.nickname,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get height => $state.composableBuilder(
+      column: $state.table.height,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get weight => $state.composableBuilder(
+      column: $state.table.weight,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get age => $state.composableBuilder(
+      column: $state.table.age,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get recommenedCalories => $state.composableBuilder(
+      column: $state.table.recommenedCalories,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get targetCalories => $state.composableBuilder(
+      column: $state.table.targetCalories,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get targetWaterIntake => $state.composableBuilder(
+      column: $state.table.targetWaterIntake,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$DailyActivityInfoTableInsertCompanionBuilder
+    = DailyActivityInfoCompanion Function({
+  required DateTime recordDate,
+  required double totalCalorieIntake,
+  required double totalCalorieBurned,
+  required double waterIntake,
+  Value<int> rowid,
+});
+typedef $$DailyActivityInfoTableUpdateCompanionBuilder
+    = DailyActivityInfoCompanion Function({
+  Value<DateTime> recordDate,
+  Value<double> totalCalorieIntake,
+  Value<double> totalCalorieBurned,
+  Value<double> waterIntake,
+  Value<int> rowid,
+});
+
+class $$DailyActivityInfoTableTableManager extends RootTableManager<
+    _$LocalDatabase,
+    $DailyActivityInfoTable,
+    DailyActivityInfoData,
+    $$DailyActivityInfoTableFilterComposer,
+    $$DailyActivityInfoTableOrderingComposer,
+    $$DailyActivityInfoTableProcessedTableManager,
+    $$DailyActivityInfoTableInsertCompanionBuilder,
+    $$DailyActivityInfoTableUpdateCompanionBuilder> {
+  $$DailyActivityInfoTableTableManager(
+      _$LocalDatabase db, $DailyActivityInfoTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$DailyActivityInfoTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$DailyActivityInfoTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$DailyActivityInfoTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<DateTime> recordDate = const Value.absent(),
+            Value<double> totalCalorieIntake = const Value.absent(),
+            Value<double> totalCalorieBurned = const Value.absent(),
+            Value<double> waterIntake = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              DailyActivityInfoCompanion(
+            recordDate: recordDate,
+            totalCalorieIntake: totalCalorieIntake,
+            totalCalorieBurned: totalCalorieBurned,
+            waterIntake: waterIntake,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required DateTime recordDate,
+            required double totalCalorieIntake,
+            required double totalCalorieBurned,
+            required double waterIntake,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              DailyActivityInfoCompanion.insert(
+            recordDate: recordDate,
+            totalCalorieIntake: totalCalorieIntake,
+            totalCalorieBurned: totalCalorieBurned,
+            waterIntake: waterIntake,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$DailyActivityInfoTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$LocalDatabase,
+        $DailyActivityInfoTable,
+        DailyActivityInfoData,
+        $$DailyActivityInfoTableFilterComposer,
+        $$DailyActivityInfoTableOrderingComposer,
+        $$DailyActivityInfoTableProcessedTableManager,
+        $$DailyActivityInfoTableInsertCompanionBuilder,
+        $$DailyActivityInfoTableUpdateCompanionBuilder> {
+  $$DailyActivityInfoTableProcessedTableManager(super.$state);
+}
+
+class $$DailyActivityInfoTableFilterComposer
+    extends FilterComposer<_$LocalDatabase, $DailyActivityInfoTable> {
+  $$DailyActivityInfoTableFilterComposer(super.$state);
+  ColumnFilters<DateTime> get recordDate => $state.composableBuilder(
+      column: $state.table.recordDate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get totalCalorieIntake => $state.composableBuilder(
+      column: $state.table.totalCalorieIntake,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get totalCalorieBurned => $state.composableBuilder(
+      column: $state.table.totalCalorieBurned,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get waterIntake => $state.composableBuilder(
+      column: $state.table.waterIntake,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$DailyActivityInfoTableOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, $DailyActivityInfoTable> {
+  $$DailyActivityInfoTableOrderingComposer(super.$state);
+  ColumnOrderings<DateTime> get recordDate => $state.composableBuilder(
+      column: $state.table.recordDate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get totalCalorieIntake => $state.composableBuilder(
+      column: $state.table.totalCalorieIntake,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get totalCalorieBurned => $state.composableBuilder(
+      column: $state.table.totalCalorieBurned,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get waterIntake => $state.composableBuilder(
+      column: $state.table.waterIntake,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$DailyActivityDetailTableInsertCompanionBuilder
+    = DailyActivityDetailCompanion Function({
+  required DateTime recordDate,
+  required String activityName,
+  required double calorieBurned,
+  required DateTime startTime,
+  required DateTime endTime,
+  Value<int> rowid,
+});
+typedef $$DailyActivityDetailTableUpdateCompanionBuilder
+    = DailyActivityDetailCompanion Function({
+  Value<DateTime> recordDate,
+  Value<String> activityName,
+  Value<double> calorieBurned,
+  Value<DateTime> startTime,
+  Value<DateTime> endTime,
+  Value<int> rowid,
+});
+
+class $$DailyActivityDetailTableTableManager extends RootTableManager<
+    _$LocalDatabase,
+    $DailyActivityDetailTable,
+    DailyActivityDetailData,
+    $$DailyActivityDetailTableFilterComposer,
+    $$DailyActivityDetailTableOrderingComposer,
+    $$DailyActivityDetailTableProcessedTableManager,
+    $$DailyActivityDetailTableInsertCompanionBuilder,
+    $$DailyActivityDetailTableUpdateCompanionBuilder> {
+  $$DailyActivityDetailTableTableManager(
+      _$LocalDatabase db, $DailyActivityDetailTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$DailyActivityDetailTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$DailyActivityDetailTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$DailyActivityDetailTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<DateTime> recordDate = const Value.absent(),
+            Value<String> activityName = const Value.absent(),
+            Value<double> calorieBurned = const Value.absent(),
+            Value<DateTime> startTime = const Value.absent(),
+            Value<DateTime> endTime = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              DailyActivityDetailCompanion(
+            recordDate: recordDate,
+            activityName: activityName,
+            calorieBurned: calorieBurned,
+            startTime: startTime,
+            endTime: endTime,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required DateTime recordDate,
+            required String activityName,
+            required double calorieBurned,
+            required DateTime startTime,
+            required DateTime endTime,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              DailyActivityDetailCompanion.insert(
+            recordDate: recordDate,
+            activityName: activityName,
+            calorieBurned: calorieBurned,
+            startTime: startTime,
+            endTime: endTime,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$DailyActivityDetailTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$LocalDatabase,
+        $DailyActivityDetailTable,
+        DailyActivityDetailData,
+        $$DailyActivityDetailTableFilterComposer,
+        $$DailyActivityDetailTableOrderingComposer,
+        $$DailyActivityDetailTableProcessedTableManager,
+        $$DailyActivityDetailTableInsertCompanionBuilder,
+        $$DailyActivityDetailTableUpdateCompanionBuilder> {
+  $$DailyActivityDetailTableProcessedTableManager(super.$state);
+}
+
+class $$DailyActivityDetailTableFilterComposer
+    extends FilterComposer<_$LocalDatabase, $DailyActivityDetailTable> {
+  $$DailyActivityDetailTableFilterComposer(super.$state);
+  ColumnFilters<DateTime> get recordDate => $state.composableBuilder(
+      column: $state.table.recordDate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get activityName => $state.composableBuilder(
+      column: $state.table.activityName,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get calorieBurned => $state.composableBuilder(
+      column: $state.table.calorieBurned,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get startTime => $state.composableBuilder(
+      column: $state.table.startTime,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get endTime => $state.composableBuilder(
+      column: $state.table.endTime,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$DailyActivityDetailTableOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, $DailyActivityDetailTable> {
+  $$DailyActivityDetailTableOrderingComposer(super.$state);
+  ColumnOrderings<DateTime> get recordDate => $state.composableBuilder(
+      column: $state.table.recordDate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get activityName => $state.composableBuilder(
+      column: $state.table.activityName,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get calorieBurned => $state.composableBuilder(
+      column: $state.table.calorieBurned,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get startTime => $state.composableBuilder(
+      column: $state.table.startTime,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get endTime => $state.composableBuilder(
+      column: $state.table.endTime,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$SearchHistoryTableInsertCompanionBuilder = SearchHistoryCompanion
+    Function({
+  Value<int> id,
+  required String search,
+});
+typedef $$SearchHistoryTableUpdateCompanionBuilder = SearchHistoryCompanion
+    Function({
+  Value<int> id,
+  Value<String> search,
+});
+
+class $$SearchHistoryTableTableManager extends RootTableManager<
+    _$LocalDatabase,
+    $SearchHistoryTable,
+    SearchHistoryData,
+    $$SearchHistoryTableFilterComposer,
+    $$SearchHistoryTableOrderingComposer,
+    $$SearchHistoryTableProcessedTableManager,
+    $$SearchHistoryTableInsertCompanionBuilder,
+    $$SearchHistoryTableUpdateCompanionBuilder> {
+  $$SearchHistoryTableTableManager(
+      _$LocalDatabase db, $SearchHistoryTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$SearchHistoryTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$SearchHistoryTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$SearchHistoryTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> search = const Value.absent(),
+          }) =>
+              SearchHistoryCompanion(
+            id: id,
+            search: search,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required String search,
+          }) =>
+              SearchHistoryCompanion.insert(
+            id: id,
+            search: search,
+          ),
+        ));
+}
+
+class $$SearchHistoryTableProcessedTableManager extends ProcessedTableManager<
+    _$LocalDatabase,
+    $SearchHistoryTable,
+    SearchHistoryData,
+    $$SearchHistoryTableFilterComposer,
+    $$SearchHistoryTableOrderingComposer,
+    $$SearchHistoryTableProcessedTableManager,
+    $$SearchHistoryTableInsertCompanionBuilder,
+    $$SearchHistoryTableUpdateCompanionBuilder> {
+  $$SearchHistoryTableProcessedTableManager(super.$state);
+}
+
+class $$SearchHistoryTableFilterComposer
+    extends FilterComposer<_$LocalDatabase, $SearchHistoryTable> {
+  $$SearchHistoryTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get search => $state.composableBuilder(
+      column: $state.table.search,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$SearchHistoryTableOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, $SearchHistoryTable> {
+  $$SearchHistoryTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get search => $state.composableBuilder(
+      column: $state.table.search,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$SelectedMenuTableInsertCompanionBuilder = SelectedMenuCompanion
+    Function({
+  Value<int> id,
+  required String storeId,
+  required String menuId,
+  required int quantity,
+});
+typedef $$SelectedMenuTableUpdateCompanionBuilder = SelectedMenuCompanion
+    Function({
+  Value<int> id,
+  Value<String> storeId,
+  Value<String> menuId,
+  Value<int> quantity,
+});
+
+class $$SelectedMenuTableTableManager extends RootTableManager<
+    _$LocalDatabase,
+    $SelectedMenuTable,
+    SelectedMenuData,
+    $$SelectedMenuTableFilterComposer,
+    $$SelectedMenuTableOrderingComposer,
+    $$SelectedMenuTableProcessedTableManager,
+    $$SelectedMenuTableInsertCompanionBuilder,
+    $$SelectedMenuTableUpdateCompanionBuilder> {
+  $$SelectedMenuTableTableManager(_$LocalDatabase db, $SelectedMenuTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$SelectedMenuTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$SelectedMenuTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$SelectedMenuTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> storeId = const Value.absent(),
+            Value<String> menuId = const Value.absent(),
+            Value<int> quantity = const Value.absent(),
+          }) =>
+              SelectedMenuCompanion(
+            id: id,
+            storeId: storeId,
+            menuId: menuId,
+            quantity: quantity,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required String storeId,
+            required String menuId,
+            required int quantity,
+          }) =>
+              SelectedMenuCompanion.insert(
+            id: id,
+            storeId: storeId,
+            menuId: menuId,
+            quantity: quantity,
+          ),
+        ));
+}
+
+class $$SelectedMenuTableProcessedTableManager extends ProcessedTableManager<
+    _$LocalDatabase,
+    $SelectedMenuTable,
+    SelectedMenuData,
+    $$SelectedMenuTableFilterComposer,
+    $$SelectedMenuTableOrderingComposer,
+    $$SelectedMenuTableProcessedTableManager,
+    $$SelectedMenuTableInsertCompanionBuilder,
+    $$SelectedMenuTableUpdateCompanionBuilder> {
+  $$SelectedMenuTableProcessedTableManager(super.$state);
+}
+
+class $$SelectedMenuTableFilterComposer
+    extends FilterComposer<_$LocalDatabase, $SelectedMenuTable> {
+  $$SelectedMenuTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get storeId => $state.composableBuilder(
+      column: $state.table.storeId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get menuId => $state.composableBuilder(
+      column: $state.table.menuId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get quantity => $state.composableBuilder(
+      column: $state.table.quantity,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$SelectedMenuTableOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, $SelectedMenuTable> {
+  $$SelectedMenuTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get storeId => $state.composableBuilder(
+      column: $state.table.storeId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get menuId => $state.composableBuilder(
+      column: $state.table.menuId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get quantity => $state.composableBuilder(
+      column: $state.table.quantity,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class _$LocalDatabaseManager {
+  final _$LocalDatabase _db;
+  _$LocalDatabaseManager(this._db);
+  $$DietTableTableManager get diet => $$DietTableTableManager(_db, _db.diet);
+  $$PersonalSettingsTableTableManager get personalSettings =>
+      $$PersonalSettingsTableTableManager(_db, _db.personalSettings);
+  $$DailyActivityInfoTableTableManager get dailyActivityInfo =>
+      $$DailyActivityInfoTableTableManager(_db, _db.dailyActivityInfo);
+  $$DailyActivityDetailTableTableManager get dailyActivityDetail =>
+      $$DailyActivityDetailTableTableManager(_db, _db.dailyActivityDetail);
+  $$SearchHistoryTableTableManager get searchHistory =>
+      $$SearchHistoryTableTableManager(_db, _db.searchHistory);
+  $$SelectedMenuTableTableManager get selectedMenu =>
+      $$SelectedMenuTableTableManager(_db, _db.selectedMenu);
 }

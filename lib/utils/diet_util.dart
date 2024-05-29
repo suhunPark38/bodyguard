@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../database/config_database.dart';
+import '../database/local_database.dart';
 import '../model/fetched_diet_data.dart';
 import '../screens/diet_page/widgets/diet_delete_dialog.dart';
 

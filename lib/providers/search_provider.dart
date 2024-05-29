@@ -1,5 +1,5 @@
+import 'package:bodyguard/database/local_database.dart';
 import 'package:flutter/material.dart';
-import '../database/search_history_database.dart';
 import '../model/store_model.dart';
 import '../services/search_keyword_service.dart';
 import '../services/store_service.dart';
@@ -10,7 +10,7 @@ class SearchProvider with ChangeNotifier {
   List<String> _popularSearches = [];
   List<String> _cuisineTypes = [];
 
-  final SearchHistoryDatabase _database = SearchHistoryDatabase();
+  final _database = LocalDatabase.instance;
   bool _isListViewVisible = true;
 
   List<Store> _searchResults = [];

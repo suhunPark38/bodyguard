@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../database/config_database.dart';
+import '../../../database/local_database.dart';
 import '../../../providers/diet_data_provider.dart';
 import '../../../widgets/custom_button.dart';
 import 'diet_delete_dialog.dart';

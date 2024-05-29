@@ -1,6 +1,6 @@
+import 'package:bodyguard/database/local_database.dart';
 import 'package:flutter/material.dart';
 import 'package:bodyguard/model/store_menu.dart';
-import 'package:bodyguard/database/shopping_database.dart';
 import '../model/menu_item.dart';
 import '../model/payment.dart';
 import '../screens/shopping_page/widgets/filter_button.dart';
@@ -10,6 +10,8 @@ import '../utils/format_util.dart';
 import '../utils/notification.dart';
 
 class ShoppingProvider extends ChangeNotifier {
+  final _database = LocalDatabase.instance;
+
   final List<StoreMenu> _checkedMenus = []; //체크되고 제출되지 않은 메뉴
 
   List<StoreMenu> _selectedMenus = []; //선택된 메뉴들
@@ -103,7 +105,7 @@ class ShoppingProvider extends ChangeNotifier {
     _storeMenuMap.clear();
     _menuQuantities.clear();
     _totalPrice = 0;
-    ShoppingDatabase.clearData();
+    _database.clearData();
     notifyListeners();
   }
 
@@ -125,7 +127,7 @@ class ShoppingProvider extends ChangeNotifier {
         break;
       }
     }
-    ShoppingDatabase.instance.updateMenuQuantity(menuId, newQuantity);
+    _database.updateMenuQuantity(menuId, newQuantity);
     notifyListeners();
   }
 
@@ -142,7 +144,7 @@ class ShoppingProvider extends ChangeNotifier {
           .putIfAbsent(menu.storeName, () => [])
           .add(menu); // 스토어 메뉴 맵에 추가
     }
-    ShoppingDatabase.instance.insertMenu(storeId, menu.id, quantity);
+    _database.insertOrUpdateMenu(storeId, menu.id, quantity);
     calculateTotalPrice();
   }
 
@@ -156,7 +158,7 @@ class ShoppingProvider extends ChangeNotifier {
         _storeMenuMap.remove(menu.storeName);
       }
     }
-    ShoppingDatabase.instance.removeMenu(menu.id);
+    _database.removeMenu(menu.id);
     calculateTotalPrice();
   }
 
@@ -174,15 +176,15 @@ class ShoppingProvider extends ChangeNotifier {
 
   //데이터베이스에서 메뉴를 불러오는 함수(장바구니 기능)
   Future<void> loadSelectedMenus() async {
-    final selectedMenus = await ShoppingDatabase.instance.getSelectedMenus();
+    final selectedMenus = await _database.getSelectedMenus();
     _selectedMenus.clear(); // 선택된 메뉴 초기화
     _menuQuantities.clear(); // 불러오기 전에 기존 데이터 초기화
     _storeMenuMap.clear(); // 스토어 메뉴 맵 초기화
 
-    for (final menuMap in selectedMenus) {
-      final menuId = menuMap['menu_id'] as String;
-      final storeId = menuMap['store_id'] as String;
-      final quantity = menuMap['quantity'] as int;
+    for (final selectedMenu in selectedMenus) {
+      final menuId = selectedMenu.menuId;
+      final storeId = selectedMenu.storeId;
+      final quantity = selectedMenu.quantity;
 
       final menu =
           await StoreService().getMenuById(storeId, menuId); //파이어베이스에서 메뉴를 불러옴

@@ -85,11 +85,9 @@ class HomePage extends StatelessWidget {
               );
             },
           ),
-
-
         ],
       ),
-      body: Consumer3<HealthDataProvider, DietProvider,UserInfoProvider>(
+      body: Consumer3<HealthDataProvider, DietProvider, UserInfoProvider>(
         builder: (context, healthData, diet, userInfo, child) {
           return RefreshIndicator(
             onRefresh: () async {

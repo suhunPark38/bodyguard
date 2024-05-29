@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../database/config_database.dart';
+import '../database/local_database.dart';
 import '../model/diet_record.dart';
 import '../utils/calculate_util.dart';
 import '../utils/notification.dart';
@@ -17,9 +17,9 @@ class DietProvider with ChangeNotifier {
 
   bool _disposed = false;
 
+  final database = LocalDatabase.instance;
   bool _notificationSent = false; //앱 실행 동안 한 번만 알림 판별 변수
 
-  final database = ConfigDatabase.instance;
 
   DateTime _focusedDay = DateTime.now(); //현재 표시할 월
   DateTime _selectedDay = DateTime.utc(

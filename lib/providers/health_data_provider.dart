@@ -1,10 +1,7 @@
-import 'dart:io';
-
-import 'package:bodyguard/model/user_model.dart';
 import 'package:bodyguard/services/user_firebase.dart';
+import 'package:bodyguard/utils/health_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:health/health.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class HealthDataProvider with ChangeNotifier {
 
@@ -45,39 +42,6 @@ class HealthDataProvider with ChangeNotifier {
     fetchData(_selectedDate);
   }
 
-  Future<void> authorize() async {
-    await Permission.activityRecognition.request();
-    await Permission.location.request();
-
-    // Check if we have health permissions
-    bool? hasPermissions =
-    await Health().hasPermissions(types, permissions: permissions);
-
-    // hasPermissions = false because the hasPermission cannot disclose if WRITE access exists.
-    // Hence, we have to request with WRITE as well.
-    hasPermissions = false;
-
-    if (!hasPermissions) {
-      // requesting access to the data types before reading them
-      try {
-        await Health()
-            .requestAuthorization(types, permissions: permissions);
-      } catch (error) {
-        debugPrint("Exception in authorize: $error");
-      }
-    }
-
-  }
-
-  /// google health connect 설치
-  Future<void> installHealthConnect() async {
-    bool isAvailable = Health().useHealthConnectIfAvailable;
-
-    //health connect를 사용할 수 없다면 (설치 되지 않았다면) 설치한다.
-    if(!isAvailable && Platform.isAndroid){
-      await Health().installHealthConnect();
-    }
-  }
 
   /// 기본 데이터 (신장, 몸무게 등) 가져오기
   Future<void> fetchData(DateTime date) async {
@@ -96,7 +60,7 @@ class HealthDataProvider with ChangeNotifier {
       // try {
       // fetch health data
       List<HealthDataPoint> healthData = await Health().getHealthDataFromTypes(
-        types: types,
+        types: HealthUtil().types,
         startTime: startTime,
         endTime: endTime,
       );
@@ -218,7 +182,6 @@ class HealthDataProvider with ChangeNotifier {
   Future<void> addHeightData(double add) async {
     _setNow();
     final now = _selectedDate;
-    final earlier = now.subtract(Duration(minutes: 20));
     _height = add;
     // Add data for supported types
     // NOTE: These are only the ones supported on Androids new API Health Connect.
@@ -329,40 +292,6 @@ class HealthDataProvider with ChangeNotifier {
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
   }
-
-  // 안드로이드는 google health connect, ios는 apple health를 사용하기에 dataType 분리
-  List<HealthDataType> get types => (Platform.isAndroid)
-      ? dataTypesAndroid
-      : (Platform.isIOS)
-      ? dataTypesIOS
-      : [];
-
-  // Set up corresponding permissions
-  // READ only
-  List<HealthDataAccess> get permissions =>
-      types.map((e) => HealthDataAccess.READ_WRITE).toList();
-
-
-  // 안드로이드에서 사용하는 dataType
-  get dataTypesAndroid => [
-    HealthDataType.ACTIVE_ENERGY_BURNED,
-    HealthDataType.TOTAL_CALORIES_BURNED,
-    HealthDataType.STEPS,
-    HealthDataType.HEIGHT,
-    HealthDataType.WEIGHT,
-    HealthDataType.WATER
-  ];
-
-  // IOS에서 사용하는 dataType
-  get dataTypesIOS => [
-    HealthDataType.ACTIVE_ENERGY_BURNED,
-    HealthDataType.TOTAL_CALORIES_BURNED,
-    HealthDataType.STEPS,
-    HealthDataType.HEIGHT,
-    HealthDataType.WEIGHT,
-    HealthDataType.WATER
-  ];
-
 
 }
 
