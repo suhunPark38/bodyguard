@@ -58,9 +58,9 @@ class HealthUtil {
 
     // hasPermissions = false because the hasPermission cannot disclose if WRITE access exists.
     // Hence, we have to request with WRITE as well.
-    hasPermissions = false;
+    bool hasPermissionsResult = hasPermissions ?? false;
 
-    if (!hasPermissions) {
+    if (!hasPermissionsResult) {
       // requesting access to the data types before reading them
       try {
         await Health()

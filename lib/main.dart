@@ -25,16 +25,16 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  // splash screen 시작
+  // splash screen 시작 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // health connect 사용 여부 확인 (ios:android / 설치 여부) -> 앱 필수 권한 확인 -> health connect 설치 (미설치 시)
   await Health().configure(useHealthConnectIfAvailable: true);
   await HealthUtil().authorize();
   await HealthUtil().installHealthConnect();
-
-  // splash screen 끝
+  
   FlutterNativeSplash.remove();
+  // splash screen 끝 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   mapInitialize();
   await Firebase.initializeApp(
