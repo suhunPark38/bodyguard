@@ -67,7 +67,12 @@ class _BodyInfoWidget extends State<BodyInfoWidget>{
                               "신장",
                               provider.height.toString(),
                                   (value) {
-                                Provider.of<UserInfoProvider>(context, listen: false).height = double.parse(value);
+                                    if(Provider.of<HealthDataProvider>(context, listen: false).selectedDate.day == DateTime.now().day){
+                                      Provider.of<UserInfoProvider>(context, listen: false).height = double.parse(value);
+                                    }
+                                    else{
+                                      Provider.of<HealthDataProvider>(context, listen: false).addHeightData(double.parse(value));
+                                    }
                               },
                             );
                           },
@@ -123,7 +128,14 @@ class _BodyInfoWidget extends State<BodyInfoWidget>{
                               "몸무게",
                               provider.weight.toString(),
                                   (value) {
-                                    Provider.of<UserInfoProvider>(context, listen: false).weight = double.parse(value);
+                                    if(Provider.of<HealthDataProvider>(context, listen: false).selectedDate.day == DateTime.now().day){
+                                      print("현재 시간과 동일");
+                                      Provider.of<UserInfoProvider>(context, listen: false).weight = double.parse(value);
+                                    }
+                                    else{
+                                      Provider.of<HealthDataProvider>(context, listen: false).addWeightData(double.parse(value));
+                                    }
+
                               },
                             );
                           },
@@ -182,11 +194,7 @@ class _BodyInfoWidget extends State<BodyInfoWidget>{
               children: [
                 FilledButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      onSave(controller.text);
-                      print(controller.text);
                       Navigator.of(context).pop();
-                    }
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.grey.shade300,
@@ -207,7 +215,6 @@ class _BodyInfoWidget extends State<BodyInfoWidget>{
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       onSave(controller.text);
-                      print(controller.text);
                       Navigator.of(context).pop();
                     }
                   },
