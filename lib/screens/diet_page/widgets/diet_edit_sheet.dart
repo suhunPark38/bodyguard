@@ -376,6 +376,7 @@ class DietEditSheet extends StatelessWidget {
                               Navigator.pop(context);
                               dietProvider.setSelectedDay(provider.eatingTime);
                               dietProvider.setFocusedDay(provider.eatingTime);
+                              dietProvider.notifySelectDiets(provider.eatingTime);
                             }
                           },
                           text: const Text('수정 완료하기'),

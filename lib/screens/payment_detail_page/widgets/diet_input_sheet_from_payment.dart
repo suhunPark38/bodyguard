@@ -377,6 +377,7 @@ class DietInputSheetFromPayment extends StatelessWidget {
                               Navigator.pop(context);
                               dietProvider.setSelectedDay(provider.eatingTime);
                               dietProvider.setFocusedDay(provider.eatingTime);
+                              dietProvider.notifySelectDiets(provider.eatingTime);
                             } else {}
                           },
                           text: const Text('기록하기'),
