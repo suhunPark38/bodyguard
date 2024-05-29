@@ -47,7 +47,7 @@ class DietPage extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      width: 90,
+                      width:110,
                       height: 20,
                       child: CustomButton(
                         onPressed: () {
