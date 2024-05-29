@@ -7,6 +7,7 @@ import '../../map.dart';
 import '../../providers/shopping_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
+import '../my_home_page/my_home_page.dart';
 import '../store_list_page/store_list_page.dart';
 
 class ShoppingPage extends StatelessWidget {
@@ -34,7 +35,6 @@ class ShoppingPage extends StatelessWidget {
                 onTap: (index) {
                   provider.setCurrentShoppingTabIndex(index);
                 },
-                physics: const NeverScrollableScrollPhysics(),
                 tabs: const [
                   Tab(text: '결제하기'),
                   Tab(text: '결제 내역'),
@@ -44,6 +44,7 @@ class ShoppingPage extends StatelessWidget {
             body: Padding(
               padding: const EdgeInsets.all(20.0),
               child: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   PaymentTabWidget(provider: provider),
                   PaymentHistoryTabWidget(provider: provider),
@@ -157,6 +158,15 @@ class ShoppingPage extends StatelessWidget {
                             provider.completePayment(context);
                             provider.refreshPayments();
                             provider.handleReset(); // 결제를 완료 후 장바구니 데이터 클리어
+                            provider.setCurrentShoppingTabIndex(1);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MyHomePage(
+                                    initialIndex: 3,
+                                  )),
+                                  (route) => false,
+                            );
                           }
                               : null,
                           text: Text(

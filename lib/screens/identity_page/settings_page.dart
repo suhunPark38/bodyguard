@@ -19,6 +19,23 @@ class SettingsPage extends StatelessWidget {
                   value: notificationProvider.enableNotifications,
                   onChanged: (value) {
                     notificationProvider.setNotificationPreference(value);
+
+                    // 알림이 켜졌을 때 스낵바 표시
+                    if (notificationProvider.enableNotifications) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('알림이 활성화되었습니다.'),
+                        ),
+                      );
+                    }
+                    // 알림이 꺼졌을 때 스낵바 표시
+                    else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('알림이 비활성화되었습니다.'),
+                        ),
+                      );
+                    }
                   },
                 ),
               );
