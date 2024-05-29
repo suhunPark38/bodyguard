@@ -8,8 +8,9 @@ import '../identity_page/identity_page.dart';
 class MyHomePage extends StatelessWidget {
   final int initialIndex;
   final int? healthIndex;
+  final int? shoppingIndex;
 
-  const MyHomePage({Key? key, required this.initialIndex, this.healthIndex}) : super(key: key);
+  const MyHomePage({Key? key, required this.initialIndex, this.healthIndex, this.shoppingIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class MyHomePage extends StatelessWidget {
             HomePage(),
             const SearchPage(),
             HealthPage(initialIndex: healthIndex ?? 0,),
-            const ShoppingPage(),
+            ShoppingPage(initialIndex: shoppingIndex ?? 0,),
             IdentityPage(),
           ],
         ),

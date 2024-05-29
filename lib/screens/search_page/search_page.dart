@@ -55,8 +55,6 @@ class SearchPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {
-              Provider.of<ShoppingProvider>(context, listen: false)
-                  .setCurrentShoppingTabIndex(0);
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(

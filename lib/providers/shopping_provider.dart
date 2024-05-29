@@ -17,7 +17,7 @@ class ShoppingProvider extends ChangeNotifier {
   List<StoreMenu> _selectedMenus = []; //선택된 메뉴들
   String? _deliveryType = 'delivery'; // 배달 종류 배달 혹은 포장
   int _totalPrice = 0; // 총가격
-  int _currentShoppingTabIndex = 0; // 쇼핑 페이지 현재 탭
+
   int _currentStoreTabIndex = 0; // 스토어 페이지 시작 탭
   int _notificationId = 2;
   final Map<String, List<StoreMenu>> _storeMenuMap = {}; //가게와 메뉴의 맵핑
@@ -37,7 +37,6 @@ class ShoppingProvider extends ChangeNotifier {
 
   int get totalPrice => _totalPrice;
 
-  int get currentShoppingTabIndex => _currentShoppingTabIndex;
 
   int get currentStoreTabIndex => _currentStoreTabIndex;
 
@@ -63,10 +62,6 @@ class ShoppingProvider extends ChangeNotifier {
     await fetchPayments();
   }
 
-  void setCurrentShoppingTabIndex(int value) {
-    _currentShoppingTabIndex = value;
-    notifyListeners();
-  }
 
   void setCurrentStoreTabIndex(int value) {
     _currentStoreTabIndex = value;
