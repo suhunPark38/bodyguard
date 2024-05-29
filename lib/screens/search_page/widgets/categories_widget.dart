@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/search_provider.dart';
 import '../../../providers/shopping_provider.dart';
-import '../../../services/store_service.dart';
 import '../../store_list_page/store_list_page.dart';
 
 class CategoriesWidget extends StatelessWidget {
@@ -13,27 +12,32 @@ class CategoriesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
 
+    if (searchProvider.cuisineTypes.isEmpty ||
+        searchProvider.cuisineTypeImages.isEmpty ||
+        searchProvider.cuisineTypes.length !=
+            searchProvider.cuisineTypeImages.length) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return ExpansionTile(
       title: const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-
-        Text(
-          "카테고리",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            "카테고리",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
       onExpansionChanged: (bool expanded) {
         searchProvider.toggleListViewVisibility();
       },
       children: searchProvider.cuisineTypes.map((cuisineType) {
-        Future<String?> getImageUrl() async {
-          return await StoreService()
-              .getFirstStoreImageByCuisineType(cuisineType);
-        }
+        int index = searchProvider.cuisineTypes.indexOf(cuisineType);
+        String imageUrl = searchProvider.cuisineTypeImages[index];
 
         return ListTile(
           title: Text(cuisineType),
@@ -42,28 +46,16 @@ class CategoriesWidget extends StatelessWidget {
             child: SizedBox(
               width: 40,
               height: 40,
-              child: FutureBuilder<String?>(
-                future: getImageUrl(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return Image.network(
-                      snapshot.data ?? 'placeholder_image_url',
-                      fit: BoxFit.fill,
-                    );
-                  }
-                },
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.fill,
               ),
             ),
           ),
           trailing: const Icon(Icons.keyboard_arrow_right),
           onTap: () {
             Provider.of<ShoppingProvider>(context, listen: false)
-                .setCurrentStoreTabIndex(
-                    searchProvider.cuisineTypes.indexOf(cuisineType));
+                .setCurrentStoreTabIndex(index);
             Navigator.push(
               context,
               MaterialPageRoute(

@@ -10,6 +10,8 @@ class SearchProvider with ChangeNotifier {
   List<String> _popularSearches = [];
   List<String> _cuisineTypes = [];
 
+  List<String> _cuisineTypeImages = [];
+
   final _database = LocalDatabase.instance;
   bool _isListViewVisible = true;
 
@@ -23,6 +25,8 @@ class SearchProvider with ChangeNotifier {
 
   List<String> get cuisineTypes => _cuisineTypes;
 
+  List<String> get cuisineTypeImages => _cuisineTypeImages;
+
   bool get isListViewVisible => _isListViewVisible;
 
   List<Store> get searchResults => _searchResults;
@@ -30,7 +34,7 @@ class SearchProvider with ChangeNotifier {
   SearchProvider() {
     _loadSearchHistory();
     loadPopularSearches();
-    _loadCuisineTypes();
+    loadCuisineTypes();
   }
 
   Future<void> _loadSearchHistory() async {
@@ -48,10 +52,20 @@ class SearchProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _loadCuisineTypes() async {
+  Future<void> loadCuisineTypes() async {
     _cuisineTypes = await StoreService().getAllCuisineTypes();
-    notifyListeners();
+    _cuisineTypeImages = await Future.wait(_cuisineTypes.map((cuisineType) async {
+      return await StoreService().getFirstStoreImageByCuisineType(cuisineType) ?? 'placeholder_image_url';
+    }).toList());
+
+    if (_cuisineTypes.length == _cuisineTypeImages.length) {
+      notifyListeners();
+    } else {
+      // Handle the error, for example, by logging it
+      print('Error: Mismatch between cuisine types and their images.');
+    }
   }
+
 
   Future<void> addRecentSearch(String search) async {
     if (!_recentSearches.contains(search)) {

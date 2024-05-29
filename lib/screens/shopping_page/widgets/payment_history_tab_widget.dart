@@ -55,7 +55,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                   onPressed: () {
                     final now = DateTime.now();
                     final oneMonthAgo =
-                    DateTime(now.year, now.month - 1, now.day);
+                        DateTime(now.year, now.month - 1, now.day);
                     provider.setStartDate(oneMonthAgo);
                     provider.setEndDate(now);
                     provider.setSelectedFilter(FilterType.oneMonth);
@@ -75,8 +75,8 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                 children: [
                   Text(
                       '시작일 ${provider.selectedStartDate.year}년'
-                          ' ${provider.selectedStartDate.month}월'
-                          ' ${provider.selectedStartDate.day}일',
+                      ' ${provider.selectedStartDate.month}월'
+                      ' ${provider.selectedStartDate.day}일',
                       style: const TextStyle(fontSize: 12)),
                   IconButton(
                     iconSize: 20,
@@ -96,8 +96,8 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                   ),
                   Text(
                       '종료일 ${provider.selectedEndDate.year}년'
-                          ' ${provider.selectedEndDate.month}월'
-                          ' ${provider.selectedEndDate.day}일',
+                      ' ${provider.selectedEndDate.month}월'
+                      ' ${provider.selectedEndDate.day}일',
                       style: const TextStyle(fontSize: 12)),
                   IconButton(
                     iconSize: 20,
@@ -121,70 +121,84 @@ class PaymentHistoryTabWidget extends StatelessWidget {
           ],
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: provider.sortedAndFilteredPayments.length,
-            itemBuilder: (context, index) {
-              final payment = provider.sortedAndFilteredPayments[index];
-              final formattedTimestamp = formatTimestamp(payment.timestamp);
-              int totalFoodCount = 0;
-              for (var item in payment.menuItems) {
-                totalFoodCount += item.quantity;
-              }
-              final firstMenu = payment.menuItems.first.menu.menuName;
+          child: RefreshIndicator(
+            onRefresh: () async {
+              provider.refreshPayments();
+            },
+            child: ListView.builder(
+              itemCount: provider.sortedAndFilteredPayments.length,
+              itemBuilder: (context, index) {
+                final payment = provider.sortedAndFilteredPayments[index];
+                final formattedTimestamp = formatTimestamp(payment.timestamp);
+                int totalFoodCount = 0;
+                for (var item in payment.menuItems) {
+                  totalFoodCount += item.quantity;
+                }
+                final firstMenu = payment.menuItems.first.menu.menuName;
 
-              // 현재 카드의 날짜
-              final currentDate = DateTime(payment.timestamp.year,
-                  payment.timestamp.month, payment.timestamp.day);
+                // 현재 카드의 날짜
+                final currentDate = DateTime(payment.timestamp.year,
+                    payment.timestamp.month, payment.timestamp.day);
 
-              // 오늘 날짜
-              final today = DateTime.now();
+                // 오늘 날짜
+                final today = DateTime.now();
 
-              // 날짜가 오늘인지 확인
-              final isToday = currentDate.year == today.year &&
-                  currentDate.month == today.month &&
-                  currentDate.day == today.day;
+                // 날짜가 오늘인지 확인
+                final isToday = currentDate.year == today.year &&
+                    currentDate.month == today.month &&
+                    currentDate.day == today.day;
 
-              // 날짜가 오늘인 경우 "Today" 문자열, 아닌 경우 날짜 표시
-              final dateText = isToday
-                  ? '오늘'
-                  : '${currentDate.year}. ${currentDate.month}. ${currentDate.day}.';
+                // 날짜가 오늘인 경우 "Today" 문자열, 아닌 경우 날짜 표시
+                final dateText = isToday
+                    ? '오늘'
+                    : '${currentDate.year}. ${currentDate.month}. ${currentDate.day}.';
 
-              // 날짜가 변경되었을 경우 새로운 ListTile 추가
-              if (index == 0 ||
-                  currentDate !=
-                      DateTime(
-                          provider.sortedAndFilteredPayments[index - 1]
-                              .timestamp.year,
-                          provider.sortedAndFilteredPayments[index - 1]
-                              .timestamp.month,
-                          provider.sortedAndFilteredPayments[index - 1]
-                              .timestamp.day)) {
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Text(
-                        dateText,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Card(
-                      child: ListTile(
+                // 날짜가 변경되었을 경우 새로운 ListTile 추가
+                if (index == 0 ||
+                    currentDate !=
+                        DateTime(
+                            provider.sortedAndFilteredPayments[index - 1]
+                                .timestamp.year,
+                            provider.sortedAndFilteredPayments[index - 1]
+                                .timestamp.month,
+                            provider.sortedAndFilteredPayments[index - 1]
+                                .timestamp.day)) {
+                  return Column(
+                    children: [
+                      ListTile(
                         title: Text(
-                          totalFoodCount > 1
-                              ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
-                              : firstMenu,
+                          dateText,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
                         ),
-                        subtitle: Text(
-                          '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
-                              '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
-                              '\n결제 상태: ${getStatusString(payment.status)}'
-                              '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
-                              '\n결제 일시: $formattedTimestamp',
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.more_vert),
-                          onPressed: () {
+                      ),
+                      Card(
+                        child: ListTile(
+                          title: Text(
+                            totalFoodCount > 1
+                                ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
+                                : firstMenu,
+                          ),
+                          subtitle: Text(
+                            '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
+                            '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
+                            '\n결제 상태: ${getStatusString(payment.status)}'
+                            '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
+                            '\n결제 일시: $formattedTimestamp',
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.more_vert),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PaymentDetailPage(payment: payment),
+                                ),
+                              );
+                            },
+                          ),
+                          onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -194,7 +208,27 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                             );
                           },
                         ),
-                        onTap: () {
+                      ),
+                    ],
+                  );
+                } else {
+                  return Card(
+                    child: ListTile(
+                      title: Text(
+                        totalFoodCount > 1
+                            ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
+                            : firstMenu,
+                      ),
+                      subtitle: Text(
+                        '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
+                        '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
+                        '\n결제 상태: ${getStatusString(payment.status)}'
+                        '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
+                        '\n결제 일시: $formattedTimestamp',
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.more_vert),
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -204,27 +238,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                           );
                         },
                       ),
-                    ),
-                  ],
-                );
-              } else {
-                return Card(
-                  child: ListTile(
-                    title: Text(
-                      totalFoodCount > 1
-                          ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
-                          : firstMenu,
-                    ),
-                    subtitle: Text(
-                      '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
-                          '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
-                          '\n결제 상태: ${getStatusString(payment.status)}'
-                          '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
-                          '\n결제 일시: $formattedTimestamp',
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.more_vert),
-                      onPressed: () {
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -234,19 +248,10 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                         );
                       },
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              PaymentDetailPage(payment: payment),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }
-            },
+                  );
+                }
+              },
+            ),
           ),
         ),
       ],

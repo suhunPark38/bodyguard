@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../../providers/diet_data_provider.dart';
 import '../../providers/search_provider.dart';
-import '../../providers/shopping_provider.dart';
 import '../../widgets/custom_search_bar.dart';
 import '../my_home_page/my_home_page.dart';
 import '../search_results_page/search_results_page.dart';
@@ -71,6 +70,7 @@ class SearchPage extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           await searchProvider.loadPopularSearches();
+          await searchProvider.loadCuisineTypes();
         },
         child: ListView(
           children: const [
