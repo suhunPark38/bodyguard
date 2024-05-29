@@ -61,8 +61,6 @@ class StoreListPage extends StatelessWidget {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Provider.of<ShoppingProvider>(context, listen: false)
-                      .setCurrentShoppingTabIndex(0);
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
