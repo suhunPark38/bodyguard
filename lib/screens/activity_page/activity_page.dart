@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/screens/activity_page/widgets/body_info_widget.dart';
 import 'package:bodyguard/screens/activity_page/widgets/calorie_widget.dart';
@@ -5,8 +7,8 @@ import 'package:bodyguard/screens/activity_page/widgets/date_widget.dart';
 import 'package:bodyguard/screens/activity_page/widgets/steps_widget.dart';
 import 'package:bodyguard/screens/activity_page/widgets/water_widget.dart';
 import 'package:bodyguard/widgets/custom_button.dart';
-import 'package:bodyguard/widgets/explain_use_health.dart';
 import 'package:flutter/material.dart';
+import 'package:health/health.dart';
 import 'package:provider/provider.dart';
 
 
@@ -34,12 +36,13 @@ class _ActivityPageState extends State<ActivityPage> {
                   WaterWidget(water: provider.water),
                   CalorieWidget(targetCalories: 2000, burnedCalories: provider.totalCalorie),
                   BodyInfoWidget(height: provider.height, weight: provider.weight),
-                  CustomButton(
-                    onPressed: () {  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ExplainUseHealth()), // ImageStepper 페이지로 이동
-                    );}, text: const Text('건강 데이터 연동에 실패한다면?'),
-                  ),
+
+                  if(Platform.isAndroid) // 헬스 커넥트는 안드로이드에서만 실행 가능하다.
+                    CustomButton(
+                      onPressed: () {
+                        Health().installHealthConnect();
+                      }, text: const Text('헬스 커넥트 열기'),
+                    ),
                 ]),
 
           )
