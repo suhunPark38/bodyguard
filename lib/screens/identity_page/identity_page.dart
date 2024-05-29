@@ -1,4 +1,5 @@
 import 'package:bodyguard/providers/user_info_provider.dart';
+import 'package:bodyguard/widgets/user_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
@@ -46,7 +47,7 @@ class _IdentityPage extends State<IdentityPage> {
                 Icon(Icons.face, size: 40),
                 Consumer<UserInfoProvider>(
                     builder: (context ,userInfo, child){
-                      return userInfo.D(" 님 안녕하세요.");
+                      return userIDTitle(context, " 님 안녕하세요.");
                     }),
                 Spacer(),
                 Align(

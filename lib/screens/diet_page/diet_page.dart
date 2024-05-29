@@ -1,3 +1,5 @@
+import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -76,30 +78,29 @@ class DietPage extends StatelessWidget {
                             MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "총 칼로리",
+                                "총 칼로리/(권장)",
                                 style: TextStyle(
                                     color: Colors.blueGrey, fontSize: 15),
                               ),
                               Icon(Icons.fastfood)
                             ]),
                         const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-
-                            Row(
-                              children: [
-                                Text(
-                                  '${provider.totalNutritionalInfo.calories.toStringAsFixed(1)} / ${provider.recommendedCalories}kcal',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                        Consumer2<UserInfoProvider, HealthDataProvider>(
+                            builder: (context, user, health, child){
+                              var BMR = (10 * health.weight) + (6.25 * health.height) - 5 * (user.info?.age ?? 25);
+                              print("BMR는 $BMR 성별은 ${user.info!.gender}");
+                              user.info?.gender == "남" ? BMR += 5 : BMR -= 161;
+                              provider.recommendedCalories = BMR * 1.55;
+                              return Text(
+                                '${provider.totalNutritionalInfo.calories.toStringAsFixed(2)} / ${provider.recommendedCalories.toStringAsFixed(2)}kcal',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ],
-                            ),
-                          ],
+                              );
+                            }
                         ),
+
                         const SizedBox(height: 10),
                         LinearProgressIndicator(
                           value: caloriesPercentage,
@@ -121,7 +122,7 @@ class DietPage extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '${provider.recommendedCalories}',
+                              '${provider.recommendedCalories.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey.shade600,

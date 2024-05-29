@@ -92,7 +92,7 @@ class ShoppingPage extends StatelessWidget {
                             height: 20,
                             child: CustomButton(
                               onPressed: () async {
-                                Widget mapPage = await MapRun();
+                                Widget mapPage = const NaverMapApp();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

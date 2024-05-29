@@ -1,25 +1,33 @@
+import 'dart:io';
+
+import 'package:bodyguard/model/user_model.dart';
 import 'package:bodyguard/services/user_firebase.dart';
 import 'package:bodyguard/utils/health_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:health/health.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HealthDataProvider with ChangeNotifier {
 
   AppState _state = AppState.DATA_NOT_FETCHED; // 현재 health data 상태
   DateTime _selectedDate = DateTime.now(); // 가져올 건강 데이터 시간
   int _steps = 0;
-  double _height = 0;
-  double _weight = 0;
   double _totalCalorieBurned = 0;
   double _water = 0;
   double _activeCalorieBurned = 0;
+  double _height = 0;
+  double _weight = 0;
 
   double _todayWater = 0;
   int _todayStep = 0;
 
+  late double _targetCalorie = 0;
+
+  double get targetCalorie => _targetCalorie;
   DateTime get selectedDate => _selectedDate;
   AppState get state => _state;
   int get steps => _steps;
+
   double get height => _height;
   double get weight => _weight;
   double get totalCalorie => _totalCalorieBurned;
@@ -27,14 +35,10 @@ class HealthDataProvider with ChangeNotifier {
   double get activeCalorieBurned => _activeCalorieBurned;
   double get todayWater => _todayWater;
   int get todayStep => _todayStep;
+  set targetCalorie(double value){
+    _targetCalorie = value;
+    notifyListeners();
 
-  set weight(double value) {
-    _weight = value;
-    notifyListeners();
-  }
-  set height(double value){
-    _height = value;
-    notifyListeners();
   }
 
   HealthDataProvider() {
@@ -47,14 +51,14 @@ class HealthDataProvider with ChangeNotifier {
   Future<void> fetchData(DateTime date) async {
     _setNow();
 
-      _state = AppState.FETCHING_DATA;
+    _state = AppState.FETCHING_DATA;
 
-      final startTime = DateTime(date.year, date.month, date.day);
-      final endTime = startTime.add(const Duration(hours: 23, minutes: 59));
+    final startTime = DateTime(date.year, date.month, date.day);
+    final endTime = startTime.add(const Duration(hours: 23, minutes: 59));
 
-      double totalCalories = 0;
-      double totalActiveCalories = 0;
-      double totalWater = 0;
+    double totalCalories = 0;
+    double totalActiveCalories = 0;
+    double totalWater = 0;
 
 
       // try {
@@ -65,51 +69,69 @@ class HealthDataProvider with ChangeNotifier {
         endTime: endTime,
       );
 
-      debugPrint('Total number of data points: ${healthData.length}. '
-          '${healthData.length > 100 ? 'Only showing the first 100.' : ''}');
+    debugPrint('Total number of data points: ${healthData.length}. '
+        '${healthData.length > 100 ? 'Only showing the first 100.' : ''}');
 
 
-      // filter out duplicates
-      healthData = Health().removeDuplicates(healthData);
+    // filter out duplicates
+    healthData = Health().removeDuplicates(healthData);
 
-      // Iterate through healthData to populate fields
-      for (var dataPoint in healthData) {
-        final value = dataPoint.value.toJson();
-        switch (dataPoint.type) {
-          case HealthDataType.TOTAL_CALORIES_BURNED:
-            totalCalories += value['numeric_value'] as double;
-            break;
-          case HealthDataType.WATER:
-            print(value);
-            totalWater += value['numeric_value'] as double;
-            break;
-          case HealthDataType.HEIGHT:
-            _height = value['numeric_value'] as double;
-            break;
-          case HealthDataType.WEIGHT:
-            _weight = value['numeric_value'] as double;;
-            break;
-          case HealthDataType.ACTIVE_ENERGY_BURNED:
-            totalActiveCalories += (value['numeric_value'] as double);
-          default:
-            break;
-        }
+    // Iterate through healthData to populate fields
+    for (var dataPoint in healthData) {
+      final value = dataPoint.value.toJson();
+      switch (dataPoint.type) {
+        case HealthDataType.TOTAL_CALORIES_BURNED:
+          totalCalories += value['numeric_value'] as double;
+          break;
+        case HealthDataType.WATER:
+          print(value);
+          totalWater += value['numeric_value'] as double;
+          break;
+        case HealthDataType.HEIGHT:
+          _height = (value['numeric_value'] as double) * 100;
+          break;
+        case HealthDataType.WEIGHT:
+          _weight = value['numeric_value'] as double;;
+          break;
+        case HealthDataType.ACTIVE_ENERGY_BURNED:
+          totalActiveCalories += (value['numeric_value'] as double);
+        default:
+          break;
       }
-      _totalCalorieBurned = totalCalories;
-      _activeCalorieBurned = totalActiveCalories;
-      _water = totalWater;
+    }
+    _totalCalorieBurned = totalCalories;
+    _activeCalorieBurned = totalActiveCalories;
+    _water = totalWater;
 
     if (selectedDate.day == DateTime.now().day){
       _todayWater = _water;
     }
 
-      _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
+    _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
 
       print(_state);
       notifyListeners();
 
   }
 
+  void updateHeight(double? height){
+    if(height != null) {
+      _height = height;
+      notifyListeners();
+    }
+  }
+  void updateWeight(double? weight){
+    if(weight != null) {
+      _weight = weight;
+      notifyListeners();
+    }
+  }
+  void updateTargetCalorie(double? targetCalorie){
+    if(targetCalorie != null) {
+      _targetCalorie = targetCalorie;
+      notifyListeners();
+    }
+  }
 
   /// Fetch steps from the health plugin and show them in the app.
   Future<void> fetchStepData(DateTime date) async {
@@ -195,13 +217,8 @@ class HealthDataProvider with ChangeNotifier {
         type: HealthDataType.HEIGHT,
         startTime: now);
 
-    if(success){
-      _state = AppState.DATA_ADDED;
-      UserFirebase().setHeight(_height);
-    }
-    else{
-      AppState.DATA_NOT_ADDED;
-    }
+    _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
+
 
     notifyListeners();
   }
@@ -210,7 +227,6 @@ class HealthDataProvider with ChangeNotifier {
   Future<void> addWeightData(double add) async {
     _setNow();
     final now = _selectedDate;
-    _weight = add;
     // Add data for supported types
     // NOTE: These are only the ones supported on Androids new API Health Connect.
     // Both Android's Google Fit and iOS' HealthKit have more types that we support in the enum list [HealthDataType]
@@ -223,13 +239,8 @@ class HealthDataProvider with ChangeNotifier {
         type: HealthDataType.WEIGHT,
         startTime: now);
 
-    if(success){
-      _state = AppState.DATA_ADDED;
-      UserFirebase().setWeight(_weight);
-    }
-    else{
-      AppState.DATA_NOT_ADDED;
-    }
+    _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
+
 
     notifyListeners();
   }

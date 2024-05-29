@@ -1,5 +1,6 @@
+import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:flutter/material.dart';
-import '../../model/user_model.dart';
+import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_firebase.dart';
 import '../../utils/format_util.dart';
@@ -32,7 +33,6 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
   late List<FocusNode> focusNodes;
   Map<String, dynamic>? selectedadress;
   bool _showEditForm = false;
-  UserInfoModel? userInfo;
 
   @override
   void initState() {
@@ -40,23 +40,7 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
     controllers =
         List.generate(data.length, (index) => TextEditingController());
     focusNodes = List.generate(data.length, (index) => FocusNode());
-    _initializeUserInfo();
-  }
 
-  Future<void> _initializeUserInfo() async {
-    userInfo = await UserFirebase().getUserInfoF();
-    if (userInfo != null) {
-      setState(() {
-        controllers[0].text = userInfo!.nickName;
-        controllers[1].text = userInfo!.email;
-        controllers[3].text = (userInfo!.age).toString();
-        controllers[4].text = userInfo!.gender;
-        controllers[5].text = userInfo!.height.toString();
-        controllers[6].text = userInfo!.weight.toString();
-        controllers[7].text = userInfo!.roadAddress;
-        controllers[8].text = userInfo!.detailAddress;
-      });
-    }
   }
 
   @override
@@ -92,7 +76,7 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
     );
   }
 
-  Widget _buildLogoutButton() {
+  Align _buildLogoutButton() {
     return Align(
       alignment: Alignment.centerRight,
       child: OutlinedButton(
@@ -125,6 +109,17 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
   }
 
   Widget _buildEditForm() {
+    final user = Provider.of<UserInfoProvider>(context, listen: true);
+    controllers[0].text = user.info?.nickName ?? '';
+    controllers[1].text = user.info?.email ?? '';
+    controllers[3].text = user.info != null ? user.info!.age.toString() : '';
+    controllers[4].text = user.info?.gender ?? '';
+    controllers[5].text = user.info != null ? user.info!.height.toString() : '';
+    controllers[6].text = user.info != null ? user.info!.weight.toString() : '';
+    controllers[7].text = user.info?.roadAddress ?? '';
+    controllers[8].text = user.info?.detailAddress ?? '';
+
+
     return AnimatedOpacity(
         opacity: _showEditForm ? 1.0 : 0.0,
         duration: Duration(milliseconds: 500),
@@ -178,16 +173,13 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
                   regExp: REGEXP.password,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   validator: (value) {
-                    if (CheckValidate().checkPW(
-                                focusNode: focusNodes[2], value: value!) ==
-                            null &&
-                        value.isNotEmpty) {
+                    final result =CheckValidate().checkPW(focusNode: focusNodes[2], value: value!);
+                    if ( result == null) {
                       Auth().updatePassword(value);
                       return null;
-                    } else if (value.isEmpty) {
-                      return null;
+                    } else{
+                      return result;
                     }
-                    return "6자 이상 입력하세요";
                   },
                 ),
                 const SizedBox(height: 10),
@@ -249,14 +241,13 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
                             builder: (context) => SearchAddress()),
                       );
                       if (selectedadress != null) {
-                        setState(() {
                           controllers[7].text = selectedadress!['roadAddress'];
-                        });
                       }
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return '주소창을 먼저 눌러주세요';
+
                       }
                       return null;
                     },
@@ -284,35 +275,35 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
                       setState(() {
                         isLoading = true;
                       });
-                      userInfo!.nickName = controllers[0].text;
-                      userInfo!.email = controllers[1].text;
-                      userInfo!.age =
-                          int.parse(controllers[3].text); // 문자열을 int로 변환
-                      userInfo!.gender = controllers[4].text;
-                      userInfo!.height =
-                          double.parse(controllers[5].text); // 문자열을 double로 변환
-                      userInfo!.weight =
-                          double.parse(controllers[6].text); // 문자열을 double로 변환
-                      if (userInfo!.roadAddress != controllers[7].text) {
-                        userInfo!.NLatLng = [
-                          selectedadress!['x'],
-                          selectedadress!['y']
-                        ];
-                      }
-                      userInfo!.roadAddress = controllers[7].text;
-                      userInfo!.detailAddress = controllers[8].text;
-                      String? result =
-                          await UserFirebase().updateUser(user: userInfo!);
+
+                      String? result = await UserFirebase().updateUser({
+                        "nickName": controllers[0].text,
+                        "email": controllers[1].text,
+                        "age": int.parse(controllers[3].text), // 문자열을 int로 변환
+                        "gender": controllers[4].text,
+                        "height": double.parse(controllers[5].text), // 문자열을 double로 변환
+                        "weight": double.parse(controllers[6].text), // 문자열을 double로 변환
+                        "roadAddress": controllers[7].text,
+                        "detailAddress": controllers[8].text,
+                        "NLatLng": user.info?.roadAddress != controllers[7].text
+                            ? [int.parse(selectedadress!['x']), int.parse(selectedadress!['y'])]
+                            : user.info!.NLatLng,
+                      });
+
                       if (result == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("정보가 성공적으로 저장되었습니다.")));
+                          SnackBar(content: Text("정보가 성공적으로 저장되었습니다.")),
+                        );
+                        _showEditForm = false;
                       } else {
                         print(result);
                       }
+
+
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
-                    setState(() {
-                      isLoading = false; // 로딩 종료
-                    });
                   },
                   child: isLoading
                       ? CircularProgressIndicator(
@@ -378,7 +369,7 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
         ListTile(
           leading: Icon(Icons.login),
           title: Text(
-              "마지막 로그인 시간 \n${formatTimestamp((userInfo!.time).toDate())}"),
+              "마지막 로그인 시간 \n${formatTimestamp(Provider.of<UserInfoProvider>(context).info?.time.toDate() ?? DateTime.now())}"),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:bodyguard/widgets/customForm.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,15 +7,15 @@ import 'package:provider/provider.dart';
 import '../../../utils/regExp.dart';
 import '../../../widgets/custom_button.dart';
 
-class BodyInfoWidget extends StatelessWidget {
-  final double height; // 현재 걸음 수
-  final double weight; // 목표 걸음 수
-  const BodyInfoWidget({Key? key, required this.height, required this.weight})
-      : super(key: key);
+class BodyInfoWidget extends StatefulWidget {
+  BodyInfoWidget({Key? key}) : super(key: key);
 
   @override
+  _BodyInfoWidget createState() => _BodyInfoWidget();
+}
+class _BodyInfoWidget extends State<BodyInfoWidget>{
+  @override
   Widget build(BuildContext context) {
-    return Consumer<HealthDataProvider>(builder: (context, provider, child) {
       return GridView(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -25,56 +26,60 @@ class BodyInfoWidget extends StatelessWidget {
         ),
         children: [
           Card(
+
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Consumer<HealthDataProvider>(
+                builder: (context, provider, child){
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "신장",
+                            style: TextStyle(color: Colors.blueGrey, fontSize: 15),
+                          ),
+                          Icon(Icons.accessibility),
+                        ],
+                      ),
+                      const SizedBox(height: 25),
                       Text(
-                        "신장",
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 15),
+                        "${provider.height}cm",
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
                       ),
-                      Icon(Icons.accessibility),
-                    ],
-                  ),
-                  const SizedBox(height: 25),
-                  Text(
-                    "${provider.height}cm",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                  const SizedBox(height: 25),
-                  SizedBox(
-                    width: 110,
-                    height: 20,
-                    child: CustomButton(
-                      onPressed: () {
-                        showEditDialog(
-                          Icons.accessibility,
-                          context,
-                          "신장",
-                          provider.height.toString(),
-                          (value) {
-                            provider.height = double.parse(value);
+                      const SizedBox(height: 25),
+                      SizedBox(
+                        width: 110,
+                        height: 20,
+                        child: CustomButton(
+                          onPressed: () {
+                            showEditDialog(
+                              Icons.accessibility,
+                              context,
+                              "신장",
+                              provider.height.toString(),
+                                  (value) {
+                                Provider.of<UserInfoProvider>(context, listen: false).height = double.parse(value);
+                              },
+                            );
                           },
-                        );
-                      },
-                      text: const Text(
-                        "수정하기",
-                        style: TextStyle(fontSize: 10),
+                          text: const Text(
+                            "수정하기",
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
+                    ],
+                  );
+                })
             ),
           ),
           Card(
@@ -83,57 +88,60 @@ class BodyInfoWidget extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Consumer<HealthDataProvider>(
+                builder: (context, provider, child){
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "몸무게",
+                            style: TextStyle(color: Colors.blueGrey, fontSize: 15),
+                          ),
+                          Icon(Icons.monitor_weight),
+                        ],
+                      ),
+                      const SizedBox(height: 25),
                       Text(
-                        "몸무게",
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 15),
+                        "${provider.weight}kg",
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
                       ),
-                      Icon(Icons.monitor_weight),
-                    ],
-                  ),
-                  const SizedBox(height: 25),
-                  Text(
-                    "${provider.weight}kg",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                  const SizedBox(height: 25),
-                  SizedBox(
-                    width: 110,
-                    height: 20,
-                    child: CustomButton(
-                      onPressed: () {
-                        showEditDialog(
-                          Icons.monitor_weight,
-                          context,
-                          "몸무게",
-                          provider.weight.toString(),
-                          (value) {
-                            provider.weight = double.parse(value);
+                      const SizedBox(height: 25),
+                      SizedBox(
+                        width: 110,
+                        height: 20,
+                        child: CustomButton(
+                          onPressed: () {
+                            showEditDialog(
+                              Icons.monitor_weight,
+                              context,
+                              "몸무게",
+                              provider.weight.toString(),
+                                  (value) {
+                                    Provider.of<UserInfoProvider>(context, listen: false).weight = double.parse(value);
+                              },
+                            );
                           },
-                        );
-                      },
-                      text: const Text(
-                        "수정하기",
-                        style: TextStyle(fontSize: 10),
+                          text: const Text(
+                            "수정하기",
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
+                    ],
+                  );
+                })
             ),
           ),
         ],
       );
-    });
   }
+
 
   void showEditDialog(IconData? icon, BuildContext context, String title,
       String initialValue, Function(String) onSave) {
@@ -174,7 +182,11 @@ class BodyInfoWidget extends StatelessWidget {
               children: [
                 FilledButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    if (_formKey.currentState!.validate()) {
+                      onSave(controller.text);
+                      print(controller.text);
+                      Navigator.of(context).pop();
+                    }
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.grey.shade300,

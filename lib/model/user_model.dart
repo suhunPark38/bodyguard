@@ -13,6 +13,7 @@ class UserInfoModel {
   String detailAddress;
   List<double> NLatLng;
   Timestamp time;
+  double targetCalorie = 0.0;
 
   UserInfoModel({
     required this.nickName,
@@ -24,20 +25,31 @@ class UserInfoModel {
     required this.roadAddress,
     required this.NLatLng,
     required this.detailAddress,
-    required this.time
+    required this.time,
+    required this.targetCalorie
   });
-
 
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is UserInfoModel && runtimeType == other.runtimeType &&
-              nickName == other.nickName && email == other.email &&
-              gender == other.gender && height == other.height &&
-              weight == other.weight && age == other.age &&
-              roadAddress == other.roadAddress &&
-              detailAddress == other.detailAddress && NLatLng == other.NLatLng;
+      other is UserInfoModel &&
+          runtimeType == other.runtimeType &&
+          nickName == other.nickName &&
+          email == other.email &&
+          gender == other.gender &&
+          height == other.height &&
+          weight == other.weight &&
+          age == other.age &&
+          roadAddress == other.roadAddress &&
+          detailAddress == other.detailAddress &&
+          NLatLng == other.NLatLng &&
+          time == other.time &&
+          targetCalorie == other.targetCalorie;
+
+
+  //"recommendedC": 10 * double.parse(controllers[6].text) + 6.25 * double.parse(controllers[5].text) + 5 * int.parse(controllers[3].text) +
+  //(controllers[4].text == "남" ? 5 : -161)
 
   @override
   int get hashCode =>
@@ -49,8 +61,9 @@ class UserInfoModel {
       age.hashCode ^
       roadAddress.hashCode ^
       detailAddress.hashCode ^
-      NLatLng.hashCode;
-
+      NLatLng.hashCode ^
+      time.hashCode ^
+      targetCalorie.hashCode;
 
   factory UserInfoModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
@@ -94,6 +107,7 @@ class UserInfoModel {
     final NLatLng = getDoubleList(json['NLatLng']);
     final detailAddress = json['DetailAddress'] ?? "";
     final time = json['lastLogin'] ?? Timestamp.fromDate(DateTime.now());
+    final targetCalorie = json['targetCalorie'] ?? 0.0;
 
 
     log("user_model의 factory UserInfo.fromJson 출력 값: "
@@ -109,7 +123,8 @@ class UserInfoModel {
       roadAddress: roadAddress,
       detailAddress: detailAddress,
       NLatLng: NLatLng,
-      time: time
+      time: time,
+      targetCalorie: targetCalorie
     );
   }
 
@@ -123,8 +138,7 @@ class UserInfoModel {
       "gender": gender,
       "roadAddress": roadAddress,
       "detailAddress": detailAddress,
-      "NLatLng": NLatLng
-
+      "NLatLng": NLatLng,
     };
   }
 

@@ -3,7 +3,6 @@ import 'package:bodyguard/widgets/forget_password.dart';
 import 'package:bodyguard/widgets/sign_up.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../services/auth_service.dart';
 import '../utils/regExp.dart';
 import 'customForm.dart';
@@ -35,7 +34,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: SingleChildScrollView(
         // 스크롤뷰로 전체 내용을 감싼다.
-        physics: BouncingScrollPhysics(), // 스크롤 기능 비활성화
+        physics: const BouncingScrollPhysics(), // 스크롤 기능 비활성화
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -94,10 +93,7 @@ class _LoginState extends State<Login> {
                           isLoading = false; // 로딩 종료
                         });
 
-                        if (result == null) {
-                          // 로그인 성공
-                          const MyApp();
-                        } else {
+                        if (result != null) {
                           // 로그인 실패, 결과 변수에서 오류 메시지를 사용합니다.
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text("로그인에 실패했습니다: $result"),  // 로그인 실패 메시지 출력

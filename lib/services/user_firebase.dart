@@ -5,7 +5,8 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'auth_service.dart';
 
 class UserFirebase {
-  FirebaseFirestore _firebase = FirebaseFirestore.instance;
+  final FirebaseFirestore _firebase = FirebaseFirestore.instance;
+
   Future<String?> createUserInfo(
       {required uid, required UserInfoModel user}) async {
     try {
@@ -23,42 +24,16 @@ class UserFirebase {
     }
   }
 
-  Stream<UserInfoModel> getUserInfo({required String uid}) {
-    print("getUserInfo: $uid");
-    return _firebase
-        .collection('users')
-        .doc(uid)
-        .snapshots()
-        .map((snapshot) {
-      print("getUserInfo: $uid");
-      print("Firestore snapshot data: ${snapshot.data()}");
-      // `snapshot.data()`를 통해 데이터를 가져옵니다. `data()`는 `Map<String, dynamic>` 타입을 반환합니다.
-      return UserInfoModel.fromJson(snapshot.data() as Map<String, dynamic>);
+
+  Stream<Map<String, dynamic>> fetchUser(String userId) {
+    return _firebase.collection('users').doc(userId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return snapshot.data()!;
+      } else {
+        throw Exception("User data not found");
+      }
     });
   }
-
-  Future<UserInfoModel?> getUserInfoF() async {
-    String? uid = await Auth().getUiD();
-
-    if (uid == null) {
-      return null;
-    }
-
-    // Firestore에서 사용자 정보를 가져옵니다.
-    DocumentSnapshot snapshot = await _firebase.collection('users').doc(uid).get();
-
-    if (snapshot.exists) {
-      print("getUserInfo: $uid");
-      print("Firestore snapshot data: ${snapshot.data()}");
-
-      // `snapshot.data()`를 통해 데이터를 가져옵니다. `data()`는 `Map<String, dynamic>` 타입을 반환합니다.
-      return UserInfoModel.fromJson(snapshot.data() as Map<String, dynamic>);
-    } else {
-      print("No user data found for uid: $uid");
-      return null;
-    }
-  }
-
 
   Future<String?> getUser(String userEmail) async {
     try {
@@ -78,38 +53,12 @@ class UserFirebase {
     }
   }
 
-  Future<String?> updateUser({required UserInfoModel user}) async {
-    String? uid = await Auth().getUiD();
-
-    await _firebase
-        .collection('users')
-        .doc(uid)
-        .update(user.toJson())
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
-
-  }
-
-  void updateAddress(String address) {
-    String? uid = Auth().getUiD() as String?;
-
-    if (uid == null) {
-      return;
-    }
-    _firebase
-        .collection('users')
-        .doc(uid)
-        .update({'address': address})
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
-  }
-
   Future<NLatLng> getUserLatLng() async {
     try {
       String? uid = await Auth().getUiD();
 
       // Firestore 인스턴스에서 'users' 컬렉션의 특정 유저 문서를 참조하여 데이터를 가져옴
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await _firebase
           .collection('users')
           .doc(uid)
           .get();
@@ -133,6 +82,21 @@ class UserFirebase {
     }
   }
 
+  // 미 구현
+  //
+
+  Future<String?> updateUser(Map<String, dynamic> user) async {
+    String? uid = await Auth().getUiD();
+
+    await _firebase
+        .collection('users')
+        .doc(uid)
+        .update(user)
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+
+  }
+
   Future<void> updateLoginDate() async {
     String? uid = await Auth().getUiD();
 
@@ -145,19 +109,7 @@ class UserFirebase {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
-  Future<void> getWeight() async {
-    String? uid = await Auth().getUiD();
-
-    await _firebase
-        .collection('users')
-        .doc(uid)
-        .update({"lastLogin": DateTime.now()
-    })
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
-  }
-
-  Future<void> setWeight(double weight) async {
+  Future<void> updateWeight(double weight) async {
     String? uid = await Auth().getUiD();
     await _firebase
         .collection('users')
@@ -168,7 +120,7 @@ class UserFirebase {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
-  Future<void> setHeight(double height) async {
+  Future<void> updateHeight(double height) async {
     try {
       String? uid = await Auth().getUiD();
       if (uid == null) {
@@ -176,7 +128,7 @@ class UserFirebase {
         return;
       }
 
-      await FirebaseFirestore.instance
+      await _firebase
           .collection('users')
           .doc(uid)
           .update({"height": height});
@@ -191,5 +143,54 @@ class UserFirebase {
       }
     }
   }
+
+  Future<void> updateGender(String gender) async {
+    try {
+      String? uid = await Auth().getUiD();
+      if (uid == null) {
+        print("Failed to get user ID: User not authenticated");
+        return;
+      }
+
+      await _firebase
+          .collection('users')
+          .doc(uid)
+          .update({"gender": gender});
+      print("User Updated");
+    } catch (e) {
+      if (e is FirebaseException && e.code == 'unavailable') {
+        // 네트워크 연결 문제
+        print("Failed to update user: Network connection error");
+      } else {
+        // 기타 오류
+        print("Failed to update user: $e");
+      }
+    }
+  }
+
+  Future<void> updateTargetCalorie(double targetCalorie) async {
+    try {
+      String? uid = await Auth().getUiD();
+      if (uid == null) {
+        print("Failed to get user ID: User not authenticated");
+        return;
+      }
+
+      await _firebase
+          .collection('users')
+          .doc(uid)
+          .set({"targetCalorie": targetCalorie}, SetOptions(merge: true));
+      print("User Updated");
+    } catch (e) {
+      if (e is FirebaseException && e.code == 'unavailable') {
+        // 네트워크 연결 문제
+        print("Failed to update user: Network connection error");
+      } else {
+        // 기타 오류
+        print("Failed to update user: $e");
+      }
+    }
+  }
+
 
 }

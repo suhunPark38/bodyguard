@@ -38,7 +38,7 @@ class StoreCard extends StatelessWidget {
               children: [
               Text(store.cuisineType),
               FutureBuilder<String>(
-                future: calDist(store.latitude, store.longitude),
+                future: calDist(store.latitude, store.longitude, context),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text('Calculating...');
