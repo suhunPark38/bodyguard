@@ -4,9 +4,9 @@ import 'package:bodyguard/screens/home_page/widget/ad_carousel.dart';
 import 'package:bodyguard/utils/date_util.dart';
 import 'package:bodyguard/utils/notification.dart';
 import 'package:bodyguard/screens/store_list_page/store_list_page.dart';
+import 'package:bodyguard/widgets/user_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/diet_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../providers/user_info_provider.dart';
 import '../../widgets/custom_button.dart';
@@ -64,11 +64,11 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer3<HealthDataProvider, DietProvider,UserInfoProvider>(
-        builder: (context, healthData, diet, userInfo, child) {
+      body: Consumer2<HealthDataProvider, DietProvider>(
+        builder: (context, healthData, diet, child) {
           return RefreshIndicator(
             onRefresh: () async {
-               healthData.todayDate();
+              healthData.todayDate();
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    userInfo.D("님의 하루는?"),
+                    userIDTitle(context, "님의 하루는?"),
                     const SizedBox(
                       height: 5,
                     ),
@@ -357,7 +357,7 @@ class HomePage extends StatelessWidget {
                       height: 16,
                     ),
                     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                      userInfo.D("님, 이런건 어떠세요?"),
+                      userIDTitle(context, "님, 이런건 어떠세요?"),
                     ]),
                     const SizedBox(
                       height: 5,

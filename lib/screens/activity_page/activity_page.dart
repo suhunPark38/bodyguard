@@ -22,6 +22,7 @@ class _ActivityPageState extends State<ActivityPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Center(
@@ -32,8 +33,8 @@ class _ActivityPageState extends State<ActivityPage> {
                   DateWidget(),
                   StepsWidget(currentSteps: provider.steps, targetSteps: 6000),
                   WaterWidget(water: provider.water),
-                  CalorieWidget(targetCalories: 2000, burnedCalories: provider.totalCalorie),
-                  BodyInfoWidget(height: provider.height, weight: provider.weight),
+                  CalorieWidget(burnedCalories: provider.totalCalorie, targetCalorie: provider.targetCalorie,),
+                  BodyInfoWidget(),
                   CustomButton(
                     onPressed: () {  Navigator.push(
                       context,

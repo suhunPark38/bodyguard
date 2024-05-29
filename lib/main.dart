@@ -4,7 +4,6 @@ import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/search_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
-
 import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:bodyguard/widgets/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,14 +17,15 @@ import 'firebase_options.dart';
 import 'map.dart';
 import 'utils/notification.dart';
 import 'screens/my_home_page/my_home_page.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  //NaverMap init
   mapInitialize();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );// Firebase 초기화
@@ -118,6 +118,7 @@ class AuthenticationWrapper extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.hasData) {
             UserFirebase().updateLoginDate();
+            Provider.of<UserInfoProvider>(context, listen: false).fetchUser(FirebaseAuth.instance.currentUser!.uid, context);
             return const MyHomePage(
               initialIndex: 0,
             );

@@ -27,7 +27,7 @@ class DietProvider with ChangeNotifier {
   List<DietData> _lunchForPeriod = [];
   List<DietData> _dinnerForPeriod = [];
 
-  final double _recommendedCalories = 2000;
+  double _recommendedCalories = 2000;
 
   double _todayCalories = 0.0;
 
@@ -42,7 +42,9 @@ class DietProvider with ChangeNotifier {
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
 
   double get recommendedCalories => _recommendedCalories;
-
+  set recommendedCalories(double value){
+    _recommendedCalories = value;
+  }
   DateTime get focusedDay => _focusedDay;
 
   DateTime get selectedDay => _selectedDay;

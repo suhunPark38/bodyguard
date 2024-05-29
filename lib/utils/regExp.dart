@@ -32,22 +32,26 @@ class CheckValidate {
   }
 
   //회원정보 수정할 때 쓰이는 정규식체크
-  Future<String?> checkPW({required FocusNode focusNode, required String value}) async {
+  String? checkPW({required FocusNode focusNode, required String value}) {
     // 값이 비어 있는 경우, 검증 없이 통과
+    print(value);
+    // 값이 있을 경우, 정규식을 사용하여 검증
+
     if (value.isEmpty) {
       return null;
-    }
-
-    // 값이 있을 경우, 정규식을 사용하여 검증
-    RegExp regexp = getPattern(REGEXP.password);
-    if (!regexp.hasMatch(value)) {
-      focusNode.requestFocus();
-      return "6자 이상 입력하세요";
+    } else {
+      RegExp regexp = getPattern(REGEXP.password);
+      if (!regexp.hasMatch(value)) {
+        focusNode.requestFocus();
+        return "6자 이상 입력하세요";
+      } else {
+        return null;
+      }
     }
 
     // 여기까지 코드가 도달했다면, 정규식을 통과한 것입니다.
     // 비밀번호 업데이트 로직은 여기에서 처리하지 않고 호출하는 곳에서 처리합니다.
-    return null;
+
   }
 
   RegExp getPattern(REGEXP regexp){

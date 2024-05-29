@@ -216,9 +216,6 @@ class _SignUpState extends State<SignUp> {
                   setState(() {
                     isLoading = false; // 로딩 종료
                   });
-                  Provider.of<HealthDataProvider>(context, listen: false).weight = double.parse(controllers[6].text) ?? 0;
-                  Provider.of<HealthDataProvider>(context, listen: false).height = double.parse(controllers[6].text) ?? 0;
-
 
                   Navigator.pop(context);
                 }

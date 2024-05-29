@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,23 +31,6 @@ class _BodyPageState extends State<BodyPage> {
   bool _isChecked = false;
   bool _isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _initializeUserInfo();
-  }
-
-  Future<void> _initializeUserInfo() async {
-    var userInfo = await UserFirebase().getUserInfoF();
-    if (userInfo != null) {
-      setState(() {
-        _ageController.text = userInfo.age.toString();
-        _genderController.text = userInfo.gender;
-        _heightController.text = userInfo.height.toString();
-        _weightController.text = userInfo.weight.toString();
-      });
-    }
-  }
 
   void _showLoadingSnackBar() {
     Future.delayed(Duration(seconds: 2), () {
@@ -77,6 +59,8 @@ class _BodyPageState extends State<BodyPage> {
   }
 
   Form inputForm() {
+    final user = Provider.of<UserInfoProvider>(context);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -143,6 +127,7 @@ class _BodyPageState extends State<BodyPage> {
                     healthData
                         .addWeightData(double.parse(_weightController.text));
                   }
+                  UserFirebase().updateGender(_genderController.text);
                 }
                 _calculateBodyComposition();
               }
