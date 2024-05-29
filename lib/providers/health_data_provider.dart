@@ -1,11 +1,7 @@
-import 'dart:io';
 
-import 'package:bodyguard/model/user_model.dart';
-import 'package:bodyguard/services/user_firebase.dart';
 import 'package:bodyguard/utils/health_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:health/health.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class HealthDataProvider with ChangeNotifier {
 
@@ -25,6 +21,16 @@ class HealthDataProvider with ChangeNotifier {
 
   double get targetCalorie => _targetCalorie;
   DateTime get selectedDate => _selectedDate;
+  set selectedDate(DateTime date){
+    _selectedDate = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      _selectedDate.hour,
+      _selectedDate.minute,
+      _selectedDate.second,
+    );
+  }
   AppState get state => _state;
   int get steps => _steps;
 
@@ -213,7 +219,7 @@ class HealthDataProvider with ChangeNotifier {
 
     // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
-        value: add,
+        value: add /100,
         type: HealthDataType.HEIGHT,
         startTime: now);
 
@@ -227,6 +233,7 @@ class HealthDataProvider with ChangeNotifier {
   Future<void> addWeightData(double add) async {
     _setNow();
     final now = _selectedDate;
+    _weight = add;
     // Add data for supported types
     // NOTE: These are only the ones supported on Androids new API Health Connect.
     // Both Android's Google Fit and iOS' HealthKit have more types that we support in the enum list [HealthDataType]

@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../database/local_database.dart';
 import '../../../providers/diet_provider.dart';
+import '../../../providers/health_data_provider.dart';
 
 class DietCalendar extends StatelessWidget {
   const DietCalendar({Key? key}) : super(key: key);
@@ -36,6 +37,8 @@ class DietCalendar extends StatelessWidget {
             provider.setSelectedDay(selectedDay);
             provider.setFocusedDay(focusedDay);
             provider.notifySelectDiets(selectedDay);
+            Provider.of<HealthDataProvider>(context, listen: false).selectedDate = selectedDay;
+            Provider.of<HealthDataProvider>(context, listen: false).fetchData(provider.selectedDay);
           },
           headerStyle: const HeaderStyle(
             titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
