@@ -106,6 +106,7 @@ flutter:
 
     - assets/body_logo_icon.png
     - assets/body_logo.png
+    - assets/icon_540.png
 
 
     - assets/nutrition_icon/protein.png
