@@ -1,6 +1,7 @@
 import 'package:bodyguard/providers/diet_data_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
+import 'package:bodyguard/providers/notification_provider.dart';
 import 'package:bodyguard/providers/search_provider.dart';
 import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
@@ -21,7 +22,6 @@ import 'utils/notification.dart';
 import 'screens/my_home_page/my_home_page.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
@@ -39,20 +39,15 @@ Future<void> main() async {
   mapInitialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  );// Firebase 초기화
+  ); // Firebase 초기화
 
-
-  initializeDateFormatting().then((_) => runApp(
-    const MyApp()
-  ));
-
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
 
 
 
   FlutterLocalNotification.init(); // 로컬 알림 초기화
   FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -67,11 +62,18 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => SearchProvider()),
           ChangeNotifierProvider(create: (context) => UserInfoProvider()),
           ChangeNotifierProvider(create: (context) => DietDataProvider()),
+          ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-
-
+          //사용자 디바이스 글자 크기를 무시하는 방법
+          builder: (context, child) {
+            return MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(1)),
+              child: child!,
+            );
+          },
           theme: ThemeData(
             useMaterial3: true, //false로 수정시 material2
             fontFamily: "Pretendard",
@@ -104,7 +106,6 @@ class MyApp extends StatelessWidget {
         ));
   }
 }
-
 
 //main실행 후 실행시키는 첫 위젯
 class Start extends StatelessWidget {

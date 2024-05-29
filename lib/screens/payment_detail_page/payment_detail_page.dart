@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 
 import '../../model/payment.dart';
 import '../../model/store_menu.dart';
+import '../../providers/diet_data_provider.dart';
 import '../../providers/shopping_provider.dart';
+import '../../utils/calculate_util.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/nutrient_info_button.dart';
@@ -18,7 +20,12 @@ class PaymentDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CalculateUtil calculator = CalculateUtil();
     Provider.of<ShoppingProvider>(context, listen: false).checkedMenus.clear();
+
+    DateTime paymentTime = payment.timestamp;
+    int classification = calculator.calculateClassification(paymentTime.hour);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('결제 상세 정보'),
@@ -68,10 +75,12 @@ class PaymentDetailPage extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
+                                  Flexible(child:
                                   Text(
                                     menuItem.menu.menuName,
-                                    overflow: TextOverflow.fade,
+                                    overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(fontSize: 18),
+                                  ),
                                   ),
                                   NutrientInfoButton(
                                       size: 15, menu: menuItem.menu),
@@ -124,7 +133,7 @@ class PaymentDetailPage extends StatelessWidget {
               style: const TextStyle(fontSize: 16.0),
             ),
             Text(
-              '결제 일시: ${formatTimestamp(payment.timestamp)}',
+              '결제 일시: ${formatTimestamp(paymentTime)}',
               style: const TextStyle(fontSize: 16.0),
             ),
           ],
@@ -145,6 +154,9 @@ class PaymentDetailPage extends StatelessWidget {
                         Provider.of<ShoppingProvider>(context, listen: false)
                             .checkedMenus;
                     _showDialogsSequentially(context, checkedMenus, payment);
+                    Provider.of<DietDataProvider>(context, listen: false).setAmount(1);
+                    Provider.of<DietDataProvider>(context, listen: false).setClassification(classification);
+                    Provider.of<DietDataProvider>(context, listen: false).setEatingTime(paymentTime);
                   }
                 }
                     : null,

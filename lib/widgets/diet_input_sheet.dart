@@ -38,31 +38,40 @@ class DietInputSheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Row(children: [
-                Text(
-                  selectedData.DESC_KOR,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(width: 10),
-                const Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Text(
-                      "기록중",
-                      style: TextStyle(
-                          fontSize: 14, color: Colors.deepPurpleAccent),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          selectedData.DESC_KOR,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Text(
+                            "기록중",
+                            style: TextStyle(
+                                fontSize: 14, color: Colors.deepPurpleAccent),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ]),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ]),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -344,7 +353,7 @@ class DietInputSheet extends StatelessWidget {
                           ),
                         ),
                         SizedBox(
-                          width: 235,
+                          width: 200,
                           child: CustomButton(
                             onPressed: () {
                               if (provider.amount == 0) {
@@ -390,6 +399,9 @@ class DietInputSheet extends StatelessWidget {
                                           )),
                                   (route) => false,
                                 );
+                                dietProvider
+                                    .setSelectedDay(provider.eatingTime);
+                                dietProvider.setFocusedDay(provider.eatingTime);
                               }
                             },
                             text: const Text('기록하기'),

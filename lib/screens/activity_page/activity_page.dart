@@ -33,10 +33,13 @@ class _ActivityPageState extends State<ActivityPage> {
                 children: [
                   DateWidget(),
                   StepsWidget(currentSteps: provider.steps),
+                  const SizedBox(height: 10),
                   WaterWidget(water: provider.water),
+                  const SizedBox(height: 10),
                   CalorieWidget(targetCalories: 2000, burnedCalories: provider.totalCalorie),
+                  const SizedBox(height: 10),
                   BodyInfoWidget(height: provider.height, weight: provider.weight),
-
+                  const SizedBox(height: 10),
                   if(Platform.isAndroid) // 헬스 커넥트는 안드로이드에서만 실행 가능하다.
                     CustomButton(
                       onPressed: () {

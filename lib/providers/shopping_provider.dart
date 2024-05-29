@@ -7,6 +7,7 @@ import '../screens/shopping_page/widgets/filter_button.dart';
 import '../services/payment_service.dart';
 import '../services/store_service.dart';
 import '../utils/format_util.dart';
+import '../utils/notification.dart';
 
 class ShoppingProvider extends ChangeNotifier {
   final _database = LocalDatabase.instance;
@@ -18,7 +19,7 @@ class ShoppingProvider extends ChangeNotifier {
   int _totalPrice = 0; // 총가격
   int _currentShoppingTabIndex = 0; // 쇼핑 페이지 현재 탭
   int _currentStoreTabIndex = 0; // 스토어 페이지 시작 탭
-
+  int _notificationId = 2;
   final Map<String, List<StoreMenu>> _storeMenuMap = {}; //가게와 메뉴의 맵핑
   final Map<StoreMenu, int> _menuQuantities = {}; // 메뉴와 수량의 맵핑
 
@@ -201,13 +202,14 @@ class ShoppingProvider extends ChangeNotifier {
   }
 
   void completePayment(BuildContext context) {
+
     // 선택된 메뉴들을 가게 이름으로 그룹화합니다.
     Map<String, List<StoreMenu>> storeMenuGroups = {};
     for (var menu in _selectedMenus) {
       final storeName = menu.storeName;
       storeMenuGroups.putIfAbsent(storeName, () => []).add(menu);
     }
-
+    FlutterLocalNotification.showGroupSummaryNotification("주문 알림");
     // 각 가게별로 결제를 진행합니다.
     for (var storeName in storeMenuGroups.keys) {
       final List<StoreMenu> storeMenus = storeMenuGroups[storeName]!;
@@ -241,6 +243,7 @@ class ShoppingProvider extends ChangeNotifier {
             duration: const Duration(seconds: 2), // 스낵바 표시 시간 설정
           ),
         );
+        FlutterLocalNotification.showNotification(_notificationId++,"주문 알림",storeName, " 주문이 완료되었습니다.");
       } catch (e) {
         print('가게별 결제 중 오류가 발생했습니다: $e');
         // 결제가 실패했을 때 스낵바 표시
@@ -252,6 +255,7 @@ class ShoppingProvider extends ChangeNotifier {
         );
       }
     }
+
   }
 
   int calculateTotalPriceForStore(List<StoreMenu> storeMenus) {

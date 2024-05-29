@@ -62,11 +62,14 @@ class DietDataListView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      selectedData.DESC_KOR,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                    Expanded(
+                      child: Text(
+                        selectedData.DESC_KOR,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                     IconButton(

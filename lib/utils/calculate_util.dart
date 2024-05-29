@@ -22,4 +22,14 @@ class CalculateUtil {
   double multiply(double a, double b) => a * b;
 
   double divide(double a, double b) => a / b;
+
+  int calculateClassification(int hour) {
+    if (hour >= 6 && hour < 12) {
+      return 0;
+    } else if (hour >= 12 && hour < 17) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
 }
