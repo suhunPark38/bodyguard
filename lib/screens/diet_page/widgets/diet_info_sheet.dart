@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../database/config_database.dart';
+import '../../../database/local_database.dart';
 import '../../../widgets/custom_button.dart';
 import 'diet_delete_dialog.dart';
 import 'diet_edit_sheet.dart';

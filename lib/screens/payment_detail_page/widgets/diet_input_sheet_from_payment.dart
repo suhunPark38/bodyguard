@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:drift/drift.dart' show Value;
 
-import '../../../database/config_database.dart';
+import '../../../database/local_database.dart';
 import '../../../model/payment.dart';
 import '../../../providers/diet_data_provider.dart';
 import '../../../providers/diet_provider.dart';

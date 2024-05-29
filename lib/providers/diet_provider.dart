@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../database/config_database.dart';
+import '../database/local_database.dart';
 import '../model/diet_record.dart';
 import '../utils/calculate_util.dart';
 
@@ -16,7 +16,7 @@ class DietProvider with ChangeNotifier {
 
   bool _disposed = false;
 
-  final database = ConfigDatabase.instance;
+  final database = LocalDatabase.instance;
 
   DateTime _focusedDay = DateTime.now(); //현재 표시할 월
   DateTime _selectedDay = DateTime.utc(

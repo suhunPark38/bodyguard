@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../database/config_database.dart';
+import '../../../database/local_database.dart';
 import '../../../providers/diet_provider.dart';
 import '../../../utils/calculate_util.dart';
 import 'diet_info_sheet.dart';

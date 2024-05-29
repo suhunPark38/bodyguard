@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:bodyguard/model/fetched_diet_data.dart';
 import 'package:bodyguard/providers/diet_data_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
-import 'package:bodyguard/database/config_database.dart';
+import 'package:bodyguard/database/local_database.dart';
 
 import '../screens/my_home_page/my_home_page.dart';
 import '../utils/format_util.dart';

@@ -2,6 +2,8 @@ import 'package:bodyguard/model/diet.dart';
 import 'package:bodyguard/model/personal_settings.dart';
 import 'package:bodyguard/model/daily_activity_info.dart';
 import 'package:bodyguard/model/daily_activity_detail.dart';
+import 'package:bodyguard/model/search_history.dart';
+import 'package:bodyguard/model/selected_menu.dart';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -9,50 +11,91 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-part 'config_database.g.dart';
+part 'local_database.g.dart';
 
-/// localdb 관리 클래스
+// local db 관리 클래스
 @DriftDatabase(
   tables: [
     Diet,
     PersonalSettings,
     DailyActivityInfo,
     DailyActivityDetail,
+    SearchHistory,
+    SelectedMenu
   ],
 )
-class ConfigDatabase extends _$ConfigDatabase {
-  static ConfigDatabase _instance = ConfigDatabase._(); // 초기화
+class LocalDatabase extends _$LocalDatabase {
+  static LocalDatabase _instance = LocalDatabase._(); // 초기화
 
-  static ConfigDatabase get instance {
+  static LocalDatabase get instance {
     return _instance;
   }
 
   // 싱글톤 패턴을 위한 private 생성자
-  ConfigDatabase._() : super(_openConnection());
+  LocalDatabase._() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
 
-  /* PersonalSettings 테이블 */
+  /*SelectedMenus table*/
 
-  /// 최초 로그인 시, 사용자 설정값 추가
-  Future<void> insertPersonalSettings(PersonalSettingsCompanion entry) async {
-    await into(personalSettings).insert(entry);
+  /// 메뉴 항목을 쇼핑 카트에 추가하거나 이미 존재하는 경우 수량 업데이트
+  Future<void> insertOrUpdateMenu(String storeId, String menuId, int quantity) async {
+    await into(selectedMenu).insertOnConflictUpdate(
+      SelectedMenuCompanion.insert(
+        storeId: storeId,
+        menuId: menuId,
+        quantity: quantity,
+      ),
+    );
   }
 
-  /// 사용자 설정값 수정
-  Future<void> updatePersonalSettings(PersonalSettingsCompanion entry) async {
-    await update(personalSettings).replace(entry);
+  /// 쇼핑 카트에 담긴 모든 메뉴 항목 조회
+  Future<List<SelectedMenuData>> getSelectedMenus() async {
+    return await select(selectedMenu).get();
   }
 
-  /* DailyActivityInfo 테이블 */
 
-  /// 일일 활동량 저장
-  Future<void> insertDailyActivityInfo(DailyActivityInfoCompanion entry) async {
-    await into(dailyActivityInfo).insert(entry);
+  /// 특정 메뉴 항목의 수량 업데이트
+  Future<void> updateMenuQuantity(String menuId, int newQuantity) async {
+    await (update(selectedMenu)..where((tbl) => tbl.menuId.equals(menuId)))
+        .write(SelectedMenuCompanion(quantity: Value(newQuantity)));
   }
 
-  /* DailyActivityDetail 테이블 */
+  /// 특정 메뉴 항목 삭제
+  Future<void> removeMenu(String menuId) async {
+    await (delete(selectedMenu)..where((tbl) => tbl.menuId.equals(menuId))).go();
+  }
+
+  /// 쇼핑 카트 비우기 (모든 메뉴 항목 삭제)
+  Future<void> clearData() async {
+    await delete(selectedMenu).go();
+  }
+
+  /*SearchHistory table*/
+  /// 검색어 삽입
+  Future<void> insertSearch(String search) async {
+    await into(searchHistory).insert(SearchHistoryCompanion(
+      search: Value(search),
+    ));
+  }
+
+  /// 검색 기록 조회
+  Future<List<String>> getSearchHistory() async {
+    final results = await select(searchHistory).get();
+    return results.map((row) => row.search).toList();
+  }
+
+  /// 특정 검색어 삭제
+  Future<void> deleteSearch(String search) async {
+    await (delete(searchHistory)..where((tbl) => tbl.search.equals(search))).go();
+  }
+
+  /// 전체 검색 기록 삭제
+  Future<void> clearAllSearches() async {
+    await delete(searchHistory).go();
+  }
+
 
   /* Diet 테이블 */
 
@@ -125,7 +168,7 @@ class ConfigDatabase extends _$ConfigDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'local_db.sqlite'));
+    final file = File(p.join(dbFolder.path, 'local_database.sqlite'));
     return NativeDatabase(file);
   });
 }

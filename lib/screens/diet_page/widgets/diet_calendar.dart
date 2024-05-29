@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../database/config_database.dart';
+import '../../../database/local_database.dart';
 import '../../../providers/diet_provider.dart';
 
 class DietCalendar extends StatelessWidget {

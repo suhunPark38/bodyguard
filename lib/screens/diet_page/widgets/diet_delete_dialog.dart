@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../database/config_database.dart';
+import '../../../database/local_database.dart';
 import '../../../providers/diet_provider.dart';
 
 class DietDeleteDialog extends StatelessWidget {
