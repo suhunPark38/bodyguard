@@ -1,3 +1,4 @@
+import 'package:bodyguard/providers/ad_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/screens/home_page/widget/ad_carousel.dart';
@@ -11,16 +12,11 @@ import '../../providers/shopping_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../body_page/body_page.dart';
 import '../my_home_page/my_home_page.dart';
-import '../../services/store_service.dart';
-import '../../services/ad_service.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
 
-
-  final StoreService storeService = StoreService();
-  final AdService adService = AdService(); // 추가
   final DateTime now = DateTime.now();
 
   @override
@@ -94,6 +90,7 @@ class HomePage extends StatelessWidget {
           return RefreshIndicator(
             onRefresh: () async {
               healthData.todayDate();
+              Provider.of<AdProvider>(context, listen: false).fetchAds();
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),

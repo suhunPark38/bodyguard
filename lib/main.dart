@@ -1,3 +1,4 @@
+import 'package:bodyguard/providers/ad_provider.dart';
 import 'package:bodyguard/providers/diet_data_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => UserInfoProvider()),
           ChangeNotifierProvider(create: (context) => DietDataProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
+          ChangeNotifierProvider(create: (_) => AdProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

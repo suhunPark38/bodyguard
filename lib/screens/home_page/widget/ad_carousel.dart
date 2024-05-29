@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:bodyguard/model/ad_model.dart';
-import 'package:bodyguard/services/ad_service.dart';
-import 'package:bodyguard/services/store_service.dart';
-import 'package:bodyguard/screens/store_menu_page/store_menu_page.dart';
+import 'package:provider/provider.dart';
+import 'package:bodyguard/providers/ad_provider.dart';
 
 import '../../../model/store_model.dart';
+import '../../../services/store_service.dart';
+import '../../store_menu_page/store_menu_page.dart';
 
 class AdCarousel extends StatelessWidget {
-  final AdService adService = AdService();
   final StoreService storeService = StoreService();
-
-  AdCarousel({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Ad>>(
-      future: adService.fetchAds(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+    return Consumer<AdProvider>(
+      builder: (context, adProvider, _) {
+        if (adProvider.ads.isEmpty) {
+          adProvider.fetchAds(); // 데이터 가져오기
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return const Center(child: Text('광고를 불러오는 중 오류가 발생했습니다.'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('광고가 없습니다.'));
         } else {
-          final ads = snapshot.data!;
+          final ads = adProvider.ads;
           return CarouselSlider(
             options: CarouselOptions(
               height: 210,
@@ -42,7 +35,7 @@ class AdCarousel extends StatelessWidget {
                   return GestureDetector(
                     onTap: () async {
                       Store? store =
-                          await storeService.getStoreByName(ad.storeName);
+                      await storeService.getStoreByName(ad.storeName);
                       if (store != null) {
                         Navigator.push(
                           context,
