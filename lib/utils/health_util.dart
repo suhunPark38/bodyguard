@@ -29,7 +29,6 @@ class HealthUtil {
   // 안드로이드에서 사용하는 dataType
   get dataTypesAndroid => [
     HealthDataType.ACTIVE_ENERGY_BURNED,
-    HealthDataType.TOTAL_CALORIES_BURNED,
     HealthDataType.STEPS,
     HealthDataType.HEIGHT,
     HealthDataType.WEIGHT,
@@ -38,7 +37,6 @@ class HealthUtil {
 
   // IOS에서 사용하는 dataType
   get dataTypesIOS => [
-    HealthDataType.TOTAL_CALORIES_BURNED,
     HealthDataType.STEPS,
     HealthDataType.HEIGHT,
     HealthDataType.WEIGHT,
@@ -75,7 +73,7 @@ class HealthUtil {
   /// google health connect 설치
   Future<void> installHealthConnect() async {
     bool isAvailable = Health().useHealthConnectIfAvailable;
-    print("isAvailable => ${isAvailable}");
+    print("isAvailabe => ${isAvailable}");
 
     //health connect를 사용할 수 없다면 (설치 되지 않았다면) 설치한다.
     if(!isAvailable && Platform.isAndroid){
