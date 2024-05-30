@@ -16,6 +16,10 @@ class BodyInfoWidget extends StatefulWidget {
 class _BodyInfoWidget extends State<BodyInfoWidget>{
   @override
   Widget build(BuildContext context) {
+    // MediaQuery를 통해 화면의 크기 정보를 얻음
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
+
       return GridView(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -57,8 +61,8 @@ class _BodyInfoWidget extends State<BodyInfoWidget>{
                       ),
                       const SizedBox(height: 25),
                       SizedBox(
-                        width: 110,
-                        height: 20,
+                        width: screenWidth * 0.3,
+                        height: screenHeight * 0.025,
                         child: CustomButton(
                           onPressed: () {
                             showEditDialog(
@@ -118,8 +122,8 @@ class _BodyInfoWidget extends State<BodyInfoWidget>{
                       ),
                       const SizedBox(height: 25),
                       SizedBox(
-                        width: 110,
-                        height: 20,
+                        width: screenWidth * 0.3,
+                        height: screenHeight * 0.025,
                         child: CustomButton(
                           onPressed: () {
                             showEditDialog(

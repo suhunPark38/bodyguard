@@ -31,7 +31,10 @@ Future<void> main() async {
   await Health().configure(useHealthConnectIfAvailable: true);
   await HealthUtil().authorize();
   await HealthUtil().installHealthConnect();
-  
+
+  FlutterLocalNotification.init(); // 로컬 알림 초기화
+  FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
+
   FlutterNativeSplash.remove();
   // splash screen 끝 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -44,10 +47,6 @@ Future<void> main() async {
 
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 
-
-
-  FlutterLocalNotification.init(); // 로컬 알림 초기화
-  FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
 }
 
 class MyApp extends StatelessWidget {
