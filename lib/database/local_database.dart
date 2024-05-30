@@ -171,14 +171,6 @@ class LocalDatabase extends _$LocalDatabase {
         .get();
   }
 
-  /// Diet 테이블에서 startDate ~ endDate까지 Diet 조회하는 메소드
-  Future<List<DietData>> getDietBetweenDates(
-      DateTime startDate, DateTime endDate) async {
-    return (select(diet)
-      ..where((d) => d.eatingTime.isBetweenValues(startDate, endDate)))
-        .get();
-  }
-
 }
 
 LazyDatabase _openConnection() {
