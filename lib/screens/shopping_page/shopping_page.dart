@@ -126,6 +126,7 @@ class ShoppingPage extends StatelessWidget {
                                         ),
                                       ],
                                     ),
+
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
