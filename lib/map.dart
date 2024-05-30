@@ -100,8 +100,8 @@ class _NMapApp extends State<NaverMapApp> {
                     maxChildSize: 0.5,
                     builder: (BuildContext context, ScrollController scrollController) {
                       return Container(
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF80A4B4),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20),
                             topRight: Radius.circular(20),

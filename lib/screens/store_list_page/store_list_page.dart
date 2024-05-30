@@ -38,10 +38,8 @@ class StoreListPage extends StatelessWidget {
                   icon: const Icon(Icons.arrow_back),
                 ),
                 actions: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 14, 0, 14),
-                    child: CustomButton(
-
+                  IconButton(
+                    icon: const Icon(Icons.location_on),
                     onPressed: () async {
                       Widget mapPage = const NaverMapApp();
                       Navigator.push(
@@ -51,11 +49,6 @@ class StoreListPage extends StatelessWidget {
                         ),
                       );
                     },
-                    text: const Text(
-                      '위치',
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ),
                   ),
                   IconButton(
                     onPressed: () {
@@ -66,7 +59,7 @@ class StoreListPage extends StatelessWidget {
                             initialIndex: 0,
                           ),
                         ),
-                            (route) => false,
+                        (route) => false,
                       );
                     },
                     icon: const Icon(Icons.home),
@@ -90,7 +83,7 @@ class StoreListPage extends StatelessWidget {
                         initialIndex: 3,
                       ),
                     ),
-                        (route) => false,
+                    (route) => false,
                   );
                 },
                 child: const Icon(Icons.shopping_cart),
