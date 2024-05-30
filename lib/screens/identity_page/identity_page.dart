@@ -44,24 +44,12 @@ class _IdentityPage extends State<IdentityPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(Icons.face, size: 40),
+                const Icon(Icons.face, size: 40),
                 Consumer<UserInfoProvider>(
                     builder: (context ,userInfo, child){
                       return userIDTitle(context, "님 안녕하세요.");
                     }),
-                Spacer(),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Auth().userLoginOut();
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.redAccent),
-                    ),
-                    child: const Text("로그아웃", style: TextStyle(color: Colors.redAccent)),
-                  ),
-                ),
+                const Spacer(),
               ],
             ),
           ),
@@ -100,9 +88,9 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget buildPageContent() {
       if (detail == '내정보') {
-        return MyInfoDetailPage();
+        return const MyInfoDetailPage();
       } else if (detail == '결제 내역') {
-        return OrderHistoryPage();
+        return const OrderHistoryPage();
       } else if (detail == '자주 묻는 질문') {
         return QNAPage();
       } else if (detail == '공지사항') {
@@ -112,7 +100,7 @@ class DetailPage extends StatelessWidget {
       } else if (detail == '약관 및 정책') {
         return TOSPage();
       } else if (detail == '앱 사용 도우미') {
-        return AppInstructionsPage();
+        return const AppInstructionsPage();
       }
 
       return Container(); // 모든 경우에 대해 기본적으로 빈 컨테이너를 반환합니다.

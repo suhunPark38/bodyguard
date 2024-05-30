@@ -7,6 +7,7 @@ import 'package:bodyguard/screens/activity_page/widgets/water_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/diet_provider.dart';
 
 class ActivityPage extends StatelessWidget {
   const ActivityPage({super.key});
@@ -16,6 +17,12 @@ class ActivityPage extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         Provider.of<HealthDataProvider>(context, listen: false).todayDate();
+        Provider.of<DietProvider>(context, listen: false)
+            .setSelectedDay(Provider.of<HealthDataProvider>(context, listen: false).selectedDate);
+        Provider.of<DietProvider>(context, listen: false)
+            .setFocusedDay(Provider.of<HealthDataProvider>(context, listen: false).selectedDate);
+        Provider.of<DietProvider>(context, listen: false)
+            .notifySelectDiets(Provider.of<HealthDataProvider>(context, listen: false).selectedDate);
       },
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

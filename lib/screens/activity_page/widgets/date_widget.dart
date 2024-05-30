@@ -19,34 +19,35 @@ class DateWidget extends StatelessWidget {
             // 이전 버튼 왼쪽 끝으로 밀어냄
             child: IconButton(
               icon: const Icon(Icons.chevron_left, size: 28),
-      onPressed: (){
-      provider.previousDate();
-      Provider.of<DietProvider>(context, listen: false).setSelectedDay(provider.selectedDate);
-      Provider.of<DietProvider>(context, listen: false).setFocusedDay(provider.selectedDate);
-      Provider.of<DietProvider>(context, listen: false).notifySelectDiets(provider.selectedDate);
-      },
+              onPressed: () {
+                provider.previousDate();
+                Provider.of<DietProvider>(context, listen: false)
+                    .setSelectedDay(provider.selectedDate);
+                Provider.of<DietProvider>(context, listen: false)
+                    .setFocusedDay(provider.selectedDate);
+                Provider.of<DietProvider>(context, listen: false)
+                    .notifySelectDiets(provider.selectedDate);
+              },
             ),
           ),
           Text(
             DateFormat('M월 d일 EEEE', 'ko_KR').format(provider.selectedDate),
-            style:   const TextStyle(fontSize: 18, fontWeight: FontWeight.w500), // 글꼴 크기 24
+            style: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.w500), // 글꼴 크기 24
           ),
           Expanded(
             // 다음 버튼 오른쪽 끝으로 밀어냄
             child: IconButton(
               icon: const Icon(Icons.chevron_right, size: 28),
-      onPressed: (){
-                if(provider.isToday)
-                  return;
-                else{
-      provider.nextDate();
-      Provider.of<DietProvider>(context, listen: false).setSelectedDay(provider.selectedDate);
-      Provider.of<DietProvider>(context, listen: false).setFocusedDay(provider.selectedDate);
-      Provider.of<DietProvider>(context, listen: false).notifySelectDiets(provider.selectedDate);
-
-      }
-
-      },
+              onPressed: provider.isToday ? null :(){
+                    provider.nextDate();
+                    Provider.of<DietProvider>(context, listen: false)
+                        .setSelectedDay(provider.selectedDate);
+                    Provider.of<DietProvider>(context, listen: false)
+                        .setFocusedDay(provider.selectedDate);
+                    Provider.of<DietProvider>(context, listen: false)
+                        .notifySelectDiets(provider.selectedDate);
+                }
             ),
           ),
           SizedBox(
@@ -55,6 +56,12 @@ class DateWidget extends StatelessWidget {
             child: CustomButton(
               onPressed: () {
                 provider.todayDate();
+                Provider.of<DietProvider>(context, listen: false)
+                    .setSelectedDay(provider.selectedDate);
+                Provider.of<DietProvider>(context, listen: false)
+                    .setFocusedDay(provider.selectedDate);
+                Provider.of<DietProvider>(context, listen: false)
+                    .notifySelectDiets(provider.selectedDate);
               },
               text: const Text(
                 "오늘 날짜로",
@@ -62,10 +69,8 @@ class DateWidget extends StatelessWidget {
               ),
             ),
           )
-          ],
-        );
-      }
-    );
+        ],
+      );
+    });
   }
-
 }

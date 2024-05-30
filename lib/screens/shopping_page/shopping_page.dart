@@ -109,11 +109,7 @@ class ShoppingPage extends StatelessWidget {
                                               '메뉴 담기',
                                               style: TextStyle(fontSize: 10),
                                             ),
-                                            onPressed: () async {
-                                              provider.completePayment(context);
-                                              provider.refreshPayments();
-                                              provider.handleReset(); // 결제를 완료 후 장바구니 데이터 클리어
-                                              provider.setCurrentStoreTabIndex(0);
+                                            onPressed: () async {// 결제를 완료 후 장바구니 데이터 클리어
                                               provider.setCurrentStoreTabIndex(0);
                                               await Navigator.push(
                                                 context,
