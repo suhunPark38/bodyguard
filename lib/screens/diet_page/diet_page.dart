@@ -7,7 +7,6 @@ import '../../providers/diet_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/nutrition_info.dart';
-import 'widgets/report_widget.dart';
 import 'widgets/diets_card.dart';
 import 'widgets/diet_calendar.dart';
 
@@ -44,8 +43,6 @@ class DietPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    ReportWidget(),
-
                     const DietCalendar(),
                     const SizedBox(height: 20),
                     Row(
@@ -151,6 +148,29 @@ class DietPage extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.35,
+                                  height: MediaQuery.of(context).size.height *
+                                      0.025,
+                                  child: CustomButton(
+                                    onPressed: () async {
+                                      _showBottomSheet(context);
+                                    },
+                                    text: const Text(
+                                      "식단 리포트 확인",
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -200,11 +220,222 @@ class DietPage extends StatelessWidget {
                                       ]),
                                   SizedBox(height: 25),
                                   NutritionInfo(),
-                                ])))
+                                ]))),
                   ],
                 ),
               ),
             ));
+      },
+    );
+  }
+
+  double _findMaxCalories(
+      double todayCalories, double weeklyCalories, double monthlyCalories) {
+    double max = todayCalories;
+    if (weeklyCalories > max) {
+      max = weeklyCalories;
+    }
+    if (monthlyCalories > max) {
+      max = monthlyCalories;
+    }
+    if (max == 0) {
+      max = 1;
+    }
+    return max;
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    final provider = Provider.of<DietProvider>(context, listen: false);
+    double max = _findMaxCalories(provider.todayCalories,
+        provider.averageCaloriesForWeek, provider.averageCaloriesForMonth);
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        "식단 리포트",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                // 주간 및 월간 평균 칼로리를 표시하는 그래프 추가
+                Column(
+                  children: [
+                    if (provider.averageCaloriesForWeek == 0 ||
+                        provider.averageCaloriesForMonth == 0)
+                      const Column(children: [
+                        Text(
+                          '지난 식단 데이터가 없어요. 식단을 기록할까요?',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 25),
+                      ]),
+                    if (provider.averageCaloriesForWeek != 0 &&
+                        provider.averageCaloriesForMonth != 0)
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  "오늘은 ${provider.getWeeklyCaloriesComparisonMessage(
+                                    provider.todayCalories,
+                                    provider.averageCaloriesForWeek,
+                                  )}",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  " ${provider.getMonthlyCaloriesComparisonMessage(provider.todayCalories, provider.averageCaloriesForMonth)} 섭취했습니다!",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 25),
+                        ],
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "오늘",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            '${provider.todayCalories.toStringAsFixed(1)} kcal',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: LinearProgressIndicator(
+                        value: provider.todayCalories / max,
+                        backgroundColor: Colors.grey[300],
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(Colors.teal),
+                        minHeight: 10,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "주간 평균",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            '${provider.averageCaloriesForWeek.toStringAsFixed(1)} kcal',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: LinearProgressIndicator(
+                        value: provider.averageCaloriesForWeek / max,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                            Colors.blueAccent),
+                        minHeight: 10,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "월간 평균",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            '${provider.averageCaloriesForMonth.toStringAsFixed(1)} kcal',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: LinearProgressIndicator(
+                        value: provider.averageCaloriesForMonth / max,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                            Colors.redAccent),
+                        minHeight: 10,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                // 주간 및 월간 평균 칼로리에 대한 메시지 표시
+              ],
+            ),
+          ),
+        );
       },
     );
   }
