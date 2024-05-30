@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:bodyguard/providers/ad_provider.dart';
 import 'package:bodyguard/providers/diet_data_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
@@ -36,6 +33,11 @@ Future<void> main() async {
     await HealthUtil().authorize();
     await HealthUtil().installHealthConnect();
   }
+
+
+  FlutterLocalNotification.init(); // 로컬 알림 초기화
+  FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
+
   FlutterNativeSplash.remove();
   // splash screen 끝 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -48,10 +50,6 @@ Future<void> main() async {
 
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 
-
-
-  FlutterLocalNotification.init(); // 로컬 알림 초기화
-  FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
 }
 
 class MyApp extends StatelessWidget {
