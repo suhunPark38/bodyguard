@@ -134,12 +134,14 @@ class HealthDataProvider with ChangeNotifier {
   void updateHeight(double? height){
     if(height != null) {
       _height = height;
+      addHeightData(height);
       notifyListeners();
     }
   }
   void updateWeight(double? weight){
     if(weight != null) {
       _weight = weight;
+      addWeightData(weight);
       notifyListeners();
     }
   }

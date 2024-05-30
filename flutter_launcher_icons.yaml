@@ -1,6 +1,8 @@
-
-
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: "ic_launcher"
+
+
+
+
   ios: true
-  image_path: "assets/body_logo.png"
+  image_path: "assets/1024_removebg.png"
