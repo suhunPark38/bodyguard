@@ -34,6 +34,9 @@ class DietProvider with ChangeNotifier {
 
   double _todayCalories = 0.0;
 
+  double _averageCaloriesForWeek = 0.0;
+  double _averageCaloriesForMonth = 0.0;
+
   List<DietData> get diets => _diets;
 
   List<DietData> get breakfast => _breakfast;
@@ -45,6 +48,7 @@ class DietProvider with ChangeNotifier {
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
 
   double get recommendedCalories => _recommendedCalories;
+  
   set recommendedCalories(double value){
     _recommendedCalories = value;
   }
@@ -61,6 +65,11 @@ class DietProvider with ChangeNotifier {
   List<DietData> get dinnerForPeriod => _dinnerForPeriod;
 
   double get todayCalories => _todayCalories;
+
+  double get averageCaloriesForWeek => _averageCaloriesForWeek;
+
+  double get averageCaloriesForMonth => _averageCaloriesForMonth;
+
 
 
   void setFocusedDay(DateTime day) {
@@ -168,7 +177,7 @@ class DietProvider with ChangeNotifier {
     _dinner = _diets.where((diet) => diet.classification == 2).toList();
 
     _updateTodayCalories();
-
+    _updateAverages();
     _totalNutritionalInfo = DietRecord(
       calories: CalculateUtil()
           .getSumOfLists(_diets.map((diet) => diet.calories).toList()),
@@ -184,5 +193,76 @@ class DietProvider with ChangeNotifier {
           .getSumOfLists(_diets.map((diet) => diet.sugar).toList()),
     );
     notifyListeners();
+  }
+  void _updateAverages() async {
+    _averageCaloriesForWeek = await getAverageCaloriesForWeek();
+    _averageCaloriesForMonth = await getAverageCaloriesForMonth();
+  }
+
+  Future<double> getAverageCaloriesForWeek() async {
+    // 오늘을 제외한 일주일 전의 날짜 계산
+    DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
+
+    // 일주일 동안의 다이어트 데이터 가져오기
+    List<DietData> weekDiets = await database.getDietBetweenDates(oneWeekAgo, DateTime.now());
+    // 주간 다이어트 데이터의 개수
+    int weekDataCount = weekDiets.length;
+    // 주간 칼로리 합계 구하기
+    double weekCaloriesSum = _calculateCaloriesSum(weekDiets);
+
+    // 주간 평균 칼로리 계산 (데이터가 없으면 0으로 처리)
+    double averageCaloriesForWeek = weekDataCount > 0 ? weekCaloriesSum / weekDataCount : 0.0;
+
+    return averageCaloriesForWeek;
+  }
+
+  Future<double> getAverageCaloriesForMonth() async {
+    // 오늘을 제외한 한 달 전의 날짜 계산
+    DateTime oneMonthAgo = DateTime.now().subtract(Duration(days: 30));
+
+    // 한 달 동안의 다이어트 데이터 가져오기
+    List<DietData> monthDiets = await database.getDietBetweenDates(oneMonthAgo, DateTime.now());
+    // 한 달 다이어트 데이터의 개수
+    int monthDataCount = monthDiets.length;
+    // 한 달 칼로리 합계 구하기
+    double monthCaloriesSum = _calculateCaloriesSum(monthDiets);
+
+    // 월간 평균 칼로리 계산 (데이터가 없으면 0으로 처리)
+    double averageCaloriesForMonth = monthDataCount > 0 ? monthCaloriesSum / monthDataCount : 0.0;
+
+    return averageCaloriesForMonth;
+  }
+
+
+  double _calculateCaloriesSum(List<DietData> diets) {
+    double sum = 0.0;
+    for (var diet in diets) {
+      sum += diet.calories;
+    }
+    return sum;
+  }
+
+  String getWeeklyCaloriesComparisonMessage(double todayCalories, double weekAverage) {
+    double difference = (todayCalories - weekAverage).abs();
+    if (todayCalories < weekAverage) {
+      return "주간 평균보다 ${difference.toStringAsFixed(1)} kcal 적게";
+    } else if (todayCalories > weekAverage) {
+      return "주간 평균보다 ${difference.toStringAsFixed(1)} kcal 많이";
+    } else {
+      return "주간 평균과 같은 양을";
+    }
+  }
+
+
+  String getMonthlyCaloriesComparisonMessage(double todayCalories, double monthAverage) {
+    double difference = (todayCalories - monthAverage).abs();
+
+    if (todayCalories < monthAverage) {
+      return "월간 평균보다 ${difference.toStringAsFixed(1)} kcal 적게";
+    } else if (todayCalories > monthAverage) {
+      return "월간 평균보다 ${difference.toStringAsFixed(1)} kcal 많이";
+    } else {
+      return "월간 평균과 같은 양을";
+    }
   }
 }

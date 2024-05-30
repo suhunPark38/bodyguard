@@ -7,6 +7,7 @@ import '../../providers/diet_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/nutrition_info.dart';
+import 'widgets/report_widget.dart';
 import 'widgets/diets_card.dart';
 import 'widgets/diet_calendar.dart';
 
@@ -43,6 +44,8 @@ class DietPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    ReportWidget(),
+
                     const DietCalendar(),
                     const SizedBox(height: 20),
                     Row(
