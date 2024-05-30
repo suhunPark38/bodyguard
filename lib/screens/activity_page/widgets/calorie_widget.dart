@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
+import '../../../widgets/custom_button.dart';
+
 class CalorieWidget extends StatelessWidget {
   final double burnedCalories;
   double targetCalorie;
@@ -14,12 +16,11 @@ class CalorieWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
+
     final provider = Provider.of<HealthDataProvider>(context);
-    return InkWell(
-      onTap: () async {
-        await showCalorieSettingDialog(context);
-      },
-      child: Card(
+    return Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -32,7 +33,7 @@ class CalorieWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "칼로리 소모량",
+                    "소모 칼로리 / 목표 칼로리",
                     style: TextStyle(color: Colors.blueGrey, fontSize: 15),
                   ),
                   Icon(Icons.local_fire_department),
@@ -46,10 +47,22 @@ class CalorieWidget extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               _buildStepCircularChart(provider.targetCalorie, burnedCalories),
+              const SizedBox(height: 25),
+              SizedBox(
+                width: screenWidth * 0.4,
+                height: screenHeight * 0.025,
+                child: CustomButton(
+                  onPressed: () {showCalorieSettingDialog(context);},
+                  text: const Text(
+                    "목표 칼로리 설정하기",
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-      ),
+
     );
   }
 

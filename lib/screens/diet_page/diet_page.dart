@@ -15,6 +15,8 @@ class DietPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
     return Consumer<DietProvider>(
       builder: (context, provider, child) {
         final DateTime now = DateTime.utc(
@@ -56,8 +58,8 @@ class DietPage extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          width: 110,
-                          height: 20,
+                          width: screenWidth * 0.3,
+                          height: screenHeight * 0.025,
                           child: CustomButton(
                             onPressed: () {
                               provider.setSelectedDay(now);
@@ -90,7 +92,7 @@ class DietPage extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "총 칼로리 / 권장 칼로리",
+                                    "섭취 칼로리 / 권장 칼로리",
                                     style: TextStyle(
                                         color: Colors.blueGrey, fontSize: 15),
                                   ),

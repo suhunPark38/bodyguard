@@ -8,6 +8,8 @@ import '../../../widgets/custom_button.dart';
 class DateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
     return Consumer<HealthDataProvider>(builder: (context, provider, child) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -27,12 +29,12 @@ class DateWidget extends StatelessWidget {
             // 다음 버튼 오른쪽 끝으로 밀어냄
             child: IconButton(
               icon: const Icon(Icons.chevron_right, size: 28),
-              onPressed: provider.nextDate,
+              onPressed: provider.isToday ? null : provider.nextDate,
             ),
           ),
           SizedBox(
-            width: 110,
-            height: 20,
+            width: screenWidth * 0.3,
+            height: screenHeight * 0.025,
             child: CustomButton(
               onPressed: () {
                 provider.todayDate();

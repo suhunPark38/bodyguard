@@ -12,6 +12,9 @@ class BodyInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return GridView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -53,8 +56,8 @@ class BodyInfoWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 25),
                     SizedBox(
-                      width: 110,
-                      height: 20,
+                      width: screenWidth * 0.3,
+                      height: screenHeight * 0.025,
                       child: CustomButton(
                         onPressed: () {
                           showEditDialog(
@@ -104,7 +107,7 @@ class BodyInfoWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "몸무게",
+                          "체중",
                           style:
                               TextStyle(color: Colors.blueGrey, fontSize: 15),
                         ),
@@ -121,14 +124,14 @@ class BodyInfoWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 25),
                     SizedBox(
-                      width: 110,
-                      height: 20,
+                      width: screenWidth * 0.3,
+                      height: screenHeight * 0.025,
                       child: CustomButton(
                         onPressed: () {
                           showEditDialog(
                             Icons.monitor_weight,
                             context,
-                            "몸무게",
+                            "체중",
                             provider.weight.toString(),
                             (value) {
                               if (Provider.of<HealthDataProvider>(context,
@@ -174,9 +177,6 @@ class BodyInfoWidget extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
           title: Text(
             "$title 수정",
             style: const TextStyle(
