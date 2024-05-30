@@ -3,7 +3,6 @@ import 'package:bodyguard/screens/shopping_page/widgets/payment_tab_widget.dart'
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../map.dart';
 import '../../providers/shopping_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
@@ -86,25 +85,6 @@ class ShoppingPage extends StatelessWidget {
                                 ],
                               ),
                             ],
-                          ),
-                          SizedBox(
-                            width: 90,
-                            height: 20,
-                            child: CustomButton(
-                              onPressed: () async {
-                                Widget mapPage = const NaverMapApp();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => mapPage,
-                                  ),
-                                );
-                              },
-                              text: const Text(
-                                '가게 위치',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
                           ),
                           SizedBox(
                             width: 90,

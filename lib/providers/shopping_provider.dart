@@ -27,6 +27,7 @@ class ShoppingProvider extends ChangeNotifier {
   DateTime _selectedStartDate = DateTime(2024);
   DateTime _selectedEndDate = DateTime.now();
 
+
   FilterType _selectedFilter = FilterType.all;
 
   List<StoreMenu> get checkedMenus => _checkedMenus;

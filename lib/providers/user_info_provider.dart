@@ -18,7 +18,12 @@ class UserInfoProvider with ChangeNotifier{
   set weight(double value){
     UserFirebase().updateWeight(value);
   }
-
+  set age(int value){
+    UserFirebase().updateAge(value);
+  }
+  set gender(String value){
+    UserFirebase().updateGender(value);
+  }
 
   void setUser(UserInfoModel user, BuildContext context) {
     _user = user;

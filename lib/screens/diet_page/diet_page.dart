@@ -54,7 +54,7 @@ class DietPage extends StatelessWidget {
                           provider.setSelectedDay(now);
                           provider.notifySelectDiets(provider.selectedDay);
                           provider.setFocusedDay(now);
-                          Provider.of<HealthDataProvider>(context, listen: false).fetchData(provider.selectedDay);
+                          Provider.of<HealthDataProvider>(context, listen: false).postFetchData(now);
                         },
                         text: const Text(
                           "오늘 날짜로",

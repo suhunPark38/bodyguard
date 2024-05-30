@@ -1,4 +1,10 @@
+import 'package:bodyguard/providers/user_info_provider.dart';
+import 'package:bodyguard/services/store_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:provider/provider.dart';
+import '../../../map.dart';
+import '../../../model/store_model.dart';
 import '../../../providers/shopping_provider.dart';
 import '../../../utils/format_util.dart';
 import '../../payment_detail_page/payment_detail_page.dart';
@@ -183,18 +189,23 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                               '\n결제 일시: $formattedTimestamp',
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.more_vert),
-                          onPressed: () {
+                          icon: const Icon(Icons.fmd_good_outlined),
+                          onPressed: () async { //아이콘 이벤트
+                            final storeName = payment.menuItems.first.menu.storeName;
+                            final Store? store = await StoreService().getStoreByName(storeName);
                             Navigator.push(
                               context,
+
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    PaymentDetailPage(payment: payment),
+                                  shortPathView(
+                                      UserNLatLng: NLatLng(Provider.of<UserInfoProvider>(context, listen: false).info!.NLatLng[1], Provider.of<UserInfoProvider>(context, listen: false).info!.NLatLng[0]),
+                                      StoreNLatLng: NLatLng(store!.latitude, store!.longitude)),
                               ),
                             );
                           },
                         ),
-                        onTap: () {
+                        onTap: () {//카드 이벤트
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -223,7 +234,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                           '\n결제 일시: $formattedTimestamp',
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.more_vert),
+                      icon: const Icon(Icons.fmd_good_outlined),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -252,4 +263,5 @@ class PaymentHistoryTabWidget extends StatelessWidget {
       ],
     );
   }
+
 }

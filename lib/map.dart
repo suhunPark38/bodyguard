@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:math' as Math;
 import 'package:bodyguard/model/store_model.dart';
 import 'package:bodyguard/providers/user_info_provider.dart';
+import 'package:bodyguard/screens/store_menu_page/store_menu_page.dart';
 import 'package:bodyguard/services/store_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -11,17 +12,17 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 // Constants and Globals
-final _naverclientid = "yrgpw62fjk";
-final _naversecret = "S3EybkJIeurZPmXNmBfhi2j5HwwqrDckAz5Sq2NY";
+const _naverClientId = "yrgpw62fjk";
+const _naverSecret = "S3EybkJIeurZPmXNmBfhi2j5HwwqrDckAz5Sq2NY";
 final _headers = {
-  "X-NCP-APIGW-API-KEY-ID": _naverclientid,
-  "X-NCP-APIGW-API-KEY": _naversecret,
+  "X-NCP-APIGW-API-KEY-ID": _naverClientId,
+  "X-NCP-APIGW-API-KEY": _naverSecret,
 };
 
 // Map initialization function
 Future<void> mapInitialize() async {
   await NaverMapSdk.instance.initialize(
-    clientId: _naverclientid,
+    clientId: _naverClientId,
     onAuthFailed: (e) => log("네이버맵 인증오류 : $e", name: "onAuthFailed"),
   );
 }
@@ -31,10 +32,10 @@ class NaverMapApp extends StatefulWidget {
   const NaverMapApp({super.key});
 
   @override
-  _NaverMapApp createState() => _NaverMapApp();
+  _NMapApp createState() => _NMapApp();
 }
 
-class _NaverMapApp extends State<NaverMapApp> {
+class _NMapApp extends State<NaverMapApp> {
   late List<Store> stores;
   ScrollController listScrollController = ScrollController(); // ListView scroll controller
   bool isMapLoading = true; // 로딩 상태를 나타내는 변수
@@ -56,7 +57,7 @@ class _NaverMapApp extends State<NaverMapApp> {
                     options: NaverMapViewOptions(
                       initialCameraPosition: NCameraPosition(
                         target: NLatLng(user.info!.NLatLng[1], user.info!.NLatLng[0]),
-                        zoom: 18,
+                        zoom: 15,
                       ),
                     ),
                     onMapReady: (controller) {
@@ -99,7 +100,7 @@ class _NaverMapApp extends State<NaverMapApp> {
                     maxChildSize: 0.5,
                     builder: (BuildContext context, ScrollController scrollController) {
                       return Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Color(0xFF80A4B4),
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20),
@@ -113,7 +114,7 @@ class _NaverMapApp extends State<NaverMapApp> {
                               child: Container(
                                 width: 150,
                                 height: 10,
-                                margin: EdgeInsets.only(top: 8, bottom: 4),
+                                margin: const EdgeInsets.only(top: 8, bottom: 4),
                                 decoration: BoxDecoration(
                                   color: Colors.grey[300],
                                   borderRadius: BorderRadius.circular(12),
@@ -132,35 +133,30 @@ class _NaverMapApp extends State<NaverMapApp> {
                                       height: 100,
                                       fit: BoxFit.fill,
                                     ),
-                                    title: Text("${stores[index].storeName}"),
-                                    subtitle: Text("${stores[index].subscript}"),
+                                    title: Text(stores[index].storeName),
+                                    subtitle: Text(stores[index].subscript),
                                     trailing: Column(
                                       children: [
-                                        Text("${stores[index].cuisineType}"),
-                                        FutureBuilder<String>(
-                                          future: calDist(stores[index].latitude, stores[index].longitude, context),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return Text('Calculating...');
-                                            } else if (snapshot.hasError) {
-                                              return Text('Error');
-                                            } else {
-                                              return Text(snapshot.data ?? 'Unknown distance');
-                                            }
-                                          },
-                                        )
+                                        Text(stores[index].cuisineType),
+                                        Text(calDist(stores[index].latitude, stores[index].longitude, context)),
                                       ],
                                     ),
                                     onTap: () {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => ShortPathView(
-                                            UserNLatLng: NLatLng(user.info!.NLatLng[1], user.info!.NLatLng[0]),
-                                            StoreNLatLng: NLatLng(stores[index].latitude, stores[index].longitude),
-                                          ),
+                                          builder: (context) => StoreMenuPage(store: stores[index]),
                                         ),
                                       );
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) => ShortPathView(
+                                      //       UserNLatLng: NLatLng(user.info!.NLatLng[1], user.info!.NLatLng[0]),
+                                      //       StoreNLatLng: NLatLng(stores[index].latitude, stores[index].longitude),
+                                      //     ),
+                                      //   ),
+                                      // );
                                     },
                                   );
                                 },
@@ -174,10 +170,10 @@ class _NaverMapApp extends State<NaverMapApp> {
                 ],
               );
             } else {
-              return Center(child: Text("No data available"));
+              return const Center(child: Text("No data available"));
             }
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),
@@ -192,7 +188,6 @@ class _NaverMapApp extends State<NaverMapApp> {
         position: NLatLng(stores[i].latitude, stores[i].longitude),
       );
       marker.setOnTapListener((NMarker marker) {
-        print("마커가 터치되었습니다. id: ${marker.info.id}");
         scrollToStore(i);
       });
       markers.add(marker);
@@ -205,7 +200,7 @@ class _NaverMapApp extends State<NaverMapApp> {
       double position = index * 80.0; // Adjust according to item height
       listScrollController.animateTo(
         position,
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeIn,
       );
     }
@@ -216,6 +211,7 @@ class _NaverMapApp extends State<NaverMapApp> {
     super.dispose();
   }
 
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // `didChangeDependencies`에서 조상 위젯 참조
@@ -238,53 +234,65 @@ Future<List?> searchPath({required NLatLng start, required NLatLng goal}) async 
       List<dynamic> path = decodedData['route']['trafast'][0]['path'];
       return path;
     } else {
-      print('Path 데이터가 없습니다.');
+      throw Exception('Path not have data.');
     }
     return null;
   } else {
-    print('값 받아오기 실패');
-    log('값 받아오기 실패');
     throw Exception('Failed to load data');
   }
 }
 
 // Display Short Path view
-Scaffold ShortPathView({required NLatLng UserNLatLng, required NLatLng StoreNLatLng, bool isDelivery = true}) {
+Scaffold shortPathView({required NLatLng UserNLatLng, required NLatLng StoreNLatLng, bool isDelivery = true}) {
   final start = isDelivery ? StoreNLatLng : UserNLatLng;
   final goal = isDelivery ? UserNLatLng : StoreNLatLng;
+
+  // `FutureBuilder`에 사용할 Future
+  Future<void> mapReadyFuture = Future.delayed(const Duration(seconds: 2)); // 적절한 future로 교체 가능
+
   return Scaffold(
     body: Stack(
       children: [
-        NaverMap(
-          options: NaverMapViewOptions(
-            initialCameraPosition: NCameraPosition(
-              target: UserNLatLng,
-              zoom: 14,
-            ),
-          ),
-          onMapReady: (controller) async {
-            NMarker startInfo = NMarker(id: "start", position: start);
-            NMarker goalInfo = NMarker(id: "dest", position: goal);
-            controller.addOverlayAll({startInfo, goalInfo});
-            startInfo.openInfoWindow(NInfoWindow.onMarker(id: startInfo.info.id, text: "출발지"));
-            goalInfo.openInfoWindow(NInfoWindow.onMarker(id: goalInfo.info.id, text: "도착지"));
+        FutureBuilder(
+          future: mapReadyFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // 맵 로딩 중
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              // 맵 로딩 완료
+              return NaverMap(
+                options: NaverMapViewOptions(
+                  initialCameraPosition: NCameraPosition(
+                    target: UserNLatLng,
+                    zoom: 14,
+                  ),
+                ),
+                onMapReady: (controller) async {
+                  NMarker startInfo = NMarker(id: "start", position: start);
+                  NMarker goalInfo = NMarker(id: "dest", position: goal);
+                  controller.addOverlayAll({startInfo, goalInfo});
+                  startInfo.openInfoWindow(NInfoWindow.onMarker(id: startInfo.info.id, text: "출발지"));
+                  goalInfo.openInfoWindow(NInfoWindow.onMarker(id: goalInfo.info.id, text: "도착지"));
 
-            List? path = await searchPath(start: start, goal: goal);
-            List<NLatLng> coords = conversion2NLatLng(path!);
-            NPolylineOverlay polyline = NPolylineOverlay(
-              coords: coords,
-              color: Colors.blue,
-              width: 5,
-              id: 'null',
-            );
-            controller.addOverlay(polyline);
+                  List? path = await searchPath(start: start, goal: goal);
+                  List<NLatLng> coords = conversion2NLatLng(path!);
+                  NPolylineOverlay polyline = NPolylineOverlay(
+                    coords: coords,
+                    color: Colors.blue,
+                    width: 5,
+                    id: 'path_polyline',
+                  );
+                  controller.addOverlay(polyline);
+                },
+              );
+            }
           },
         ),
       ],
     ),
   );
 }
-
 // Convert dynamic list to NLatLng list
 List<NLatLng> conversion2NLatLng(List<dynamic> list) {
   List<NLatLng> path = [];
@@ -295,7 +303,7 @@ List<NLatLng> conversion2NLatLng(List<dynamic> list) {
 }
 
 // Calculate distance between two points
-Future<String> calDist(double lat, double lon, BuildContext context) async {
+String calDist(double lat, double lon, BuildContext context) {
   NLatLng user = NLatLng(Provider.of<UserInfoProvider>(context).info!.NLatLng[1], Provider.of<UserInfoProvider>(context).info!.NLatLng[0]);
   const earthR = 6371000.0;
   const rad = Math.pi / 180;

@@ -2,6 +2,8 @@ import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/screens/store_list_page/widgets/store_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../map.dart';
+import '../../widgets/custom_button.dart';
 import '../my_home_page/my_home_page.dart';
 import '../../services/store_service.dart';
 
@@ -36,15 +38,35 @@ class StoreListPage extends StatelessWidget {
                   icon: const Icon(Icons.arrow_back),
                 ),
                 actions: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 14, 0, 14),
+                    child: CustomButton(
+
+                    onPressed: () async {
+                      Widget mapPage = const NaverMapApp();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => mapPage,
+                        ),
+                      );
+                    },
+                    text: const Text(
+                      '위치',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  ),
                   IconButton(
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MyHomePage(
-                                  initialIndex: 0,
-                                )),
-                        (route) => false,
+                          builder: (context) => const MyHomePage(
+                            initialIndex: 0,
+                          ),
+                        ),
+                            (route) => false,
                       );
                     },
                     icon: const Icon(Icons.home),
@@ -66,10 +88,11 @@ class StoreListPage extends StatelessWidget {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const MyHomePage(
-                              initialIndex: 3,
-                            )),
-                    (route) => false,
+                      builder: (context) => const MyHomePage(
+                        initialIndex: 3,
+                      ),
+                    ),
+                        (route) => false,
                   );
                 },
                 child: const Icon(Icons.shopping_cart),

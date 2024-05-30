@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:bodyguard/utils/health_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:health/health.dart';
@@ -288,6 +290,13 @@ class HealthDataProvider with ChangeNotifier {
     );
   }
 
+  void postFetchData(DateTime date){
+    _selectedDate = date;
+    fetchData(_selectedDate);
+    fetchStepData(_selectedDate);
+  }
+
+
   /// 전날로 이동
   void previousDate() {
     _setNow();
@@ -302,6 +311,7 @@ class HealthDataProvider with ChangeNotifier {
     _selectedDate = _selectedDate.add(Duration(days: 1));
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
+
   }
 
   /// 오늘로 이동
