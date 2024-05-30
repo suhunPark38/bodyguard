@@ -7,7 +7,7 @@ import '../../providers/diet_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/nutrition_info.dart';
-import '../activity_page/widgets/report_widget.dart';
+import 'widgets/report_widget.dart';
 import 'widgets/diets_card.dart';
 import 'widgets/diet_calendar.dart';
 
