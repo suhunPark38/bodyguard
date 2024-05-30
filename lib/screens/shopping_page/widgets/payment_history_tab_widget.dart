@@ -96,8 +96,8 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                   ),
                   Text(
                       '종료일 ${provider.selectedEndDate.year}년'
-                          ' ${provider.selectedEndDate.month}월'
-                          ' ${provider.selectedEndDate.day}일',
+                      ' ${provider.selectedEndDate.month}월'
+                      ' ${provider.selectedEndDate.day}일',
                       style: const TextStyle(fontSize: 12)),
                   IconButton(
                     iconSize: 20,
@@ -121,33 +121,37 @@ class PaymentHistoryTabWidget extends StatelessWidget {
           ],
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: provider.sortedAndFilteredPayments.length,
-            itemBuilder: (context, index) {
-              final payment = provider.sortedAndFilteredPayments[index];
-              final formattedTimestamp = formatTimestamp(payment.timestamp);
-              int totalFoodCount = 0;
-              for (var item in payment.menuItems) {
-                totalFoodCount += item.quantity;
-              }
-              final firstMenu = payment.menuItems.first.menu.menuName;
+          child: RefreshIndicator(
+            onRefresh: () async {
+              provider.refreshPayments();
+            },
+            child: ListView.builder(
+              itemCount: provider.sortedAndFilteredPayments.length,
+              itemBuilder: (context, index) {
+                final payment = provider.sortedAndFilteredPayments[index];
+                final formattedTimestamp = formatTimestamp(payment.timestamp);
+                int totalFoodCount = 0;
+                for (var item in payment.menuItems) {
+                  totalFoodCount += item.quantity;
+                }
+                final firstMenu = payment.menuItems.first.menu.menuName;
 
-              // 현재 카드의 날짜
-              final currentDate = DateTime(payment.timestamp.year,
-                  payment.timestamp.month, payment.timestamp.day);
+                // 현재 카드의 날짜
+                final currentDate = DateTime(payment.timestamp.year,
+                    payment.timestamp.month, payment.timestamp.day);
 
-              // 오늘 날짜
-              final today = DateTime.now();
+                // 오늘 날짜
+                final today = DateTime.now();
 
-              // 날짜가 오늘인지 확인
-              final isToday = currentDate.year == today.year &&
-                  currentDate.month == today.month &&
-                  currentDate.day == today.day;
+                // 날짜가 오늘인지 확인
+                final isToday = currentDate.year == today.year &&
+                    currentDate.month == today.month &&
+                    currentDate.day == today.day;
 
-              // 날짜가 오늘인 경우 "Today" 문자열, 아닌 경우 날짜 표시
-              final dateText = isToday
-                  ? '오늘'
-                  : '${currentDate.year}. ${currentDate.month}. ${currentDate.day}.';
+                // 날짜가 오늘인 경우 "Today" 문자열, 아닌 경우 날짜 표시
+                final dateText = isToday
+                    ? '오늘'
+                    : '${currentDate.year}. ${currentDate.month}. ${currentDate.day}.';
 
               // 날짜가 변경되었을 경우 새로운 ListTile 추가
               if (index == 0 ||
@@ -183,18 +187,23 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                               '\n결제 일시: $formattedTimestamp',
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.more_vert),
-                          onPressed: () {
+                          icon: const Icon(Icons.fmd_good_outlined),
+                          onPressed: () async { //아이콘 이벤트
+                            final storeName = payment.menuItems.first.menu.storeName;
+                            final Store? store = await StoreService().getStoreByName(storeName);
                             Navigator.push(
                               context,
+
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    PaymentDetailPage(payment: payment),
+                                  shortPathView(
+                                      UserNLatLng: NLatLng(Provider.of<UserInfoProvider>(context, listen: false).info!.NLatLng[1], Provider.of<UserInfoProvider>(context, listen: false).info!.NLatLng[0]),
+                                      StoreNLatLng: NLatLng(store!.latitude, store!.longitude)),
                               ),
                             );
                           },
                         ),
-                        onTap: () {
+                        onTap: () {//카드 이벤트
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -223,7 +232,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                           '\n결제 일시: $formattedTimestamp',
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.more_vert),
+                      icon: const Icon(Icons.fmd_good_outlined),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -252,4 +261,5 @@ class PaymentHistoryTabWidget extends StatelessWidget {
       ],
     );
   }
+
 }

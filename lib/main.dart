@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bodyguard/providers/ad_provider.dart';
 import 'package:bodyguard/providers/diet_data_provider.dart';
 import 'package:bodyguard/providers/diet_provider.dart';
@@ -8,7 +10,7 @@ import 'package:bodyguard/providers/shopping_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
 import 'package:bodyguard/providers/user_info_provider.dart';
 import 'package:bodyguard/utils/health_util.dart';
-import 'package:bodyguard/widgets/login.dart';
+import 'package:bodyguard/screens/login_page/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -29,10 +31,16 @@ Future<void> main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // health connect 사용 여부 확인 (ios:android / 설치 여부) -> 앱 필수 권한 확인 -> health connect 설치 (미설치 시)
-  await Health().configure(useHealthConnectIfAvailable: true);
-  await HealthUtil().authorize();
-  await HealthUtil().installHealthConnect();
-  
+  if (Platform.isAndroid) {
+    await Health().configure(useHealthConnectIfAvailable: true);
+    await HealthUtil().authorize();
+    await HealthUtil().installHealthConnect();
+  }
+
+
+  FlutterLocalNotification.init(); // 로컬 알림 초기화
+  FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
+
   FlutterNativeSplash.remove();
   // splash screen 끝 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -45,10 +53,6 @@ Future<void> main() async {
 
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 
-
-
-  FlutterLocalNotification.init(); // 로컬 알림 초기화
-  FlutterLocalNotification.requestNotificationPermission(); //로컬 알림 권한
 }
 
 class MyApp extends StatelessWidget {

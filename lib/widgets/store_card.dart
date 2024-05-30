@@ -14,52 +14,41 @@ class StoreCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: SizedBox(
-              width: 100,
-              height: 60,
-              child: Image.network(
-                store.image,
-                fit: BoxFit.fill,
-              ),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: SizedBox(
+            width: 100,
+            height: 60,
+            child: Image.network(
+              store.image,
+              fit: BoxFit.fill,
             ),
           ),
-          title: AutoSizeText(
-            store.storeName,
-            maxLines: 1,
-          ),
-          subtitle: AutoSizeText(
-            store.subscript,
-            maxLines: 1,
-          ),
-          trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              Text(store.cuisineType),
-              FutureBuilder<String>(
-                future: calDist(store.latitude, store.longitude, context),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text('Calculating...');
-                  } else if (snapshot.hasError) {
-                    return Text('Error');
-                  } else {
-                    return Text(snapshot.data ?? 'Unknown distance');
-                  }
-                },
-              )
-      ],
-    ),
-    onTap: () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) => StoreMenuPage(store: store),
-    ),
-    );
-    },
-    ),
+        ),
+        title: AutoSizeText(
+          store.storeName,
+          maxLines: 1,
+        ),
+        subtitle: AutoSizeText(
+          store.subscript,
+          maxLines: 1,
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(store.cuisineType),
+            Text(calDist(store.latitude, store.longitude, context)),
+          ],
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StoreMenuPage(store: store),
+            ),
+          );
+        },
+      ),
     );
   }
 }

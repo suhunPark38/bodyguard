@@ -62,6 +62,7 @@ class DietProvider with ChangeNotifier {
 
   double get todayCalories => _todayCalories;
 
+
   void setFocusedDay(DateTime day) {
     _focusedDay = day;
     notifyListeners();

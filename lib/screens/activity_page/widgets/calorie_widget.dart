@@ -4,21 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
+import '../../../widgets/custom_button.dart';
+
 class CalorieWidget extends StatelessWidget {
   final double burnedCalories;
   double targetCalorie;
 
-  CalorieWidget({Key? key, required this.burnedCalories, required this.targetCalorie}) : super(key: key);
-
+  CalorieWidget(
+      {Key? key, required this.burnedCalories, required this.targetCalorie})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
+
     final provider = Provider.of<HealthDataProvider>(context);
-    return InkWell(
-      onTap: () async {
-        await showCalorieSettingDialog(context);
-      },
-      child: Card(
+    return Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -31,7 +33,7 @@ class CalorieWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "칼로리 소모량",
+                    "소모 칼로리 / 목표 칼로리",
                     style: TextStyle(color: Colors.blueGrey, fontSize: 15),
                   ),
                   Icon(Icons.local_fire_department),
@@ -40,14 +42,27 @@ class CalorieWidget extends StatelessWidget {
               const SizedBox(height: 25),
               Text(
                 "${burnedCalories.toStringAsFixed(1)} / ${provider.targetCalorie} kcal",
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 15),
               _buildStepCircularChart(provider.targetCalorie, burnedCalories),
+              const SizedBox(height: 25),
+              SizedBox(
+                width: screenWidth * 0.4,
+                height: screenHeight * 0.025,
+                child: CustomButton(
+                  onPressed: () {showCalorieSettingDialog(context);},
+                  text: const Text(
+                    "목표 칼로리 설정하기",
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-      ),
+
     );
   }
 
@@ -68,73 +83,105 @@ class CalorieWidget extends StatelessWidget {
   }
 
   Future<double?> showCalorieSettingDialog(BuildContext context) {
-    TextEditingController controller = TextEditingController(
-        text: targetCalorie.toString());
+    TextEditingController controller =
+        TextEditingController(text: targetCalorie.toString());
     return showDialog<double>(
         context: context,
         builder: (context) {
-          return StatefulBuilder(  // StatefulBuilder를 사용하여 다이얼로그 내의 상태를 관리
+          return StatefulBuilder(
+            // StatefulBuilder를 사용하여 다이얼로그 내의 상태를 관리
             builder: (BuildContext context, StateSetter setState) {
               return AlertDialog(
-                title: const Text("목표 칼로리 설정"),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: controller,
-                      keyboardType: TextInputType.numberWithOptions(decimal: false),
-                      decoration: const InputDecoration(
-                        labelText: "목표 칼로리 (kcal)",
-                        border: OutlineInputBorder(),
+                  title: const Text(
+                    "목표 칼로리 설정",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: controller,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: false),
+                        decoration: const InputDecoration(
+                          labelText: "목표 칼로리 (kcal)",
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          final newValue = double.tryParse(value);
+                          if (newValue != null) {
+                            setState(() {
+                              // StatefulBuilder의 setState를 호출
+                              targetCalorie = newValue; // 슬라이더 최대치를 넘지 않게 함
+                            });
+                          }
+                        },
                       ),
-                      onChanged: (value) {
-                        final newValue = double.tryParse(value);
-                        if (newValue != null) {
-                          setState(() {  // StatefulBuilder의 setState를 호출
-                            targetCalorie = newValue;  // 슬라이더 최대치를 넘지 않게 함
+                      Slider(
+                        value: targetCalorie.clamp(500, 4000),
+                        min: 500,
+                        max: 4000,
+                        divisions: 35,
+                        label: targetCalorie.round().toString(),
+                        onChanged: (double value) {
+                          setState(() {
+                            // StatefulBuilder의 setState를 호출
+                            targetCalorie = value;
+                            controller.text = value.toStringAsFixed(0);
                           });
-                        }
-                      },
-                    ),
-                    Slider(
-                      value: targetCalorie.clamp(500, 4000),
-                      min: 500,
-                      max: 4000,
-                      divisions: 35,
-                      label: targetCalorie.round().toString(),
-                      onChanged: (double value) {
-                        setState(() {  // StatefulBuilder의 setState를 호출
-                          targetCalorie = value;
-                          controller.text = value.toStringAsFixed(0);
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text("취소"),
-                    onPressed: (){
-
-                      Navigator.of(context).pop();
-                    },
+                        },
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    child: const Text("설정"),
-                    onPressed: () {
-                      double? newTarget = double.tryParse(controller.text);
-                      UserFirebase().updateTargetCalorie(newTarget!);
-                      Navigator.of(context).pop(newTarget);
-                    },
-                  ),
-                ],
-              );
+                  actions: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.grey.shade300,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                          ),
+                          child: const Text(
+                            '취소하기',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        FilledButton(
+                          onPressed: () {
+                            double? newTarget =
+                                double.tryParse(controller.text);
+                            UserFirebase().updateTargetCalorie(newTarget!);
+                            Navigator.of(context).pop(newTarget);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                          ),
+                          child: const Text(
+                            '설정하기',
+                          ),
+                        ),
+                      ],
+                    )
+                  ]);
             },
           );
-        }
-    );
+        });
   }
-
-
-
 }

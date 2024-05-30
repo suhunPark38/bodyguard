@@ -20,8 +20,10 @@ class HealthDataProvider with ChangeNotifier {
   late double _targetCalorie = 0;
 
   double get targetCalorie => _targetCalorie;
+
   DateTime get selectedDate => _selectedDate;
-  set selectedDate(DateTime date){
+
+  set selectedDate(DateTime date) {
     _selectedDate = DateTime(
       date.year,
       date.month,
@@ -41,7 +43,16 @@ class HealthDataProvider with ChangeNotifier {
   double get activeCalorieBurned => _activeCalorieBurned;
   double get todayWater => _todayWater;
   int get todayStep => _todayStep;
-  set targetCalorie(double value){
+
+  bool get isToday {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    return _selectedDate.year == today.year &&
+        _selectedDate.month == today.month &&
+        _selectedDate.day == today.day;
+  }
+
+  set targetCalorie(double value) {
     _targetCalorie = value;
     notifyListeners();
 
@@ -66,14 +77,13 @@ class HealthDataProvider with ChangeNotifier {
     double totalActiveCalories = 0;
     double totalWater = 0;
 
-
-      // try {
-      // fetch health data
-      List<HealthDataPoint> healthData = await Health().getHealthDataFromTypes(
-        types: HealthUtil().types,
-        startTime: startTime,
-        endTime: endTime,
-      );
+    // try {
+    // fetch health data
+    List<HealthDataPoint> healthData = await Health().getHealthDataFromTypes(
+      types: HealthUtil().types,
+      startTime: startTime,
+      endTime: endTime,
+    );
 
     debugPrint('Total number of data points: ${healthData.length}. '
         '${healthData.length > 100 ? 'Only showing the first 100.' : ''}');
@@ -97,7 +107,8 @@ class HealthDataProvider with ChangeNotifier {
           _height = (value['numeric_value'] as double) * 100;
           break;
         case HealthDataType.WEIGHT:
-          _weight = value['numeric_value'] as double;;
+          _weight = value['numeric_value'] as double;
+          ;
           break;
         case HealthDataType.ACTIVE_ENERGY_BURNED:
           totalActiveCalories += (value['numeric_value'] as double);
@@ -145,39 +156,37 @@ class HealthDataProvider with ChangeNotifier {
 
     int? fetchedSteps;
 
-      // get steps for today (i.e., since midnight)
-      final midnight = DateTime(date.year, date.month, date.day);
-      final end = midnight.add(Duration(hours: 23, minutes: 59));
+    // get steps for today (i.e., since midnight)
+    final midnight = DateTime(date.year, date.month, date.day);
+    final end = midnight.add(Duration(hours: 23, minutes: 59));
 
-      bool stepsPermission =
-          await Health().hasPermissions([HealthDataType.STEPS]) ?? false;
-      if (!stepsPermission) {
-        stepsPermission =
-        await Health().requestAuthorization([HealthDataType.STEPS]);
+    bool stepsPermission =
+        await Health().hasPermissions([HealthDataType.STEPS]) ?? false;
+    if (!stepsPermission) {
+      stepsPermission =
+          await Health().requestAuthorization([HealthDataType.STEPS]);
+    }
+
+    if (stepsPermission) {
+      try {
+        fetchedSteps = await Health().getTotalStepsInInterval(midnight, end);
+      } catch (error) {
+        debugPrint("Exception in getTotalStepsInInterval: $error");
       }
 
-      if (stepsPermission) {
-        try {
-          fetchedSteps = await Health().getTotalStepsInInterval(midnight, end);
-        } catch (error) {
-          debugPrint("Exception in getTotalStepsInInterval: $error");
-        }
-
-        debugPrint('Total number of steps: $steps');
+      debugPrint('Total number of steps: $steps');
 
       _steps = (fetchedSteps == null) ? 0 : fetchedSteps;
       _state = (fetchedSteps == null) ? AppState.NO_DATA : AppState.STEPS_READY;
 
-        if (selectedDate.day == DateTime.now().day){
-          _todayStep = _steps;
-        }
-
-      } else {
-        debugPrint("Authorization not granted - error in authorization");
-        _state = AppState.DATA_NOT_FETCHED;
+      if (selectedDate.day == DateTime.now().day) {
+        _todayStep = _steps;
       }
-      notifyListeners();
-
+    } else {
+      debugPrint("Authorization not granted - error in authorization");
+      _state = AppState.DATA_NOT_FETCHED;
+    }
+    notifyListeners();
   }
 
   /// 걸음 수 데이터 추가
@@ -276,17 +285,24 @@ class HealthDataProvider with ChangeNotifier {
   }
 
   /// selectedDate의 시, 분, 초 값을 현재 시간에 맞게 동기화
-  void _setNow(){
+  void _setNow() {
     final now = DateTime.now();
     _selectedDate = DateTime(
-        _selectedDate.year,
-        _selectedDate.month,
-        _selectedDate.day,
-        now.hour,
-        now.minute,
-        now.second,
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      now.hour,
+      now.minute,
+      now.second,
     );
   }
+
+  void postFetchData(DateTime date){
+    _selectedDate = date;
+    fetchData(_selectedDate);
+    fetchStepData(_selectedDate);
+  }
+
 
   /// 전날로 이동
   void previousDate() {
@@ -299,9 +315,15 @@ class HealthDataProvider with ChangeNotifier {
   /// 다음날로 이동
   void nextDate() {
     _setNow();
-    _selectedDate = _selectedDate.add(Duration(days: 1));
-    fetchStepData(_selectedDate);
-    fetchData(_selectedDate);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    if (_selectedDate.isBefore(today)) {
+      _selectedDate = _selectedDate.add(Duration(days: 1));
+      fetchStepData(_selectedDate);
+      fetchData(_selectedDate);
+      notifyListeners();
+    }
   }
 
   /// 오늘로 이동

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../services/user_firebase.dart';
 import '../../utils/regExp.dart';
-import '../../widgets/customForm.dart';
+import '../../widgets/custom_form.dart';
 
 class BodyPage extends StatefulWidget {
   const BodyPage({Key? key}) : super(key: key);
@@ -17,20 +17,20 @@ class BodyPage extends StatefulWidget {
 
 class _BodyPageState extends State<BodyPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _heightController = TextEditingController();
-  TextEditingController _weightController = TextEditingController();
-  TextEditingController _ageController = TextEditingController();
-  TextEditingController _genderController = TextEditingController();
-  FocusNode _heightNode = FocusNode();
-  FocusNode _weightNode = FocusNode();
-  FocusNode _ageNode = FocusNode();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final FocusNode _heightNode = FocusNode();
+  final FocusNode _weightNode = FocusNode();
+  final FocusNode _ageNode = FocusNode();
 
   late double _bmi;
   double? _skeletalMuscleMass;
   double? _bodyFat;
-  bool _isChecked = false;
+  final ValueNotifier<bool> _isCheckedNotifier = ValueNotifier(false);
   bool _isLoading = false;
-
+  bool _isInitialized = false;
 
   void _showLoadingSnackBar() {
     Future.delayed(Duration(seconds: 2), () {
@@ -43,6 +43,24 @@ class _BodyPageState extends State<BodyPage> {
         });
       }
     });
+  }
+
+  void initInfoText() {
+    final user = Provider.of<UserInfoProvider>(context, listen: false);
+    // 텍스트 필드의 초기값을 설정
+    _weightController.text = (user.info?.weight ?? 0.0).toString();
+    _heightController.text = (user.info?.height ?? 0.0).toString();
+    _ageController.text = (user.info?.age ?? 0).toString();
+    _genderController.text = user.info?.gender ?? "남";
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      initInfoText();
+      _isInitialized = true;
+    }
   }
 
   @override
@@ -59,8 +77,6 @@ class _BodyPageState extends State<BodyPage> {
   }
 
   Form inputForm() {
-    final user = Provider.of<UserInfoProvider>(context);
-
     return Form(
       key: _formKey,
       child: Column(
@@ -92,12 +108,15 @@ class _BodyPageState extends State<BodyPage> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Row(
               children: [
-                Checkbox(
-                  value: _isChecked,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked = value ?? false;
-                    });
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isCheckedNotifier,
+                  builder: (context, isChecked, child) {
+                    return Checkbox(
+                      value: isChecked,
+                      onChanged: (bool? value) {
+                        _isCheckedNotifier.value = value ?? false;
+                      },
+                    );
                   },
                 ),
                 Text('변경된 데이터(키, 몸무게) 내정보에 저장하기'),
@@ -116,19 +135,6 @@ class _BodyPageState extends State<BodyPage> {
               });
               _showLoadingSnackBar();
               if (_formKey.currentState!.validate()) {
-                final healthData =
-                    Provider.of<HealthDataProvider>(context, listen: false);
-                if (_isChecked) {
-                  if (double.tryParse(_heightController.text) != null) {
-                    healthData
-                        .addHeightData(double.parse(_heightController.text));
-                  }
-                  if (double.tryParse(_weightController.text) != null) {
-                    healthData
-                        .addWeightData(double.parse(_weightController.text));
-                  }
-                  UserFirebase().updateGender(_genderController.text);
-                }
                 _calculateBodyComposition();
               }
               setState(() {
@@ -137,8 +143,8 @@ class _BodyPageState extends State<BodyPage> {
             },
             child: _isLoading
                 ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            )
                 : Text('계산하기'),
           ),
           SizedBox(height: 10),
@@ -204,6 +210,13 @@ class _BodyPageState extends State<BodyPage> {
     print(weight);
     print(age);
 
+    if (_isCheckedNotifier.value) {
+      Provider.of<UserInfoProvider>(context, listen: false).height = height;
+      Provider.of<UserInfoProvider>(context, listen: false).weight = weight;
+      Provider.of<UserInfoProvider>(context, listen: false).age = age;
+      Provider.of<UserInfoProvider>(context, listen: false).gender = _genderController.text;
+    }
+
     double heightMeter = height / 100; // 키를 미터로 변환
     _bmi = weight / (heightMeter * heightMeter); // BMI 계산
     setState(() {
@@ -225,9 +238,9 @@ class _BodyPageState extends State<BodyPage> {
 
   Widget _buildResultTile(
       {required String title,
-      required double value,
-      required String unit,
-      required List<double> range}) {
+        required double value,
+        required String unit,
+        required List<double> range}) {
     Color color;
     String statusText;
     if (value <= 0) {
@@ -264,19 +277,7 @@ class _BodyPageState extends State<BodyPage> {
       ),
       trailing: Text(
         statusText,
-        style: TextStyle(color: color, fontWeight: FontWeight.bold),
-        textAlign: TextAlign.center,
-        maxLines: 2,
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _heightController.dispose();
-    _weightController.dispose();
-    _ageController.dispose();
-    _genderController.dispose();
-    super.dispose();
   }
 }

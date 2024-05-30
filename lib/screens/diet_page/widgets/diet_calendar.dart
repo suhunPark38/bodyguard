@@ -12,7 +12,18 @@ class DietCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final koreanMonths = [
-      '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'
+      '1월',
+      '2월',
+      '3월',
+      '4월',
+      '5월',
+      '6월',
+      '7월',
+      '8월',
+      '9월',
+      '10월',
+      '11월',
+      '12월'
     ];
 
     return Consumer<DietProvider>(
@@ -37,19 +48,23 @@ class DietCalendar extends StatelessWidget {
             provider.setSelectedDay(selectedDay);
             provider.setFocusedDay(focusedDay);
             provider.notifySelectDiets(selectedDay);
-            Provider.of<HealthDataProvider>(context, listen: false).selectedDate = selectedDay;
-            Provider.of<HealthDataProvider>(context, listen: false).fetchData(provider.selectedDay);
+            Provider.of<HealthDataProvider>(context, listen: false)
+                .selectedDate = selectedDay;
+            Provider.of<HealthDataProvider>(context, listen: false)
+                .fetchData(provider.selectedDay);
           },
           headerStyle: const HeaderStyle(
-            titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            titleTextStyle:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             formatButtonVisible: true,
             formatButtonShowsNext: false,
             leftChevronIcon: Icon(Icons.chevron_left, size: 28),
             rightChevronIcon: Icon(Icons.chevron_right, size: 28),
           ),
           calendarStyle: CalendarStyle(
-            selectedDecoration: const BoxDecoration(
-                color: Colors.teal, shape: BoxShape.circle),
+            outsideDaysVisible: false,
+            selectedDecoration:
+                const BoxDecoration(color: Colors.teal, shape: BoxShape.circle),
             todayDecoration: BoxDecoration(
                 color: Colors.teal.shade100, shape: BoxShape.circle),
           ),
@@ -160,7 +175,8 @@ class DietCalendar extends StatelessWidget {
               return Center(
                 child: Text(
                   '${day.year}년 ${koreanMonths[day.month - 1]}',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               );
             },
