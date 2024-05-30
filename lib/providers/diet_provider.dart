@@ -245,11 +245,11 @@ class DietProvider with ChangeNotifier {
   String getWeeklyCaloriesComparisonMessage(double todayCalories, double weekAverage) {
     double difference = (todayCalories - weekAverage).abs();
     if (todayCalories < weekAverage) {
-      return "오늘은 주간 평균보다 ${difference.toStringAsFixed(1)} kcal 적게 섭취했습니다.";
+      return "주간 평균보다 ${difference.toStringAsFixed(1)} kcal 적게";
     } else if (todayCalories > weekAverage) {
-      return "오늘은 주간 평균보다 ${difference.toStringAsFixed(1)} kcal 많이 섭취했습니다.";
+      return "주간 평균보다 ${difference.toStringAsFixed(1)} kcal 많이";
     } else {
-      return "오늘은 주간 평균과 같은 양을 섭취했습니다.";
+      return "주간 평균과 같은 양을";
     }
   }
 
@@ -258,11 +258,11 @@ class DietProvider with ChangeNotifier {
     double difference = (todayCalories - monthAverage).abs();
 
     if (todayCalories < monthAverage) {
-      return "오늘은 월간 평균보다 ${difference.toStringAsFixed(1)} kcal 적게 섭취했습니다.";
+      return "월간 평균보다 ${difference.toStringAsFixed(1)} kcal 적게";
     } else if (todayCalories > monthAverage) {
-      return "오늘은 월간 평균보다 ${difference.toStringAsFixed(1)} kcal 많이 섭취했습니다.";
+      return "월간 평균보다 ${difference.toStringAsFixed(1)} kcal 많이";
     } else {
-      return "오늘은 월간 평균과 같은 양을 섭취했습니다.";
+      return "월간 평균과 같은 양을";
     }
   }
 }
