@@ -71,14 +71,16 @@ class HealthUtil {
   }
 
   /// google health connect 설치
-  Future<void> installHealthConnect() async {
-    bool isAvailable = Health().useHealthConnectIfAvailable;
-    print("isAvailabe => ${isAvailable}");
+    Future<void> installHealthConnect() async {
+    final status = await Health().getHealthConnectSdkStatus();
+
+    print("status : $status");
 
     //health connect를 사용할 수 없다면 (설치 되지 않았다면) 설치한다.
-    if(!isAvailable && Platform.isAndroid){
+    if(!(status?.nativeValue  == 3)){
       await Health().installHealthConnect();
     }
+
   }
 
 }
