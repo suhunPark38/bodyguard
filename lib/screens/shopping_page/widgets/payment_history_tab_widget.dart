@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:provider/provider.dart';
+import '../../../map.dart';
+import '../../../model/store_model.dart';
 import '../../../providers/shopping_provider.dart';
+import '../../../providers/user_info_provider.dart';
+import '../../../services/store_service.dart';
 import '../../../utils/format_util.dart';
 import '../../payment_detail_page/payment_detail_page.dart';
 import 'filter_button.dart';
@@ -258,6 +264,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
             },
           ),
         ),
+        )
       ],
     );
   }

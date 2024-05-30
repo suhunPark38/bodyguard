@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/diet_provider.dart';
 import '../../../widgets/custom_button.dart';
 
 class DateWidget extends StatelessWidget {
@@ -22,7 +23,7 @@ class DateWidget extends StatelessWidget {
       provider.previousDate();
       Provider.of<DietProvider>(context, listen: false).setSelectedDay(provider.selectedDate);
       Provider.of<DietProvider>(context, listen: false).setFocusedDay(provider.selectedDate);
-      diet.notifySelectDiets(provider.selectedDate);
+      Provider.of<DietProvider>(context, listen: false).notifySelectDiets(provider.selectedDate);
       },
             ),
           ),
@@ -41,7 +42,7 @@ class DateWidget extends StatelessWidget {
       provider.nextDate();
       Provider.of<DietProvider>(context, listen: false).setSelectedDay(provider.selectedDate);
       Provider.of<DietProvider>(context, listen: false).setFocusedDay(provider.selectedDate);
-      diet.notifySelectDiets(provider.selectedDate);
+      Provider.of<DietProvider>(context, listen: false).notifySelectDiets(provider.selectedDate);
 
       }
 
@@ -60,7 +61,7 @@ class DateWidget extends StatelessWidget {
                 style: TextStyle(fontSize: 9),
               ),
             ),
-
+          )
           ],
         );
       }
