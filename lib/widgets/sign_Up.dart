@@ -1,7 +1,7 @@
 import 'package:bodyguard/model/user_model.dart';
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
-import 'package:bodyguard/widgets/customForm.dart';
+import 'package:bodyguard/widgets/custom_form.dart';
 import 'package:bodyguard/widgets/search_address.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';

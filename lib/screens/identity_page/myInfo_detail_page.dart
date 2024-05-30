@@ -5,7 +5,7 @@ import '../../services/auth_service.dart';
 import '../../services/user_firebase.dart';
 import '../../utils/format_util.dart';
 import '../../utils/regExp.dart';
-import '../../widgets/customForm.dart';
+import '../../widgets/custom_form.dart';
 import '../../widgets/search_address.dart';
 
 class MyInfoDetailPage extends StatefulWidget {

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../services/user_firebase.dart';
 import '../../utils/regExp.dart';
-import '../../widgets/customForm.dart';
+import '../../widgets/custom_form.dart';
 
 class BodyPage extends StatefulWidget {
   const BodyPage({Key? key}) : super(key: key);

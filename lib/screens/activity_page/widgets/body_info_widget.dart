@@ -1,6 +1,6 @@
 import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/providers/user_info_provider.dart';
-import 'package:bodyguard/widgets/customForm.dart';
+import 'package:bodyguard/widgets/custom_form.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
