@@ -55,7 +55,7 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                   onPressed: () {
                     final now = DateTime.now();
                     final oneMonthAgo =
-                        DateTime(now.year, now.month - 1, now.day);
+                    DateTime(now.year, now.month - 1, now.day);
                     provider.setStartDate(oneMonthAgo);
                     provider.setEndDate(now);
                     provider.setSelectedFilter(FilterType.oneMonth);
@@ -75,8 +75,8 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                 children: [
                   Text(
                       '시작일 ${provider.selectedStartDate.year}년'
-                      ' ${provider.selectedStartDate.month}월'
-                      ' ${provider.selectedStartDate.day}일',
+                          ' ${provider.selectedStartDate.month}월'
+                          ' ${provider.selectedStartDate.day}일',
                       style: const TextStyle(fontSize: 12)),
                   IconButton(
                     iconSize: 20,
@@ -153,82 +153,57 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                     ? '오늘'
                     : '${currentDate.year}. ${currentDate.month}. ${currentDate.day}.';
 
-                // 날짜가 변경되었을 경우 새로운 ListTile 추가
-                if (index == 0 ||
-                    currentDate !=
-                        DateTime(
-                            provider.sortedAndFilteredPayments[index - 1]
-                                .timestamp.year,
-                            provider.sortedAndFilteredPayments[index - 1]
-                                .timestamp.month,
-                            provider.sortedAndFilteredPayments[index - 1]
-                                .timestamp.day)) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          dateText,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w500),
-                        ),
+              // 날짜가 변경되었을 경우 새로운 ListTile 추가
+              if (index == 0 ||
+                  currentDate !=
+                      DateTime(
+                          provider.sortedAndFilteredPayments[index - 1]
+                              .timestamp.year,
+                          provider.sortedAndFilteredPayments[index - 1]
+                              .timestamp.month,
+                          provider.sortedAndFilteredPayments[index - 1]
+                              .timestamp.day)) {
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text(
+                        dateText,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
                       ),
-                      Card(
-                        child: ListTile(
-                          title: Text(
-                            totalFoodCount > 1
-                                ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
-                                : firstMenu,
-                          ),
-                          subtitle: Text(
-                            '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
-                            '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
-                            '\n결제 상태: ${getStatusString(payment.status)}'
-                            '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
-                            '\n결제 일시: $formattedTimestamp',
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.more_vert),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PaymentDetailPage(payment: payment),
-                                ),
-                              );
-                            },
-                          ),
-                          onTap: () {
+                    ),
+                    Card(
+                      child: ListTile(
+                        title: Text(
+                          totalFoodCount > 1
+                              ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
+                              : firstMenu,
+                        ),
+                        subtitle: Text(
+                          '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
+                              '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
+                              '\n결제 상태: ${getStatusString(payment.status)}'
+                              '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
+                              '\n결제 일시: $formattedTimestamp',
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.fmd_good_outlined),
+                          onPressed: () async { //아이콘 이벤트
+                            final storeName = payment.menuItems.first.menu.storeName;
+                            final Store? store = await StoreService().getStoreByName(storeName);
                             Navigator.push(
                               context,
+
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    PaymentDetailPage(payment: payment),
+                                  shortPathView(
+                                      UserNLatLng: NLatLng(Provider.of<UserInfoProvider>(context, listen: false).info!.NLatLng[1], Provider.of<UserInfoProvider>(context, listen: false).info!.NLatLng[0]),
+                                      StoreNLatLng: NLatLng(store!.latitude, store!.longitude)),
                               ),
                             );
                           },
                         ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Card(
-                    child: ListTile(
-                      title: Text(
-                        totalFoodCount > 1
-                            ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
-                            : firstMenu,
-                      ),
-                      subtitle: Text(
-                        '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
-                        '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
-                        '\n결제 상태: ${getStatusString(payment.status)}'
-                        '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
-                        '\n결제 일시: $formattedTimestamp',
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.more_vert),
-                        onPressed: () {
+                        onTap: () {//카드 이벤트
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -238,7 +213,27 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                           );
                         },
                       ),
-                      onTap: () {
+                    ),
+                  ],
+                );
+              } else {
+                return Card(
+                  child: ListTile(
+                    title: Text(
+                      totalFoodCount > 1
+                          ? '$firstMenu, ${totalFoodCount - 1}개의 음식'
+                          : firstMenu,
+                    ),
+                    subtitle: Text(
+                      '배달 방식: ${getDeliveryTypeString(payment.deliveryType)}'
+                          '\n가게 이름: ${payment.menuItems.first.menu.storeName}'
+                          '\n결제 상태: ${getStatusString(payment.status)}'
+                          '\n결제 금액: ${formatNumber(payment.totalPrice)}원'
+                          '\n결제 일시: $formattedTimestamp',
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.fmd_good_outlined),
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -248,13 +243,23 @@ class PaymentHistoryTabWidget extends StatelessWidget {
                         );
                       },
                     ),
-                  );
-                }
-              },
-            ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PaymentDetailPage(payment: payment),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }
+            },
           ),
         ),
       ],
     );
   }
+
 }

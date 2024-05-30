@@ -105,37 +105,21 @@ class ShoppingPage extends StatelessWidget {
                                           width: 90,
                                           height: 20,
                                           child: CustomButton(
-                                            onPressed: () async {
-                                              Widget mapPage =
-                                                  const NaverMapApp();
-                                              Navigator.push(
+                                            onPressed: provider.selectedMenus.isNotEmpty
+                                                ? () {
+                                              provider.completePayment(context);
+                                              provider.refreshPayments();
+                                              provider.handleReset(); // 결제를 완료 후 장바구니 데이터 클리어
+                                              provider.setCurrentShoppingTabIndex(1);
+                                              Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => mapPage,
-                                                ),
+                                                    builder: (context) => const MyHomePage(
+                                                      initialIndex: 3,
+                                                    )),
+                                                    (route) => false,
                                               );
-                                            },
-                                            text: const Text(
-                                              '가게 위치',
-                                              style: TextStyle(fontSize: 10),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 90,
-                                          height: 20,
-                                          child: CustomButton(
-                                            onPressed: () async {
-                                              provider
-                                                  .setCurrentStoreTabIndex(0);
-                                              await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      StoreListPage(),
-                                                ),
-                                              );
-                                            },
+                                            }
                                             text: const Text(
                                               '메뉴 담기',
                                               style: TextStyle(fontSize: 10),

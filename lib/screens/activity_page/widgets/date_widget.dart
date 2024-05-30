@@ -18,7 +18,12 @@ class DateWidget extends StatelessWidget {
             // 이전 버튼 왼쪽 끝으로 밀어냄
             child: IconButton(
               icon: const Icon(Icons.chevron_left, size: 28),
-              onPressed: provider.previousDate,
+      onPressed: (){
+      provider.previousDate();
+      Provider.of<DietProvider>(context, listen: false).setSelectedDay(provider.selectedDate);
+      Provider.of<DietProvider>(context, listen: false).setFocusedDay(provider.selectedDate);
+      diet.notifySelectDiets(provider.selectedDate);
+      },
             ),
           ),
           Text(
@@ -29,7 +34,18 @@ class DateWidget extends StatelessWidget {
             // 다음 버튼 오른쪽 끝으로 밀어냄
             child: IconButton(
               icon: const Icon(Icons.chevron_right, size: 28),
-              onPressed: provider.isToday ? null : provider.nextDate,
+      onPressed: (){
+                if(provider.isToday)
+                  return;
+                else{
+      provider.nextDate();
+      Provider.of<DietProvider>(context, listen: false).setSelectedDay(provider.selectedDate);
+      Provider.of<DietProvider>(context, listen: false).setFocusedDay(provider.selectedDate);
+      diet.notifySelectDiets(provider.selectedDate);
+
+      }
+
+      },
             ),
           ),
           SizedBox(
@@ -44,9 +60,11 @@ class DateWidget extends StatelessWidget {
                 style: TextStyle(fontSize: 9),
               ),
             ),
-          ),
-        ],
-      );
-    });
+
+          ],
+        );
+      }
+    );
   }
+
 }

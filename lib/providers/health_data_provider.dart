@@ -1,8 +1,10 @@
+
 import 'package:bodyguard/utils/health_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:health/health.dart';
 
 class HealthDataProvider with ChangeNotifier {
+
   AppState _state = AppState.DATA_NOT_FETCHED; // 현재 health data 상태
   DateTime _selectedDate = DateTime.now(); // 가져올 건강 데이터 시간
   int _steps = 0;
@@ -31,23 +33,15 @@ class HealthDataProvider with ChangeNotifier {
       _selectedDate.second,
     );
   }
-
   AppState get state => _state;
-
   int get steps => _steps;
 
   double get height => _height;
-
   double get weight => _weight;
-
   double get totalCalorie => _totalCalorieBurned;
-
   double get water => _water;
-
   double get activeCalorieBurned => _activeCalorieBurned;
-
   double get todayWater => _todayWater;
-
   int get todayStep => _todayStep;
 
   bool get isToday {
@@ -61,12 +55,14 @@ class HealthDataProvider with ChangeNotifier {
   set targetCalorie(double value) {
     _targetCalorie = value;
     notifyListeners();
+
   }
 
   HealthDataProvider() {
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
   }
+
 
   /// 기본 데이터 (신장, 몸무게 등) 가져오기
   Future<void> fetchData(DateTime date) async {
@@ -91,6 +87,7 @@ class HealthDataProvider with ChangeNotifier {
 
     debugPrint('Total number of data points: ${healthData.length}. '
         '${healthData.length > 100 ? 'Only showing the first 100.' : ''}');
+
 
     // filter out duplicates
     healthData = Health().removeDuplicates(healthData);
@@ -123,32 +120,31 @@ class HealthDataProvider with ChangeNotifier {
     _activeCalorieBurned = totalActiveCalories;
     _water = totalWater;
 
-    if (selectedDate.day == DateTime.now().day) {
+    if (selectedDate.day == DateTime.now().day){
       _todayWater = _water;
     }
 
     _state = healthData.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
 
-    print(_state);
-    notifyListeners();
+      print(_state);
+      notifyListeners();
+
   }
 
-  void updateHeight(double? height) {
-    if (height != null) {
+  void updateHeight(double? height){
+    if(height != null) {
       _height = height;
       notifyListeners();
     }
   }
-
-  void updateWeight(double? weight) {
-    if (weight != null) {
+  void updateWeight(double? weight){
+    if(weight != null) {
       _weight = weight;
       notifyListeners();
     }
   }
-
-  void updateTargetCalorie(double? targetCalorie) {
-    if (targetCalorie != null) {
+  void updateTargetCalorie(double? targetCalorie){
+    if(targetCalorie != null) {
       _targetCalorie = targetCalorie;
       notifyListeners();
     }
@@ -232,9 +228,12 @@ class HealthDataProvider with ChangeNotifier {
 
     // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
-        value: add / 100, type: HealthDataType.HEIGHT, startTime: now);
+        value: add /100,
+        type: HealthDataType.HEIGHT,
+        startTime: now);
 
     _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
+
 
     notifyListeners();
   }
@@ -252,9 +251,12 @@ class HealthDataProvider with ChangeNotifier {
 
     // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
-        value: add, type: HealthDataType.WEIGHT, startTime: now);
+        value: add,
+        type: HealthDataType.WEIGHT,
+        startTime: now);
 
     _state = success ? AppState.DATA_ADDED : AppState.DATA_NOT_ADDED;
+
 
     notifyListeners();
   }
@@ -267,7 +269,7 @@ class HealthDataProvider with ChangeNotifier {
 
     bool success = true;
 
-    // misc. health data examples using the writeHealthData() method
+   // misc. health data examples using the writeHealthData() method
     success &= await Health().writeHealthData(
         value: add,
         type: HealthDataType.WATER,
@@ -294,6 +296,13 @@ class HealthDataProvider with ChangeNotifier {
       now.second,
     );
   }
+
+  void postFetchData(DateTime date){
+    _selectedDate = date;
+    fetchData(_selectedDate);
+    fetchStepData(_selectedDate);
+  }
+
 
   /// 전날로 이동
   void previousDate() {
@@ -323,7 +332,9 @@ class HealthDataProvider with ChangeNotifier {
     fetchStepData(_selectedDate);
     fetchData(_selectedDate);
   }
+
 }
+
 
 enum AppState {
   DATA_NOT_FETCHED,
@@ -339,3 +350,4 @@ enum AppState {
   STEPS_READY,
   HEALTH_CONNECT_STATUS,
 }
+

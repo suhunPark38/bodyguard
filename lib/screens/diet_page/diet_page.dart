@@ -32,8 +32,7 @@ class DietPage extends StatelessWidget {
               provider.notifySelectDiets(provider.selectedDay);
               provider.setFocusedDay(now);
               //활동페이지도 초기화하고 싶다면 주석 지우기
-              // Provider.of<HealthDataProvider>(context, listen: false)
-              //     .fetchData(provider.selectedDay);
+               Provider.of<HealthDataProvider>(context, listen: false).fetchData(provider.selectedDay);
             },
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),

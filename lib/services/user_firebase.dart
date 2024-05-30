@@ -168,6 +168,29 @@ class UserFirebase {
     }
   }
 
+  Future<void> updateAge(int age) async{
+    try {
+      String? uid = await Auth().getUiD();
+      if (uid == null) {
+        print("Failed to get user ID: User not authenticated");
+        return;
+      }
+
+      await _firebase
+          .collection('users')
+          .doc(uid)
+          .update({"age": age});
+      print("User Updated");
+    } catch (e) {
+      if (e is FirebaseException && e.code == 'unavailable') {
+        // 네트워크 연결 문제
+        print("Failed to update user: Network connection error");
+      } else {
+        // 기타 오류
+        print("Failed to update user: $e");
+      }
+    }
+  }
   Future<void> updateTargetCalorie(double targetCalorie) async {
     try {
       String? uid = await Auth().getUiD();
