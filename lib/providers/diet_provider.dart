@@ -34,6 +34,9 @@ class DietProvider with ChangeNotifier {
 
   double _todayCalories = 0.0;
 
+  double _averageCaloriesForWeek = 0.0;
+  double _averageCaloriesForMonth = 0.0;
+
   List<DietData> get diets => _diets;
 
   List<DietData> get breakfast => _breakfast;
@@ -45,6 +48,7 @@ class DietProvider with ChangeNotifier {
   DietRecord get totalNutritionalInfo => _totalNutritionalInfo;
 
   double get recommendedCalories => _recommendedCalories;
+  
   set recommendedCalories(double value){
     _recommendedCalories = value;
   }
@@ -61,6 +65,11 @@ class DietProvider with ChangeNotifier {
   List<DietData> get dinnerForPeriod => _dinnerForPeriod;
 
   double get todayCalories => _todayCalories;
+
+  double get averageCaloriesForWeek => _averageCaloriesForWeek;
+
+  double get averageCaloriesForMonth => _averageCaloriesForMonth;
+
 
 
   void setFocusedDay(DateTime day) {
@@ -168,7 +177,7 @@ class DietProvider with ChangeNotifier {
     _dinner = _diets.where((diet) => diet.classification == 2).toList();
 
     _updateTodayCalories();
-
+    _updateAverages();
     _totalNutritionalInfo = DietRecord(
       calories: CalculateUtil()
           .getSumOfLists(_diets.map((diet) => diet.calories).toList()),
@@ -184,6 +193,10 @@ class DietProvider with ChangeNotifier {
           .getSumOfLists(_diets.map((diet) => diet.sugar).toList()),
     );
     notifyListeners();
+  }
+  void _updateAverages() async {
+    _averageCaloriesForWeek = await getAverageCaloriesForWeek();
+    _averageCaloriesForMonth = await getAverageCaloriesForMonth();
   }
 
   Future<double> getAverageCaloriesForWeek() async {
@@ -227,5 +240,29 @@ class DietProvider with ChangeNotifier {
       sum += diet.calories;
     }
     return sum;
+  }
+
+  String getWeeklyCaloriesComparisonMessage(double todayCalories, double weekAverage) {
+    double difference = (todayCalories - weekAverage).abs();
+    if (todayCalories < weekAverage) {
+      return "오늘은 주간 평균보다 ${difference.toStringAsFixed(1)} kcal 적게 섭취했습니다.";
+    } else if (todayCalories > weekAverage) {
+      return "오늘은 주간 평균보다 ${difference.toStringAsFixed(1)} kcal 많이 섭취했습니다.";
+    } else {
+      return "오늘은 주간 평균과 같은 양을 섭취했습니다.";
+    }
+  }
+
+
+  String getMonthlyCaloriesComparisonMessage(double todayCalories, double monthAverage) {
+    double difference = (todayCalories - monthAverage).abs();
+
+    if (todayCalories < monthAverage) {
+      return "오늘은 월간 평균보다 ${difference.toStringAsFixed(1)} kcal 적게 섭취했습니다.";
+    } else if (todayCalories > monthAverage) {
+      return "오늘은 월간 평균보다 ${difference.toStringAsFixed(1)} kcal 많이 섭취했습니다.";
+    } else {
+      return "오늘은 월간 평균과 같은 양을 섭취했습니다.";
+    }
   }
 }
