@@ -200,13 +200,19 @@ class DietProvider with ChangeNotifier {
   }
 
   Future<double> getAverageCaloriesForWeek() async {
-    // 오늘을 제외한 일주일 전의 날짜 계산
-    DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
+    // 현재 날짜의 요일 계산
+    int currentWeekday = selectedDay.weekday;
+
+    // 현재 주의 첫 번째 날 계산
+    DateTime firstDayOfCurrentWeek = selectedDay.subtract(Duration(days: currentWeekday - 1));
+    // 현재 주의 마지막 날 계산
+    DateTime lastDayOfCurrentWeek = firstDayOfCurrentWeek.add(Duration(days: 6));
 
     // 일주일 동안의 다이어트 데이터 가져오기
-    List<DietData> weekDiets = await database.getDietBetweenDates(oneWeekAgo, DateTime.now());
-    // 주간 다이어트 데이터의 개수
-    int weekDataCount = weekDiets.length;
+    List<DietData> weekDiets = await database.getDietBetweenDates(firstDayOfCurrentWeek, lastDayOfCurrentWeek);
+    // 주간 다이어트가 있는 날의 개수
+    int weekDataCount = _calculateNonEmptyDaysCount(weekDiets);
+
     // 주간 칼로리 합계 구하기
     double weekCaloriesSum = _calculateCaloriesSum(weekDiets);
 
@@ -217,13 +223,16 @@ class DietProvider with ChangeNotifier {
   }
 
   Future<double> getAverageCaloriesForMonth() async {
-    // 오늘을 제외한 한 달 전의 날짜 계산
-    DateTime oneMonthAgo = DateTime.now().subtract(Duration(days: 30));
+    // 현재 월의 첫 번째 날 계산
+    DateTime firstDayOfCurrentMonth = DateTime(selectedDay.year, selectedDay.month, 1);
+    // 현재 월의 마지막 날 계산
+    DateTime lastDayOfCurrentMonth = DateTime(selectedDay.year, selectedDay.month + 1, 0);
 
     // 한 달 동안의 다이어트 데이터 가져오기
-    List<DietData> monthDiets = await database.getDietBetweenDates(oneMonthAgo, DateTime.now());
-    // 한 달 다이어트 데이터의 개수
-    int monthDataCount = monthDiets.length;
+    List<DietData> monthDiets = await database.getDietBetweenDates(firstDayOfCurrentMonth, lastDayOfCurrentMonth);
+    // 한 달 동안 다이어트가 있는 날의 개수
+    int monthDataCount = _calculateNonEmptyDaysCount(monthDiets);
+
     // 한 달 칼로리 합계 구하기
     double monthCaloriesSum = _calculateCaloriesSum(monthDiets);
 
@@ -231,6 +240,16 @@ class DietProvider with ChangeNotifier {
     double averageCaloriesForMonth = monthDataCount > 0 ? monthCaloriesSum / monthDataCount : 0.0;
 
     return averageCaloriesForMonth;
+  }
+
+  int _calculateNonEmptyDaysCount(List<DietData> dietData) {
+    Set<String> uniqueDates = Set(); // 중복된 날짜를 방지하기 위해 Set을 사용합니다.
+    for (DietData data in dietData) {
+      // DietData 객체의 eatingTime 필드에서 날짜 정보를 추출합니다.
+      String date = '${data.eatingTime.year}-${data.eatingTime.month}-${data.eatingTime.day}';
+      uniqueDates.add(date);
+    }
+    return uniqueDates.length; // 중복을 제거한 날짜의 개수를 반환합니다.
   }
 
 

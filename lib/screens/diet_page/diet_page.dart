@@ -7,6 +7,7 @@ import '../../providers/diet_provider.dart';
 import '../../utils/format_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/nutrition_info.dart';
+import '../diet_search_page/diet_search_page.dart';
 import 'widgets/diets_card.dart';
 import 'widgets/diet_calendar.dart';
 
@@ -26,12 +27,12 @@ class DietPage extends StatelessWidget {
             provider.calculateCaloriesPercentage();
         final bool isOverRecommended = provider.totalNutritionalInfo.calories >
             provider.recommendedCalories;
+
         return RefreshIndicator(
             onRefresh: () async {
               provider.setSelectedDay(now);
               provider.notifySelectDiets(provider.selectedDay);
               provider.setFocusedDay(now);
-              //활동페이지도 초기화하고 싶다면 주석 지우기
               Provider.of<HealthDataProvider>(context, listen: false)
                   .selectedDate = provider.selectedDay;
               Provider.of<HealthDataProvider>(context, listen: false)
@@ -148,7 +149,7 @@ class DietPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Row(
@@ -246,7 +247,7 @@ class DietPage extends StatelessWidget {
 
   void _showBottomSheet(BuildContext context) {
     final provider = Provider.of<DietProvider>(context, listen: false);
-    double max = _findMaxCalories(provider.todayCalories,
+    double max = _findMaxCalories(provider.totalNutritionalInfo.calories,
         provider.averageCaloriesForWeek, provider.averageCaloriesForMonth);
 
     showModalBottomSheet(
@@ -268,10 +269,10 @@ class DietPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        "식단 리포트",
-                        style: TextStyle(
+                        "${provider.selectedDay.year}년 ${provider.selectedDay.month}월 식단 리포트",
+                        style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -284,23 +285,41 @@ class DietPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 25),
                 // 주간 및 월간 평균 칼로리를 표시하는 그래프 추가
                 Column(
                   children: [
-                    if (provider.averageCaloriesForWeek == 0 ||
-                        provider.averageCaloriesForMonth == 0)
+                    if (provider.totalNutritionalInfo.calories == 0)
+                      Column(children: [
+                        Text(
+                          '${provider.selectedDay.day}일은 식단 데이터가 없어요. 식단을 기록할까요?',
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 25),
+                      ]),
+                    if (provider.averageCaloriesForWeek == 0)
                       const Column(children: [
                         Text(
-                          '지난 식단 데이터가 없어요. 식단을 기록할까요?',
+                          '주간 식단 데이터가 없어요. 식단을 기록할까요?',
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 25),
                       ]),
-                    if (provider.averageCaloriesForWeek != 0 &&
-                        provider.averageCaloriesForMonth != 0)
+                    if (provider.averageCaloriesForMonth == 0)
+                      const Column(children: [
+                        Text(
+                          '월간 식단 데이터가 없어요. 식단을 기록할까요?',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 25),
+                      ]),
+                    if (provider.totalNutritionalInfo.calories != 0)
                       Column(
                         children: [
                           Row(
@@ -308,8 +327,8 @@ class DietPage extends StatelessWidget {
                             children: [
                               Flexible(
                                 child: Text(
-                                  "오늘은 ${provider.getWeeklyCaloriesComparisonMessage(
-                                    provider.todayCalories,
+                                  "${provider.selectedDay.day}일은 ${provider.getWeeklyCaloriesComparisonMessage(
+                                    provider.totalNutritionalInfo.calories,
                                     provider.averageCaloriesForWeek,
                                   )}",
                                   style: const TextStyle(
@@ -326,7 +345,7 @@ class DietPage extends StatelessWidget {
                             children: [
                               Flexible(
                                 child: Text(
-                                  " ${provider.getMonthlyCaloriesComparisonMessage(provider.todayCalories, provider.averageCaloriesForMonth)} 섭취했습니다!",
+                                  " ${provider.getMonthlyCaloriesComparisonMessage(provider.totalNutritionalInfo.calories, provider.averageCaloriesForMonth)} 섭취했어요!",
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -341,16 +360,16 @@ class DietPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Text(
-                          "오늘",
-                          style: TextStyle(
+                        Text(
+                          "${provider.selectedDay.day}일",
+                          style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            '${provider.todayCalories.toStringAsFixed(1)} kcal',
+                            '${provider.totalNutritionalInfo.calories.toStringAsFixed(1)} kcal',
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -360,7 +379,7 @@ class DietPage extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: LinearProgressIndicator(
-                        value: provider.todayCalories / max,
+                        value: provider.totalNutritionalInfo.calories / max,
                         backgroundColor: Colors.grey[300],
                         valueColor:
                             const AlwaysStoppedAnimation<Color>(Colors.teal),
@@ -377,7 +396,7 @@ class DietPage extends StatelessWidget {
                               fontSize: 16, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             '${provider.averageCaloriesForWeek.toStringAsFixed(1)} kcal',
@@ -407,7 +426,7 @@ class DietPage extends StatelessWidget {
                               fontSize: 16, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             '${provider.averageCaloriesForMonth.toStringAsFixed(1)} kcal',
@@ -427,11 +446,31 @@ class DietPage extends StatelessWidget {
                         minHeight: 10,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 25),
                   ],
                 ),
-                const SizedBox(height: 10),
-                // 주간 및 월간 평균 칼로리에 대한 메시지 표시
+                SizedBox(
+                  width: double.maxFinite,
+                  child: FilledButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DietSearchPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('식단 기록하기'),
+                  ),
+                ),
               ],
             ),
           ),
