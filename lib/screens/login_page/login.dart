@@ -16,38 +16,12 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool isLoading = false;
-  bool isButtonEnabled = false;
   TextEditingController id = TextEditingController();
   TextEditingController pw = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   FocusNode _emailFocus = FocusNode();
   FocusNode _passwordFocus = FocusNode();
   String pwtext = "6자 이상으로 입력하세요";
-
-  @override
-  void initState() {
-    super.initState();
-    id.addListener(_validateForm);
-    pw.addListener(_validateForm);
-  }
-
-  @override
-  void dispose() {
-    id.removeListener(_validateForm);
-    pw.removeListener(_validateForm);
-    id.dispose();
-    pw.dispose();
-    super.dispose();
-  }
-
-  void _validateForm() {
-    bool isFormValid = id.text.isNotEmpty && pw.text.isNotEmpty;
-    if (isFormValid != isButtonEnabled) {
-      setState(() {
-        isButtonEnabled = isFormValid;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +74,7 @@ class _LoginState extends State<Login> {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: 30.0),
                     child: FilledButton(
-                      onPressed: isButtonEnabled
-                          ? () async {
+                      onPressed: () async {
                         if (_formKey.currentState?.validate() != true) {
                           return;
                         }
@@ -124,12 +97,12 @@ class _LoginState extends State<Login> {
                             ),
                           );
                         }
-                      }
-                          : null,
+                      },
                       child: isLoading
                           ? CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            )
                           : Text("로그인"),
                       style: FilledButton.styleFrom(
                         minimumSize: Size(250, 50),
