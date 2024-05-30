@@ -33,8 +33,9 @@ Future<void> main() async {
   // health connect 사용 여부 확인 (ios:android / 설치 여부) -> 앱 필수 권한 확인 -> health connect 설치 (미설치 시)
   if (Platform.isAndroid) {
     await Health().configure(useHealthConnectIfAvailable: true);
-    await HealthUtil().authorize();
     await HealthUtil().installHealthConnect();
+    await HealthUtil().authorize();
+
   }
 
 
