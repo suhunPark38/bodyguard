@@ -31,7 +31,7 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
   ];
   late List<TextEditingController> controllers;
   late List<FocusNode> focusNodes;
-  Map<String, dynamic>? selectedadress;
+  Map<String, dynamic>? selectedAddress;
   bool _showEditForm = false;
 
   @override
@@ -63,11 +63,12 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: <Widget>[
-            _buildLogoutButton(),
-            const SizedBox(height: 20),
             _buildToggleEditFormButton(),
             const SizedBox(height: 20),
             if (_showEditForm) _buildEditForm(),
+            const SizedBox(height: 20),
+            _buildLogoutButton(),
+
             const Divider(height: 40, thickness: 2),
             _buildRecentActivities(),
           ],
@@ -235,13 +236,13 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
                     decoration: CustomForm().buildDefaultDecoration(
                         labelText: data[7], isReadOnly: true),
                     onTap: () async {
-                      selectedadress = await Navigator.push(
+                      selectedAddress = await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => SearchAddress()),
                       );
-                      if (selectedadress != null) {
-                          controllers[7].text = selectedadress!['roadAddress'];
+                      if (selectedAddress != null) {
+                          controllers[7].text = selectedAddress!['roadAddress'];
                       }
                     },
                     validator: (value) {
@@ -286,7 +287,7 @@ class _MyInfoDetailPageState extends State<MyInfoDetailPage> {
                         "roadAddress": controllers[7].text,
                         "detailAddress": controllers[8].text,
                         "NLatLng": user.info?.roadAddress != controllers[7].text
-                            ? [int.parse(selectedadress!['x']), int.parse(selectedadress!['y'])]
+                            ? [int.parse(selectedAddress!['x']), int.parse(selectedAddress!['y'])]
                             : user.info!.NLatLng,
                       });
 

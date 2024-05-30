@@ -47,7 +47,7 @@ class _IdentityPage extends State<IdentityPage> {
                 Icon(Icons.face, size: 40),
                 Consumer<UserInfoProvider>(
                     builder: (context ,userInfo, child){
-                      return userIDTitle(context, " 님 안녕하세요.");
+                      return userIDTitle(context, "님 안녕하세요.");
                     }),
                 Spacer(),
                 Align(

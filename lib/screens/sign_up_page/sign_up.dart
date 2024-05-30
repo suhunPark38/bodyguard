@@ -1,15 +1,11 @@
 import 'package:bodyguard/model/user_model.dart';
-import 'package:bodyguard/providers/health_data_provider.dart';
 import 'package:bodyguard/services/user_firebase.dart';
 import 'package:bodyguard/widgets/custom_form.dart';
 import 'package:bodyguard/widgets/search_address.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../services/auth_service.dart';
-import '../utils/regExp.dart';
+import '../../services/auth_service.dart';
+import '../../utils/regExp.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -65,6 +61,76 @@ class _SignUpState extends State<SignUp> {
           child: userInfo(),
         ),
       ),
+        persistentFooterButtons:[
+          Center(
+            child: FilledButton(
+              onPressed: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                print(controllers[3].text);
+                if (_formKey.currentState!.validate()) {
+                  var result = await Auth().createUser(
+                    email: controllers[1].text.trim(),
+                    pw: controllers[2].text.trim(),
+                  );
+                  if (result is String) {
+                    // 문자열 반환 시, 에러 메시지로 간주하고 스낵바를 표시
+                    controllers[1].text = "";
+                    _formKey.currentState!.validate();
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(result)));
+                  } else {
+                    print("시작");
+                    if (selectedadress != null) {
+                      // UserCredential 객체가 반환됐다면 데이터베이스에 사용자 정보 저장
+                      if (UserFirebase().createUserInfo(
+                          uid: Auth().getUid(result),
+                          user: UserInfoModel.fromJson({
+                            "nickName": controllers[0].text.trim(),
+                            "email": controllers[1].text.trim(),
+                            "age": controllers[3].text.trim(),
+                            "gender": controllers[4].text.trim(),
+                            "height": controllers[5].text.trim(),
+                            "weight": controllers[6].text.trim(),
+                            "roadAddress": controllers[7].text.trim(),
+                            "detailAddress": controllers[8].text.trim(),
+                            "NLatLng": [
+                              selectedadress!['x'],
+                              selectedadress!['y']
+                            ],
+
+                          })) !=
+                          null) {
+                        print("성공?");
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text('주소를 선택해주세요')));
+                    }
+                    setState(() {
+                      isLoading = false; // 로딩 종료
+                    });
+
+                    Navigator.pop(context);
+                  }
+                }
+                setState(() {
+                  isLoading = false; // 로딩 종료
+                });
+              },
+              child: isLoading
+                  ? CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )
+                  : Text("회원가입"),
+              style: FilledButton.styleFrom(
+                minimumSize: Size(250, 50),
+              ),
+            ),
+          ),
+
+        ]
     );
   }
 
@@ -168,73 +234,6 @@ class _SignUpState extends State<SignUp> {
             ),
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () async {
-              setState(() {
-                isLoading = true;
-              });
-              print(controllers[3].text);
-              if (_formKey.currentState!.validate()) {
-                var result = await Auth().createUser(
-                  email: controllers[1].text.trim(),
-                  pw: controllers[2].text.trim(),
-                );
-                if (result is String) {
-                  // 문자열 반환 시, 에러 메시지로 간주하고 스낵바를 표시
-                  controllers[1].text = "";
-                  _formKey.currentState!.validate();
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(result)));
-                } else {
-                  print("시작");
-                  if (selectedadress != null) {
-                    // UserCredential 객체가 반환됐다면 데이터베이스에 사용자 정보 저장
-                    if (UserFirebase().createUserInfo(
-                            uid: Auth().getUid(result),
-                            user: UserInfoModel.fromJson({
-                              "nickName": controllers[0].text.trim(),
-                              "email": controllers[1].text.trim(),
-                              "age": controllers[3].text.trim(),
-                              "gender": controllers[4].text.trim(),
-                              "height": controllers[5].text.trim(),
-                              "weight": controllers[6].text.trim(),
-                              "roadAddress": controllers[7].text.trim(),
-                              "detailAddress": controllers[8].text.trim(),
-                              "NLatLng": [
-                                selectedadress!['x'],
-                                selectedadress!['y']
-                              ],
-
-                            })) !=
-                        null) {
-                      print("성공?");
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('주소를 선택해주세요')));
-                  }
-                  setState(() {
-                    isLoading = false; // 로딩 종료
-                  });
-
-                  Navigator.pop(context);
-                }
-              }
-              setState(() {
-                isLoading = false; // 로딩 종료
-              });
-            },
-            child: isLoading
-                ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )
-                : Text("회원가입"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.lightBlue[50],
-              minimumSize: Size(250, 50),
-            ),
-          ),
-          SizedBox(height: 30),
         ],
       ),
     );
