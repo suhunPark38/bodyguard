@@ -51,7 +51,9 @@ class DietCalendar extends StatelessWidget {
             Provider.of<HealthDataProvider>(context, listen: false)
                 .selectedDate = selectedDay;
             Provider.of<HealthDataProvider>(context, listen: false)
-                .fetchData(provider.selectedDay);
+                .postFetchData(provider.selectedDay);
+
+
           },
           headerStyle: const HeaderStyle(
             titleTextStyle:
