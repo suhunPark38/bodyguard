@@ -111,7 +111,7 @@ class DietPage extends StatelessWidget {
                               user.info?.gender == "남" ? BMR += 5 : BMR -= 161;
                               provider.recommendedCalories = BMR * 1.55;
                               return Text(
-                                '${provider.totalNutritionalInfo.calories.toStringAsFixed(2)} / ${provider.recommendedCalories.toStringAsFixed(2)}kcal',
+                                '${provider.totalNutritionalInfo.calories.toStringAsFixed(1)} / ${provider.recommendedCalories.toStringAsFixed(1)}kcal',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -140,7 +140,7 @@ class DietPage extends StatelessWidget {
                                 ),
                                 Text(
                                   provider.recommendedCalories
-                                      .toStringAsFixed(2),
+                                      .toStringAsFixed(1),
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey.shade600,
