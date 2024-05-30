@@ -185,4 +185,47 @@ class DietProvider with ChangeNotifier {
     );
     notifyListeners();
   }
+
+  Future<double> getAverageCaloriesForWeek() async {
+    // 오늘을 제외한 일주일 전의 날짜 계산
+    DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
+
+    // 일주일 동안의 다이어트 데이터 가져오기
+    List<DietData> weekDiets = await database.getDietBetweenDates(oneWeekAgo, DateTime.now());
+    // 주간 다이어트 데이터의 개수
+    int weekDataCount = weekDiets.length;
+    // 주간 칼로리 합계 구하기
+    double weekCaloriesSum = _calculateCaloriesSum(weekDiets);
+
+    // 주간 평균 칼로리 계산 (데이터가 없으면 0으로 처리)
+    double averageCaloriesForWeek = weekDataCount > 0 ? weekCaloriesSum / weekDataCount : 0.0;
+
+    return averageCaloriesForWeek;
+  }
+
+  Future<double> getAverageCaloriesForMonth() async {
+    // 오늘을 제외한 한 달 전의 날짜 계산
+    DateTime oneMonthAgo = DateTime.now().subtract(Duration(days: 30));
+
+    // 한 달 동안의 다이어트 데이터 가져오기
+    List<DietData> monthDiets = await database.getDietBetweenDates(oneMonthAgo, DateTime.now());
+    // 한 달 다이어트 데이터의 개수
+    int monthDataCount = monthDiets.length;
+    // 한 달 칼로리 합계 구하기
+    double monthCaloriesSum = _calculateCaloriesSum(monthDiets);
+
+    // 월간 평균 칼로리 계산 (데이터가 없으면 0으로 처리)
+    double averageCaloriesForMonth = monthDataCount > 0 ? monthCaloriesSum / monthDataCount : 0.0;
+
+    return averageCaloriesForMonth;
+  }
+
+
+  double _calculateCaloriesSum(List<DietData> diets) {
+    double sum = 0.0;
+    for (var diet in diets) {
+      sum += diet.calories;
+    }
+    return sum;
+  }
 }
