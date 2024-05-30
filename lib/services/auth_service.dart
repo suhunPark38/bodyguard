@@ -10,8 +10,8 @@ class Auth{
     await FirebaseAuth.instance;
   }
 
-  Future<void> userLoginOut() async {
-    await FirebaseAuth.instance.signOut();
+  void userLoginOut() {
+    FirebaseAuth.instance.signOut();
   }
 
   Future<String?> userLogin({required String email, required String pw}) async {
