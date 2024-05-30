@@ -137,8 +137,8 @@ class HomePage extends StatelessWidget {
                                             MainAxisAlignment.end,
                                         children: [
                                           SizedBox(
-                                              width: 110,
-                                              height: 20,
+                                              width: screenWidth * 0.3,
+                                              height: screenHeight * 0.025,
                                               child: CustomButton(
                                                 onPressed: () {
                                                   Provider.of<ShoppingProvider>(
@@ -188,7 +188,7 @@ class HomePage extends StatelessWidget {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              "칼로리",
+                                              "섭취 칼로리",
                                               style: TextStyle(
                                                   color: Colors.blueGrey,
                                                   fontSize: 15),
@@ -262,10 +262,10 @@ class HomePage extends StatelessWidget {
                                           height: screenHeight * 0.025,
                                           child: CustomButton(
                                             onPressed: () {
-                                              healthData.addWaterData(0.25);
+                                              healthData.addWaterData(0.20);
                                             },
                                             text: const Text(
-                                              "추가하기",
+                                              "+ 200ml",
                                               style: TextStyle(fontSize: 10),
                                             ),
                                           ))

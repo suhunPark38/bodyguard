@@ -72,19 +72,23 @@ class SearchResultsPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            ListView.builder(
-              padding: const EdgeInsets.all(8.0),
-              itemCount: stores.length,
-              itemBuilder: (context, index) {
-                Store store = stores[index];
-                return StoreCard(store: store);
-              },
-            ), const Padding(
-      padding: EdgeInsets.all(16.0),
-      child:
-      Center(
-              child: DietDataListView(),
-            ),
+            stores.isNotEmpty
+                ? ListView.builder(
+                    padding: const EdgeInsets.all(8.0),
+                    itemCount: stores.length,
+                    itemBuilder: (context, index) {
+                      Store store = stores[index];
+                      return StoreCard(store: store);
+                    },
+                  )
+                : const Center(
+                    child: Text('해당하는 가게가 없어요.'),
+                  ),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Center(
+                child: DietDataListView(),
+              ),
             )
           ],
         ),
