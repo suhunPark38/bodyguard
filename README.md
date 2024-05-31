@@ -6,6 +6,8 @@
 
 ![body_logo_icon](https://github.com/suhunPark38/bodyguard/assets/118532970/4c324c8f-2e7c-4195-8cb7-cb5f1e54e182)
 
+[APK 파일 구글 드라이브 링크](https://drive.google.com/file/d/1GyfCp8Jyk-e1P3s4sO55F_koSxxJ9YvW/view?usp=drive_link)
+
 ## 목차
 
 1. [프로젝트 목적](#프로젝트-목적)
